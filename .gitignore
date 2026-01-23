@@ -1,0 +1,14 @@
+# 忽略自动驾驶相关的本地ROS节点/消息文件夹
+senseauto_message_ros/
+senseauto_node_TAP/
+
+# 可选：添加自动驾驶项目常见的忽略项（推荐，避免后续冗余提示）
+# 忽略ROS编译产物
+build/
+devel/
+install/
+log/
+# 忽略临时文件
+*.swp
+*.tmp
+.DS_Store
