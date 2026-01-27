@@ -1,0 +1,34 @@
+{
+    "longsafe_config": {
+        "k_use_shadowmode": 1,
+        "k_aeb_enable": 1,
+        "k_ctb_enable": 1,
+        "k_cta_enable": 1,
+        "k_rcw_enable": 1,
+        "k_bsd_enable": 1,
+        "k_dow_enable": 1,
+        "k_use_new_swc": 0
+    },
+    "longsafe_param": {
+        "k_ignore_barrier_check": 1,
+        "k_ignore_snr_check": 0,
+        "k_at_test_scene": 0,
+        "k_cross_vlat_check": 1,
+        "k_cross_vlgt_check": 1,
+        "k_LgSf_EnCone": 1,
+        "k_LgSf_EnBarrier": 1,
+        "k_LgSf_PosnLgtOffset": 0,
+        "k_LgSf_EnConfInhibit": 1,
+        "k_LgSf_EnEgoConfInhibit": 1,
+        "k_LgSf_EnObsConfInhibit": 1,
+        "k_LgSf_EnSceniaroCheck": 1,
+        "k_LgSf_EnAWB": 1,
+        "k_LgSf_MinAebDecelValue": 0,
+        "k_LgSf_EnHighMiles": 0,
+        "k_LgSf_EnSimulationMode": 0,
+        "k_LgSf_ActiveSafeMode": 0,
+        "k_ignore_roadedge_check": 1,
+        "k_LgSf_EnTestScene": 0,
+        "k_LgSf_EnableCts": 0
+    }
+}
