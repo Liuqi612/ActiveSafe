@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_ELK_ELK_TYPES_H_
+#define TAP_SDK_ALGORITHM_ELK_ELK_TYPES_H_
 #include <cstdint>
 
 namespace active_safety {
@@ -16,3 +17,4 @@ enum class ElkState { OFF, FAULT, INHIBIT, STANDBY, ACTIVE };
 
 } // namespace elk
 } // namespace active_safety
+#endif // TAP_SDK_ALGORITHM_ELK_ELK_TYPES_H_

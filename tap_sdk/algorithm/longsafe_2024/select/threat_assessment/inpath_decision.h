@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_INPATH_DECISION_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_INPATH_DECISION_H_
 #include "algorithm/longsafe_2024/algo_interface/active_safety_vse.h"
 #include "math/lookuptable/lookuptable.h"
 #include "coll_eval.h"
@@ -21,7 +22,7 @@ struct AobjAvoidance {
     float decel_short_pretime;
     float alat_steer;
 
-    AobjAvoidance() : decel_long_pretime(0.0f), decel_short_pretime(0.0f), alat_steer(0.0f) {}
+    AobjAvoidance() : decel_long_pretime(0.0F), decel_short_pretime(0.0F), alat_steer(0.0F) {}
 };
 
 struct PredictObjMotion {
@@ -42,7 +43,7 @@ struct PredictObjMotion {
     int   manv_type;
 
     PredictObjMotion()
-        : p_lgt(0.0f), p_lat(0.0f), spd(0.0f), v_lgt(0.0f), v_lat(0.0f), heading(0.0f), a(0.0f), a_lgt(0.0f), a_lat(0.0f), curv(0.0f), in_path(false),
+        : p_lgt(0.0F), p_lat(0.0F), spd(0.0F), v_lgt(0.0F), v_lat(0.0F), heading(0.0F), a(0.0F), a_lgt(0.0F), a_lat(0.0F), curv(0.0F), in_path(false),
           dist_from_left(0.0), dist_from_right(0.0), pred_offset(0.0), manv_type(0) {}
 };
 
@@ -55,7 +56,7 @@ struct RelativePose {
     float v_lat;
     bool  point_on_dist_side;
 
-    RelativePose() : heading(0.0f), sin_rotation(0.0f), cos_rotation(0.0f), p_lgt(0.0f), p_lat(0.0f), v_lat(0.0f), point_on_dist_side(false) {}
+    RelativePose() : heading(0.0F), sin_rotation(0.0F), cos_rotation(0.0F), p_lgt(0.0F), p_lat(0.0F), v_lat(0.0F), point_on_dist_side(false) {}
 };
 
 struct PredictPoseInfo {
@@ -98,8 +99,8 @@ struct CornerPoints {
     float remote_right_lat;
 
     CornerPoints()
-        : close_left_lgt(0.0f), close_left_lat(0.0f), close_right_lgt(0.0f), close_right_lat(0.0f), remote_left_lgt(0.0f), remote_left_lat(0.0f),
-          remote_right_lgt(0.0f), remote_right_lat(0.0f) {}
+        : close_left_lgt(0.0F), close_left_lat(0.0F), close_right_lgt(0.0F), close_right_lat(0.0F), remote_left_lgt(0.0F), remote_left_lat(0.0F),
+          remote_right_lgt(0.0F), remote_right_lat(0.0F) {}
 };
 struct CornerCorvedPoints {
     float close_left_lgt_corved;
@@ -112,12 +113,12 @@ struct CornerCorvedPoints {
     float remote_right_lat_corved;
 
     CornerCorvedPoints()
-        : close_left_lgt_corved(0.0f), close_left_lat_corved(0.0f), close_right_lgt_corved(0.0f), close_right_lat_corved(0.0f),
-          remote_left_lgt_corved(0.0f), remote_left_lat_corved(0.0f), remote_right_lgt_corved(0.0f), remote_right_lat_corved(0.0f) {}
+        : close_left_lgt_corved(0.0F), close_left_lat_corved(0.0F), close_right_lgt_corved(0.0F), close_right_lat_corved(0.0F),
+          remote_left_lgt_corved(0.0F), remote_left_lat_corved(0.0F), remote_right_lgt_corved(0.0F), remote_right_lat_corved(0.0F) {}
 };
 
 struct ObjProjData {
-    float dist_from_host_left  = 0.0;
+    float dist_from_host_left  = 0.0F;
     float dist_from_host_right = 0.0;
 };
 
@@ -136,7 +137,7 @@ struct EdgeDistance {
     float far_dist_r;
     float far_dist_l;
 
-    EdgeDistance() : closet_dist_r(0.0f), closet_dist_l(0.0f), far_dist_r(0.0f), far_dist_l(0.0f) {}
+    EdgeDistance() : closet_dist_r(0.0F), closet_dist_l(0.0F), far_dist_r(0.0F), far_dist_l(0.0F) {}
 };
 
 struct PossibleManoeuvres {
@@ -168,7 +169,7 @@ struct AsInPathDecision {
     ~AsInPathDecision() noexcept;
     void Clear();
     void ProcessInPathDecision(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
-                               const SafetyMarginEvaluator &safemargin_eval, const AsVseOut &vse_out, const AsEgoPath &curv_path);
+                               const SafetyMarginEvaluator &safemargin_eval, const AsVseOut &vse_out, const AsEgoPath &curv_path,const AsSocietyScene &society_scene);
 
     static bool             LinearMovementPredictorWithStop(bool stopena, float &posn, float &spd, float &a, float t);
     static PredictObjMotion PredictObjectCurveMotion(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
@@ -180,16 +181,16 @@ struct AsInPathDecision {
 
   private:
     void CalInPathDataWithPredictPose(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
-                                      const SafetyMarginEvaluator &safemargin_eval, const AsVseOut &vse_out, const AsEgoPath &curv_path);
+                                      const SafetyMarginEvaluator &safemargin_eval, const AsVseOut &vse_out, const AsEgoPath &curv_path,const AsSocietyScene &society_scene);
 
     void CalInPathDataWithCurrentPose(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
                                       const SafetyMarginEvaluator &safemagin_eval, const AsVseOut &vse_out);
 
     InPathData SelectInPathData(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval, const AsVseOut &vse_out, bool ttr_pred_valid);
-    bool       CheckUsePredForTruck(const active_safety::AsObstacle &obj);
+    PredictObjMotion SelectSingleInPathData(const PredictObjMotion &pred_data, const PredictObjMotion &curr_data, bool aeb_active, bool strict_inpath);
 
     void  CalCornerPoints(const AsVseOut &vse_out, const BoundingBox &bd_box, const active_safety::AsObstacle &obj);
-    void  CalcAvoidanceManoeuvers(const active_safety::AsObstacle &obj);
+    void  CalcAvoidanceManoeuvers(const active_safety::AsObstacle &obj,const AsSocietyScene &society_scene);
     float CalcDeclerationForAovidance(const active_safety::AsObstacle &obj, float conf_value);
     bool  CalClosestCornerDistance(const AsVseOut &vse_out, const active_safety::AsObstacle &obj, float &min_lat);
     bool  CheckInPathGeometrically(const PredictOffset &pred_offst, bool cross_flag, float min_lat);
@@ -219,13 +220,13 @@ struct AsInPathDecision {
 
     PredictObjMotion CalcCartesianMovement(const active_safety::AsObstacle &obj, float crvt);
 
-    PredictObjMotion CalcDefaultObjLinearMotion(const active_safety::AsObstacle &obj, float ttc_value);
+    PredictObjMotion CalcDefaultObjLinearMotion(const active_safety::AsObstacle &obj, float ttc_value,float head_sta);
 
     PredictObjMotion CalcBrakingObjLinearMotion(const active_safety::AsObstacle &obj, const SafetyMarginEvaluator &saffmargin_eval, float decel_pre,
                                                 float ttc_value, float head_sta);
 
     PredictObjMotion CalcTurningObjLinearMotion(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
-                                                const SafetyMarginEvaluator &safemargin_eval, float decel_pre, float ttc_value, bool turn_left);
+                                                const SafetyMarginEvaluator &safemargin_eval, float decel_pre, float ttc_value, bool turn_left,float head_sta);
     RelativePose CalcRelativePositionToHostPath(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval, PredictObjMotion pre_pos,
                                                 EgoMotionStateAtTime host_pred_info);
     float        CalcTransPosnToRemoteSide(float posn, float length, float heading);
@@ -243,7 +244,6 @@ struct AsInPathDecision {
 
     bool CheckObjLowLateralSpd(const active_safety::AsObstacle &obj);
 
-    bool               CheckUsePredictionSta(bool use_outpath, bool use_inpath, bool inpath_ttr, bool inpath_curr, bool pred_valid);
     CornerPoints       corner_points;
     CornerCorvedPoints corner_corved_points;
     InPathData         inpath_curr_data;
@@ -266,3 +266,4 @@ struct AsInPathDecision {
 };
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_INPATH_DECISION_H_

@@ -1,5 +1,6 @@
 
-#pragma once
+#ifndef TAP_SDK_MATH_SIGNALPROCESS_RELAY_BLOCK_RELAY_BLOCK_H_
+#define TAP_SDK_MATH_SIGNALPROCESS_RELAY_BLOCK_RELAY_BLOCK_H_
 #include <cstdint>
 
 namespace active_safety {
@@ -43,3 +44,4 @@ class RelayBlock {
 }; // RelayBlock
 } // namespace math
 } // namespace active_safety
+#endif // TAP_SDK_MATH_SIGNALPROCESS_RELAY_BLOCK_RELAY_BLOCK_H_

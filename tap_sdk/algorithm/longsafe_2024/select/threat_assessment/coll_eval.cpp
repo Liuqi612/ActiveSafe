@@ -12,18 +12,17 @@ SafetyObsColliDetecConfig colli_detec_param;
 CollisionEvaluator::CollisionEvaluator() {
 }
 
-CollisionEvaluator::~CollisionEvaluator() {
-}
+CollisionEvaluator::~CollisionEvaluator() = default;
 
 void CollisionEvaluator::ProcessCollisionEvaluator(const active_safety::AsObstacle &obj, const AsVseOut &vse_out, const AsEgoPath &curv_path,
                                                    const AsSocietyScene &society_scene) {
     AsVseOut egoInfo = vse_out;
     if (egoInfo.aeb_active) {
-        egoInfo.long_accel = 0.f;
+        egoInfo.long_accel = 0.F;
     }
     CalMotionType(egoInfo, obj);
     CalBoundingBox(egoInfo, obj);
-    if (fabs(vse_out.yawrate) > 0.2f) {
+    if (fabs(vse_out.yawrate) > 0.1F) {
         CalTTRAndTTMForTurnScene(curv_path, egoInfo, obj, society_scene);
         ttr = seprate_axle_ttc;
         ttm = seprate_axle_ttm;
@@ -46,38 +45,38 @@ void CollisionEvaluator::Clear() {
     motion_type.obs_is_motor_veh      = false;
     motion_type.curved_motion         = false;
     motion_type.side_closest          = false;
-    motion_type.abs_heading           = 0.0f;
-    bounding_box.length_side_lgt      = 0.0f;
-    bounding_box.length_side_lat      = 0.0f;
-    bounding_box.sin_rotation         = 0.0f;
-    bounding_box.cos_rotation         = 0.0f;
-    md_front_closest.v_rel            = 0.0f;
-    md_front_closest.v_rel_host_sta   = 0.0f;
-    md_front_closest.v_rel_object_sta = 0.0f;
-    md_front_closest.a_rel            = 0.0f;
-    md_front_closest.a_rel_host_sta   = 0.0f;
-    md_front_closest.a_rel_object_sta = 0.0f;
-    md_rear_closest.v_rel             = 0.0f;
-    md_rear_closest.v_rel_host_sta    = 0.0f;
-    md_rear_closest.v_rel_object_sta  = 0.0f;
-    md_rear_closest.a_rel             = 0.0f;
-    md_rear_closest.a_rel_host_sta    = 0.0f;
-    md_rear_closest.a_rel_object_sta  = 0.0f;
-    ed_front.close_edge_dis           = 0.0f;
-    ed_front.middle_edge_dis          = 0.0f;
-    ed_front.far_edge_dis             = 0.0f;
-    ed_rear.close_edge_dis            = 0.0f;
-    ed_rear.middle_edge_dis           = 0.0f;
-    ed_rear.far_edge_dis              = 0.0f;
+    motion_type.abs_heading           = 0.0F;
+    bounding_box.length_side_lgt      = 0.0F;
+    bounding_box.length_side_lat      = 0.0F;
+    bounding_box.sin_rotation         = 0.0F;
+    bounding_box.cos_rotation         = 0.0F;
+    md_front_closest.v_rel            = 0.0F;
+    md_front_closest.v_rel_host_sta   = 0.0F;
+    md_front_closest.v_rel_object_sta = 0.0F;
+    md_front_closest.a_rel            = 0.0F;
+    md_front_closest.a_rel_host_sta   = 0.0F;
+    md_front_closest.a_rel_object_sta = 0.0F;
+    md_rear_closest.v_rel             = 0.0F;
+    md_rear_closest.v_rel_host_sta    = 0.0F;
+    md_rear_closest.v_rel_object_sta  = 0.0F;
+    md_rear_closest.a_rel             = 0.0F;
+    md_rear_closest.a_rel_host_sta    = 0.0F;
+    md_rear_closest.a_rel_object_sta  = 0.0F;
+    ed_front.close_edge_dis           = 0.0F;
+    ed_front.middle_edge_dis          = 0.0F;
+    ed_front.far_edge_dis             = 0.0F;
+    ed_rear.close_edge_dis            = 0.0F;
+    ed_rear.middle_edge_dis           = 0.0F;
+    ed_rear.far_edge_dis              = 0.0F;
     side_near                         = AsObstacleSideNear::AS_OBS_SD_UNKNOWN;
-    seprate_axle_ttc                  = 100.0f;
-    seprate_axle_ttm                  = 100.0f;
-    long_ttc                          = 100.0f;
-    long_ttm                          = 100.0f;
+    seprate_axle_ttc                  = 100.0F;
+    seprate_axle_ttm                  = 100.0F;
+    long_ttc                          = 100.0F;
+    long_ttm                          = 100.0F;
     ttm                               = 100.0;
-    ttr                               = 100.0;
-    xolc                              = 20.0f;
-    lat_est                           = 20.0f;
+    ttr                               = 100.0F;
+    xolc                              = 20.0F;
+    lat_est                           = 20.0F;
 }
 
 void CollisionEvaluator::CalTTRAndTTM(const AsVseOut &vse_out, const active_safety::AsObstacle &obj) {
@@ -91,7 +90,7 @@ void CollisionEvaluator::CalTTRAndTTM(const AsVseOut &vse_out, const active_safe
     TTIInputData ttr_input;
     TTIData      ttr_data;
     bool         ttr_solution_exist = false;
-    float        ttr_tti            = 0.0f;
+    float        ttr_tti            = 0.0F;
     ttr_input.is_front_closest      = is_front_closest;
     ttr_input.md_front_closest      = md_front_closest;
     ttr_input.md_rear_closest       = md_rear_closest;
@@ -106,7 +105,7 @@ void CollisionEvaluator::CalTTRAndTTM(const AsVseOut &vse_out, const active_safe
     TTIInputData ttm_input;
     TTIData      ttm_data;
     bool         ttm_solution_exist = false;
-    float        ttm_tti            = 0.0f;
+    float        ttm_tti            = 0.0F;
     ttm_input.is_front_closest      = is_front_closest;
     ttm_input.md_front_closest      = md_front_closest;
     ttm_input.md_rear_closest       = md_rear_closest;
@@ -118,11 +117,11 @@ void CollisionEvaluator::CalTTRAndTTM(const AsVseOut &vse_out, const active_safe
     ttm_solution_exist = SelectTTI(ttm_data, stopping_data.host_stop_time, stopping_data.obj_stop_time, ttm_tti);
 
     // Correct TTR
-    float correct_ttr = 0.0f;
+    float correct_ttr = 0.0F;
     if (true == ttr_solution_exist) {
         correct_ttr = ttr_tti;
     } else {
-        if (((ed_front.close_edge_dis < 0.0f) ^ (ed_front.far_edge_dis < 0.0f)) ^ (ttm_tti < 0.0f)) {
+        if (((ed_front.close_edge_dis < 0.0F) ^ (ed_front.far_edge_dis < 0.0F)) ^ (ttm_tti < 0.0F)) {
             correct_ttr = colleva_param.k_tti_low;
         } else {
             correct_ttr = colleva_param.k_tti_uppr;
@@ -130,13 +129,13 @@ void CollisionEvaluator::CalTTRAndTTM(const AsVseOut &vse_out, const active_safe
     }
 
     // Modify TTR
-    float default_ttr = 0.0f;
-    if ((ed_front.close_edge_dis < 0.0f) ^ (ed_front.far_edge_dis < 0.0f)) {
+    float default_ttr = 0.0F;
+    if ((ed_front.close_edge_dis < 0.0F) ^ (ed_front.far_edge_dis < 0.0F)) {
         default_ttr = colleva_param.k_tti_low;
     } else {
         default_ttr = colleva_param.k_tti_uppr;
     }
-    if ((fabsf(md_front_closest.v_rel) < 0.01f) && (fabsf(md_front_closest.a_rel) < 0.01f)) {
+    if ((fabsf(md_front_closest.v_rel) < 0.01F) && (fabsf(md_front_closest.a_rel) < 0.01F)) {
         correct_ttr = default_ttr;
     }
     if (correct_ttr < colleva_param.k_tti_low) {
@@ -147,17 +146,17 @@ void CollisionEvaluator::CalTTRAndTTM(const AsVseOut &vse_out, const active_safe
     }
 
     // Correct TTM
-    float correct_ttm = 0.0f;
+    float correct_ttm = 0.0F;
     if (true == ttm_solution_exist) {
         correct_ttm = ttm_tti;
     } else {
-        if (((ed_front.close_edge_dis < 0.0f) ^ (ed_front.far_edge_dis < 0.0f)) ^ (ttr_tti < 0.0f)) {
+        if (((ed_front.close_edge_dis < 0.0F) ^ (ed_front.far_edge_dis < 0.0F)) ^ (ttr_tti < 0.0F)) {
             correct_ttm = colleva_param.k_tti_low;
         } else {
             correct_ttm = colleva_param.k_tti_uppr;
         }
     }
-    if ((fabsf(md_front_closest.v_rel) < 0.01f) && (fabsf(md_front_closest.a_rel) < 0.01f)) {
+    if ((fabsf(md_front_closest.v_rel) < 0.01F) && (fabsf(md_front_closest.a_rel) < 0.01F)) {
         correct_ttm = colleva_param.k_tti_uppr;
     }
     if (correct_ttm < colleva_param.k_tti_low) {
@@ -174,12 +173,12 @@ void CollisionEvaluator::CalTTRAndTTM(const AsVseOut &vse_out, const active_safe
 void CollisionEvaluator::CalLatEstimedInfo(const active_safety::AsObstacle &obj, const AsVseOut &vse_out) {
     float squrd_pos = obj.long_posn * obj.long_posn;
     // if(motion_type.obs_is_vehicle)
-    xolc = obj.lat_posn - 0.5f * vse_out.rear_curvature * squrd_pos + 0.16667f * vse_out.rear_curvaturerate * squrd_pos * obj.long_posn;
-    xolc = math::Clamp(xolc, -20.0f, 20.0f);
+    xolc = obj.lat_posn - 0.5F * vse_out.rear_curvature * squrd_pos + 0.16667F * vse_out.rear_curvaturerate * squrd_pos * obj.long_posn;
+    xolc = math::Clamp(xolc, -20.0F, 20.0F);
     float obj_lat_moving_dist = ttr * obj.lat_vel;
 
     lat_est = xolc + obj_lat_moving_dist;
-    lat_est = math::Clamp(lat_est, -20.0f, 20.0f);
+    lat_est = math::Clamp(lat_est, -20.0F, 20.0F);
 }
 
 void CollisionEvaluator::CalTTRAndTTMForTurnScene(const AsEgoPath &curv_path, const AsVseOut &vse_out, const active_safety::AsObstacle &obj,
@@ -271,12 +270,21 @@ void CollisionEvaluator::CalTTRAndTTMForTurnScene(const AsEgoPath &curv_path, co
     }
     Box2D stationary_target_rect;
     if (motion_type.stationary) {
-        stationary_target_rect.BuildFromCenter(obj.long_posn, obj.lat_posn, obj.heading, bounding_box.length_side_lgt, bounding_box.length_side_lat);
+           if(obj.object_class == active_safety::ObjectClass::BUS || obj.object_class == active_safety::ObjectClass::TRUCK ||
+             obj.object_class == active_safety::ObjectClass::CAR || obj.object_class == active_safety::ObjectClass::BICYCLE ||
+             obj.object_class == active_safety::ObjectClass::ESCOOTER ||
+             obj.object_class == active_safety::ObjectClass::MOTORCYCLE)
+             {
+                stationary_target_rect.BuildFromCenter(obj.long_posn + 0.5*sin(obj.heading)*obj.length, obj.lat_posn + 0.5*sin(obj.heading)*obj.length, obj.heading, bounding_box.length_side_lgt, bounding_box.length_side_lat);
+             }else{
+                stationary_target_rect.BuildFromCenter(obj.long_posn, obj.lat_posn, obj.heading, bounding_box.length_side_lgt, bounding_box.length_side_lat);
+            
+             }
     }
 
     constexpr int kMaxSteps = 150; // 3.0s / 0.02s
     for (int step = 0; step <= kMaxSteps; ++step) {
-        const float iterTm = step * 0.02f;
+        const float iterTm = step * 0.02F;
 
         // const auto &hostState = curv_path.GetHostState(iterTm);
         auto hostBox = curv_path.GetHostBoudingBox(iterTm);
@@ -290,7 +298,15 @@ void CollisionEvaluator::CalTTRAndTTMForTurnScene(const AsEgoPath &curv_path, co
 
             math::PredictMotionWithStop(obj.lat_posn, obj.lat_vel, obj.lat_accel, iterTm, targetState.lat_pos, targetState.lat_vel,
                                             targetState.lat_accel);
-            targetState.heading_angle = (obj.speed > 0.1f) ? std::atan2(obj.lat_vel, obj.long_vel) : obj.heading;
+            targetState.heading_angle = (obj.speed > 1.0F) ? std::atan2(obj.lat_vel, obj.long_vel) : obj.heading;
+             if(obj.object_class == active_safety::ObjectClass::BUS || obj.object_class == active_safety::ObjectClass::TRUCK ||
+                obj.object_class == active_safety::ObjectClass::CAR || obj.object_class == active_safety::ObjectClass::BICYCLE ||
+                obj.object_class == active_safety::ObjectClass::ESCOOTER ||
+                obj.object_class == active_safety::ObjectClass::MOTORCYCLE)
+             {
+                targetState.long_pos = targetState.long_pos + 0.5*obj.length*sin(obj.heading);
+                targetState.lat_pos = targetState.lat_pos   + 0.5F*obj.length*sin(obj.heading);  
+             }
             targetRect.BuildFromCenter(targetState.long_pos, targetState.lat_pos, targetState.heading_angle, bounding_box.length_side_lgt,
                                        bounding_box.length_side_lat);
         } else {
@@ -366,21 +382,21 @@ void CollisionEvaluator::CalEdgeDistanceData(const AsVseOut &vse_out, const acti
 
 StoppingData CollisionEvaluator::CalcStopDataForTTI(const active_safety::AsObstacle &obj, const AsVseOut &vse_out) {
     StoppingData stop_data;
-    stop_data.host_stop_time = math::Clamp(math::SafeDivide(vse_out.vcs_long_vel, -vse_out.long_accel), -100000.0f, 100000.0f);
-    stop_data.host_delta_pos = math::PredictPosition(0.0f, vse_out.vcs_long_vel, vse_out.long_accel, stop_data.host_stop_time);
+    stop_data.host_stop_time = math::Clamp(math::SafeDivide(vse_out.vcs_long_vel, -vse_out.long_accel), -100000.0F, 100000.0F);
+    stop_data.host_delta_pos = math::PredictPosition(0.0F, vse_out.vcs_long_vel, vse_out.long_accel, stop_data.host_stop_time);
     if (motion_type.stationary) {
-        stop_data.obj_stop_time = 0.01f;
-        stop_data.obj_delta_pos = 0.0f;
+        stop_data.obj_stop_time = 0.01F;
+        stop_data.obj_delta_pos = 0.0F;
     } else {
-        stop_data.obj_stop_time = math::Clamp(math::SafeDivide(obj.long_vel, -obj.long_accel), -100000.0f, 100000.0f);
-        stop_data.obj_delta_pos = math::PredictPosition(0.0f, obj.long_vel, obj.long_accel, stop_data.obj_stop_time);
+        stop_data.obj_stop_time = math::Clamp(math::SafeDivide(obj.long_vel, -obj.long_accel), -100000.0F, 100000.0F);
+        stop_data.obj_delta_pos = math::PredictPosition(0.0F, obj.long_vel, obj.long_accel, stop_data.obj_stop_time);
     }
     return stop_data;
 }
 
 bool CollisionEvaluator::CleckIsFrontClosest(const active_safety::AsObstacle &obj) {
     bool front_closest = false;
-    if ((md_front_closest.v_rel < 0.0f) || ((fabsf(md_front_closest.v_rel) < 0.01f) && (obj.long_posn > 0.0f))) {
+    if ((md_front_closest.v_rel < 0.0F) || ((fabsf(md_front_closest.v_rel) < 0.01F) && (obj.long_posn > 0.0F))) {
         front_closest = true;
     } else {
         front_closest = false;
@@ -390,11 +406,11 @@ bool CollisionEvaluator::CleckIsFrontClosest(const active_safety::AsObstacle &ob
 
 void CollisionEvaluator::CalTTI(const TTIInputData &input_data, TTIData &tti_data) {
     TTIMotionData tti_motion_data;
-    SelectMotionData(input_data.is_front_closest, input_data.md_front_closest, input_data.md_rear_closest, input_data.edge_dis_front,
+    (void)SelectMotionData(input_data.is_front_closest, input_data.md_front_closest, input_data.md_rear_closest, input_data.edge_dis_front,
                      input_data.edge_dis_rear, tti_motion_data);
 
     // Calculate TTI for vse_out vehicle and object moving
-    float moving_delta_pos   = 0.0f;
+    float moving_delta_pos   = 0.0F;
     tti_data.moving_sol_exit = CalTTIResult(tti_motion_data.tti_moving_para, moving_delta_pos, tti_data.moving_tti);
 
     // Calculate TTI for vse_out vehicle stopped
@@ -407,20 +423,20 @@ void CollisionEvaluator::CalTTI(const TTIInputData &input_data, TTIData &tti_dat
 bool CollisionEvaluator::SelectTTI(const TTIData &tti_data, float ego_stop_time, float veh_stop_time, float &tti) {
     // Ego vehicle will stop
     bool ego_will_stop = false;
-    if ((tti_data.ego_stop_tti > ego_stop_time) && (ego_stop_time > 0.0f) && (ego_stop_time < 3.0f) &&
-        (!((ego_stop_time > tti_data.moving_tti) && (tti_data.moving_tti > 0.0f)))) {
+    if ((tti_data.ego_stop_tti > ego_stop_time) && (ego_stop_time > 0.0F) && (ego_stop_time < 3.0F) &&
+        (!((ego_stop_time > tti_data.moving_tti) && (tti_data.moving_tti > 0.0F)))) {
         ego_will_stop = true;
     }
 
     // Object will stop
     bool veh_will_stop = false;
-    if ((tti_data.veh_stop_tti > veh_stop_time) && (veh_stop_time > 0.0f) && (veh_stop_time < 3.0f) &&
-        (!((veh_stop_time > tti_data.moving_tti) && (tti_data.moving_tti > 0.0f)))) {
+    if ((tti_data.veh_stop_tti > veh_stop_time) && (veh_stop_time > 0.0F) && (veh_stop_time < 3.0F) &&
+        (!((veh_stop_time > tti_data.moving_tti) && (tti_data.moving_tti > 0.0F)))) {
         veh_will_stop = true;
     }
 
     bool solutoin_exit = false;
-    if (true == ego_will_stop && true == veh_will_stop) {
+    if ((true == ego_will_stop)  &&  (true == veh_will_stop)) {
         if (veh_stop_time < ego_stop_time) {
             solutoin_exit = tti_data.veh_stop_sol_exit;
             tti           = tti_data.veh_stop_tti;
@@ -520,20 +536,20 @@ bool CollisionEvaluator::CalTTIResult(TTIDataSel tti_para, float delta_pos, floa
 
 bool CollisionEvaluator::CheckTTISolution(float edge_dis, float v_rel, float a_rel) {
     // For normal
-    float v2          = powf(v_rel, 2.0f);
-    float s           = math::Clamp(math::SafeDivide(v2, 2.0f * a_rel), -100000.0f, 100000.0f);
+    float v2          = powf(v_rel, 2.0F);
+    float s           = math::Clamp(math::SafeDivide(v2, 2.0F * a_rel), -100000.0F, 100000.0F);
     bool  below_limit = false;
     if (edge_dis < s) {
         below_limit = true;
     }
 
     bool no_sln_pos_a_rel = false;
-    if (a_rel > 0 && edge_dis > s) {
+    if ((a_rel > 0)  &&  (edge_dis > s)) {
         no_sln_pos_a_rel = true;
     }
 
     bool no_sln_neg_a_rel = false;
-    if (true == below_limit && a_rel < 0) {
+    if ((true == below_limit)  &&  (a_rel < 0)) {
         no_sln_neg_a_rel = true;
     }
 
@@ -543,7 +559,7 @@ bool CollisionEvaluator::CheckTTISolution(float edge_dis, float v_rel, float a_r
     }
 
     bool no_solution = false;
-    if (fabs(a_rel) > 0.01f) {
+    if (fabs(a_rel) > 0.01F) {
         no_solution = no_solution_using_a_rel;
     } else {
         no_solution = false;
@@ -553,19 +569,19 @@ bool CollisionEvaluator::CheckTTISolution(float edge_dis, float v_rel, float a_r
 }
 
 float CollisionEvaluator::SolveTTISolution(float v_rel, float a_rel, float edge_dis) {
-    float a = 0.5f * a_rel;
+    float a = 0.5F * a_rel;
     float b = v_rel;
     float c = edge_dis;
 
     bool        solution_found = false;
-    const float zero_thr       = 0.000001f;
-    float       solution_1     = 0.0f;
-    float       solution_2     = 0.0f;
-    if (fabsf(a) < zero_thr && fabsf(b) < zero_thr) {
+    const float zero_thr       = 0.000001F;
+    float       solution_1     = 0.0F;
+    float       solution_2     = 0.0F;
+    if ((fabsf(a) < zero_thr)  &&  (fabsf(b) < zero_thr)) {
         if (fabsf(c) < zero_thr) {
             solution_found = true;
-            solution_1     = 0.0f;
-            solution_2     = 0.0f;
+            solution_1     = 0.0F;
+            solution_2     = 0.0F;
         } else {
             solution_found = false;
         }
@@ -574,26 +590,26 @@ float CollisionEvaluator::SolveTTISolution(float v_rel, float a_rel, float edge_
         solution_1     = -c / b;
         solution_2     = -c / b;
     } else {
-        if (4.0f * a * c > powf(b, 2.0f)) {
+        if (4.0F * a * c > powf(b, 2.0F)) {
             solution_found = false;
-            solution_1     = 0.0f;
-            solution_2     = 0.0f;
+            solution_1     = 0.0F;
+            solution_2     = 0.0F;
         } else {
             solution_found = true;
-            solution_1     = (-b + sqrtf(powf(b, 2.0f) - 4.0f * a * c)) / (2.0f * a);
-            solution_2     = (-b - sqrtf(powf(b, 2.0f) - 4.0f * a * c)) / (2.0f * a);
+            solution_1     = (-b + sqrtf(powf(b, 2.0F) - 4.0F * a * c)) / (2.0F * a);
+            solution_2     = (-b - sqrtf(powf(b, 2.0F) - 4.0F * a * c)) / (2.0F * a);
         }
     }
 
-    float solution = 0.0f;
+    float solution = 0.0F;
     if (true == solution_found) {
-        if (a_rel < 0.0f) {
+        if (a_rel < 0.0F) {
             solution = fmaxf(solution_1, solution_2);
         } else {
             solution = fminf(solution_1, solution_2);
         }
     } else {
-        if (edge_dis < 0.0f) {
+        if (edge_dis < 0.0F) {
             solution = -MAX_TTC_THD;
         } else {
             solution = MAX_TTC_THD;
@@ -603,7 +619,7 @@ float CollisionEvaluator::SolveTTISolution(float v_rel, float a_rel, float edge_
 }
 
 float CollisionEvaluator::CalLenLat(const active_safety::AsObstacle &obj) {
-    float m_len_lat = 0.0f;
+    float m_len_lat = 0.0F;
     switch (obj.object_class) {
         case active_safety::ObjectClass::CAR:
         case active_safety::ObjectClass::TRUCK:
@@ -612,14 +628,15 @@ float CollisionEvaluator::CalLenLat(const active_safety::AsObstacle &obj) {
             m_len_lat = obj.width;
             break;
         }
-        // Check if the bike is fast enough
+        // Check if the bike is fast enough or heading sideways
         case active_safety::ObjectClass::ESCOOTER:
         case active_safety::ObjectClass::BICYCLE: {
-            if (obj.speed > colleva_param.k_bike_spd_thd) {
+            if (obj.speed > colleva_param.k_bike_spd_thd ||
+                (fabsf(obj.heading) > 1.2F && fabsf(obj.heading) < 2.0F)) {
                 m_len_lat = colleva_param.k_bike_width;
                 break;
             } else {
-                m_len_lat = 0.01f;
+                m_len_lat = 0.01F;
                 break;
             }
         }
@@ -627,67 +644,75 @@ float CollisionEvaluator::CalLenLat(const active_safety::AsObstacle &obj) {
         case active_safety::ObjectClass::ANIMAL:
         case active_safety::ObjectClass::GENOBJ:
         case active_safety::ObjectClass::UNDETERMINED: {
-            m_len_lat = 0.01f;
+            m_len_lat = 0.01F;
             break;
         }
-        case active_safety::ObjectClass::GOD: {
+        case active_safety::ObjectClass::GOD:
+        case active_safety::ObjectClass::CONE:
+        case active_safety::ObjectClass::OCC:{
             m_len_lat = fmin(obj.width, colleva_param.k_barrier_max_width);
             break;
         }
         default: {
-            m_len_lat = 0.0f;
+            m_len_lat = 0.0F;
             break;
         }
     }
     return m_len_lat;
 }
 float CollisionEvaluator::CalLenLgt(const AsVseOut &vse_out, const active_safety::AsObstacle &obj) {
-    float m_len_lgt = 0.0f;
+    float m_len_lgt = 0.0F;
     switch (obj.object_class) {
         case active_safety::ObjectClass::CAR: {
-            m_len_lgt = colleva_param.k_car_length;
+            //m_len_lgt = colleva_param.k_car_length;
+            m_len_lgt = obj.length;
             break;
         }
         case active_safety::ObjectClass::UNIDENTIFIED_VEHICLE: {
-            if (true == motion_type.moving_oncoming && true == vse_out.aeb_active) {
+            if ((true == motion_type.moving_oncoming)  &&  (true == vse_out.aeb_active)) {
                 m_len_lgt = colleva_param.k_car_length;
                 break;
             } else {
                 m_len_lgt = colleva_param.k_veh_unknown_length;
                 break;
             }
+            m_len_lgt = obj.length;
         }
         case active_safety::ObjectClass::MOTORCYCLE: {
-            m_len_lgt = colleva_param.k_motorcycle_length;
+            //m_len_lgt = colleva_param.k_motorcycle_length;
+            m_len_lgt = obj.length;
             break;
         }
         case active_safety::ObjectClass::ESCOOTER:
         case active_safety::ObjectClass::BICYCLE: {
-            if (obj.speed > colleva_param.k_bike_low_thd) {
+            if (obj.speed > colleva_param.k_bike_low_thd ||
+                (fabsf(obj.heading) > 1.2F && fabsf(obj.heading) < 2.0F)) {
                 m_len_lgt = colleva_param.k_bicycle_length;
                 break;
             } else {
-                m_len_lgt = 0.01f;
+                m_len_lgt = 0.01F;
                 break;
             }
         }
         case active_safety::ObjectClass::TRUCK: {
-            m_len_lgt = (obj.length < m_len_lgt) ? obj.length : colleva_param.k_truck_length;
+            m_len_lgt = (obj.length < colleva_param.k_truck_length) ? obj.length : colleva_param.k_truck_length;
             break;
         }
         case active_safety::ObjectClass::PEDESTRIAN:
         case active_safety::ObjectClass::ANIMAL:
         case active_safety::ObjectClass::GENOBJ:
         case active_safety::ObjectClass::UNDETERMINED: {
-            m_len_lgt = 0.01f;
+            m_len_lgt = 0.01F;
             break;
         }
-        case active_safety::ObjectClass::GOD: {
+        case active_safety::ObjectClass::GOD:
+        case active_safety::ObjectClass::CONE:
+        case active_safety::ObjectClass::OCC:{
             m_len_lgt = fmin(obj.length, colleva_param.k_barrier_max_length);
             break;
         }
         default: {
-            m_len_lgt = 0.0f;
+            m_len_lgt = 0.0F;
             break;
         }
     }
@@ -697,13 +722,14 @@ float CollisionEvaluator::CalLenLgt(const AsVseOut &vse_out, const active_safety
 // stationary or movefromself select MapAngToInterval M_PI
 // oncoming select MapAngToInterval M_PI/2
 float CollisionEvaluator::CalSinRotation(const active_safety::AsObstacle &obj) {
-    float m_sin_rotation        = 0.0f;
+    float m_sin_rotation        = 0.0F;
     bool  is_vehicle            = false;
     bool  vehicle_is_stationary = false;
 
     is_vehicle = (active_safety::ObjectClass::MOTORCYCLE == obj.object_class || active_safety::ObjectClass::ESCOOTER == obj.object_class ||
                   active_safety::ObjectClass::CAR == obj.object_class || active_safety::ObjectClass::TRUCK == obj.object_class ||
-                  active_safety::ObjectClass::UNIDENTIFIED_VEHICLE == obj.object_class);
+                  active_safety::ObjectClass::UNIDENTIFIED_VEHICLE == obj.object_class ||
+                  active_safety::ObjectClass::BICYCLE == obj.object_class);
 
     vehicle_is_stationary = (obj.speed < 2) && (fabsf(obj.lat_vel) < 1);
     if (vehicle_is_stationary && is_vehicle) {
@@ -715,20 +741,22 @@ float CollisionEvaluator::CalSinRotation(const active_safety::AsObstacle &obj) {
     if (active_safety::ObjectClass::PEDESTRIAN == obj.object_class || active_safety::ObjectClass::ANIMAL == obj.object_class ||
         active_safety::ObjectClass::GENOBJ == obj.object_class || active_safety::ObjectClass::UNDETERMINED == obj.object_class ||
         ((active_safety::ObjectClass::BICYCLE == obj.object_class || obj.object_class == active_safety::ObjectClass::ESCOOTER) &&
-         !(obj.speed > colleva_param.k_bike_spd_thd))) {
-        m_sin_rotation = 0.0f;
+         !(obj.speed > colleva_param.k_bike_spd_thd) &&
+         !(fabsf(obj.heading) > 1.2F && fabsf(obj.heading) < 2.0F))) {
+        m_sin_rotation = 0.0F;
     }
     return m_sin_rotation;
 }
 
 float CollisionEvaluator::CalCosRotation(const active_safety::AsObstacle &obj) {
-    float m_cos_rotation        = 0.0f;
+    float m_cos_rotation        = 0.0F;
     bool  is_vehicle            = false;
     bool  vehicle_is_stationary = false;
 
     is_vehicle = (active_safety::ObjectClass::MOTORCYCLE == obj.object_class || active_safety::ObjectClass::ESCOOTER == obj.object_class ||
                   active_safety::ObjectClass::CAR == obj.object_class || active_safety::ObjectClass::TRUCK == obj.object_class ||
-                  active_safety::ObjectClass::UNIDENTIFIED_VEHICLE == obj.object_class);
+                  active_safety::ObjectClass::UNIDENTIFIED_VEHICLE == obj.object_class ||
+                  active_safety::ObjectClass::BICYCLE == obj.object_class);
 
     vehicle_is_stationary = (obj.speed < 2) && (fabsf(obj.lat_vel) < 1);
     if (vehicle_is_stationary && is_vehicle) {
@@ -740,8 +768,9 @@ float CollisionEvaluator::CalCosRotation(const active_safety::AsObstacle &obj) {
     if (active_safety::ObjectClass::PEDESTRIAN == obj.object_class || active_safety::ObjectClass::ANIMAL == obj.object_class ||
         active_safety::ObjectClass::GENOBJ == obj.object_class || active_safety::ObjectClass::UNDETERMINED == obj.object_class ||
         ((active_safety::ObjectClass::BICYCLE == obj.object_class || obj.object_class == active_safety::ObjectClass::ESCOOTER) &&
-         (!(obj.speed > colleva_param.k_bike_spd_thd)))) {
-        m_cos_rotation = 1.0f;
+         (!(obj.speed > colleva_param.k_bike_spd_thd)) &&
+         !(fabsf(obj.heading) > 1.2F && fabsf(obj.heading) < 2.0F))) {
+        m_cos_rotation = 1.0F;
     }
     return m_cos_rotation;
 }
@@ -765,9 +794,9 @@ void CollisionEvaluator::CheckMotorVehicle(const active_safety::AsObstacle &obj)
 }
 
 void CollisionEvaluator::CheckAbsHeading(const active_safety::AsObstacle &obj) {
-//    float abs_heading      = 0.0f;
+//    float abs_heading      = 0.0F;
 //    bool  head_need_modify = false;
-//    if (obj.long_vel < -0.5f) {
+//    if (obj.long_vel < -0.5F) {
 //        if (active_safety::AS_OBS_MP_MOV_FROM_SELF == obj.motion_pattern || active_safety::AS_OBS_MP_MOV_TO_SELF == obj.motion_pattern) {
 //            head_need_modify = true;
 //        }
@@ -784,53 +813,14 @@ void CollisionEvaluator::CheckAbsHeading(const active_safety::AsObstacle &obj) {
 }
 
 void CollisionEvaluator::CheckStationary(const active_safety::AsObstacle &obj) {
-    bool rec_ro_stat_veh = false;
-    if ((active_safety::AS_OBS_MP_MOV_FROM_SELF == obj.motion_pattern || active_safety::AS_OBS_MP_STATIONARY == obj.motion_pattern) && true == motion_type.obs_is_vehicle) {
-        rec_ro_stat_veh = true;
-    }
+    bool stat_by_fusion = (active_safety::AS_OBS_MP_STATIONARY == obj.motion_pattern);
 
-    bool sta_no_vehicle = false;
-    if (active_safety::AS_OBS_MP_STATIONARY == obj.motion_pattern && false == motion_type.obs_is_vehicle) {
-        sta_no_vehicle = true;
-    }
+    bool stat_by_speed = (obj.speed < colleva_param.k_spd_thd_for_stat_lgt);
 
-    bool rec_ro_stat = false;
-    if (rec_ro_stat_veh || sta_no_vehicle) {
-        rec_ro_stat = true;
-    }
+    bool stat_by_component = (fabsf(obj.long_vel) < colleva_param.k_spd_thd_for_stat_lgt) &&
+                             (fabsf(obj.lat_vel) < colleva_param.k_spd_thd_for_stat_lat);
 
-    bool motion_pattern_sta = false;
-    if (true == rec_ro_stat && obj.long_vel < 0.0f && obj.long_vel > -2.0) {
-        motion_pattern_sta = true;
-    }
-
-    bool no_detec_v_lgt = false;
-    if (fabsf(obj.long_vel) < colleva_param.k_spd_thd_for_stat_lgt) {
-        no_detec_v_lgt = true;
-    }
-
-    bool stat_lgt = false;
-    if (no_detec_v_lgt) {
-        stat_lgt = true;
-    }
-
-    bool stat_lat = false;
-    if (fabsf(obj.lat_vel) < colleva_param.k_spd_thd_for_stat_lat) {
-        stat_lat = true;
-    }
-
-    bool stat_vision = false;
-    if ((active_safety::AS_OBS_MP_STATIONARY == obj.motion_pattern) &&
-        ((active_safety::ObjectClass::CAR == obj.object_class) || (active_safety::ObjectClass::TRUCK == obj.object_class) ||
-         (active_safety::ObjectClass::UNIDENTIFIED_VEHICLE == obj.object_class))) {
-        stat_vision = true;
-    }
-
-    bool stationary = false;
-    if ((true == stat_lgt && true == stat_lat)) {
-        stationary = true;
-    }
-    motion_type.stationary = stationary;
+    motion_type.stationary = stat_by_fusion || stat_by_speed || stat_by_component;
 }
 
 void CollisionEvaluator::CheckOncoming(const active_safety::AsObstacle &obj) {
@@ -842,15 +832,15 @@ void CollisionEvaluator::CheckOncoming(const active_safety::AsObstacle &obj) {
 
     if (true == motion_type.obs_is_motor_veh) {
         bool moving_on_comming_plausible = false;
-        if (obj.speed >= 0.0f && true == mtn_pat_oncomming && (fabs(obj.heading) > M_PI_2 + M_PI / 5.0f || obj.long_vel < -0.5)) {
+        if ((obj.speed >= 0.0F)  &&  (true == mtn_pat_oncomming)  &&  (fabs(obj.heading) > M_PI_2 + M_PI / 5.0F || obj.long_vel < -0.5)) {
             moving_on_comming_plausible = true;
         }
         bool moving_on_comming_probable = false;
-        if (obj.long_vel < -0.5f && active_safety::AS_OBS_MP_MOV_FROM_SELF == obj.motion_pattern) {
+        if ((obj.long_vel < -0.5F)  &&  (active_safety::AS_OBS_MP_MOV_FROM_SELF == obj.motion_pattern)) {
             moving_on_comming_probable = true;
         }
         bool confirmed_moving_oncomming = false;
-        if (true == moving_on_comming_plausible || true == moving_on_comming_probable) {
+        if ((true == moving_on_comming_plausible)  ||  (true == moving_on_comming_probable)) {
             confirmed_moving_oncomming = true;
         }
         moving_oncomming = confirmed_moving_oncomming;
@@ -861,7 +851,7 @@ void CollisionEvaluator::CheckOncoming(const active_safety::AsObstacle &obj) {
 }
 
 void CollisionEvaluator::CheckParallellVehicleLongPred(const active_safety::AsObstacle &obj) {
-    float in_path_heading_thd = 0.0f;
+    float in_path_heading_thd = 0.0F;
     if (active_safety::ObjectClass::BICYCLE == obj.object_class) {
         in_path_heading_thd = colleva_param.k_bicycle_heading_thd_in_path;
     } else {
@@ -869,7 +859,7 @@ void CollisionEvaluator::CheckParallellVehicleLongPred(const active_safety::AsOb
     }
 
     bool is_long_pred_obs = false;
-    if (true == motion_type.obs_is_vehicle && motion_type.abs_heading < in_path_heading_thd) {
+    if ((true == motion_type.obs_is_vehicle)  &&  (motion_type.abs_heading < in_path_heading_thd)) {
         is_long_pred_obs = true;
     }
     motion_type.para_veh_long_pred = is_long_pred_obs;
@@ -939,9 +929,9 @@ void CollisionEvaluator::CheckSideIsClosest(const AsVseOut &vse_out, const activ
 
     //     default:
     //         // Only for car, truck, veh_unknown, motor_bic, bic
-    //         float min_lgt_err = 0.8f;
-    //         float min_lat_err = 0.8f;
-    //         float ego_half_width = vse_out.host_width / 2.0f;
+    //         float min_lgt_err = 0.8F;
+    //         float min_lat_err = 0.8F;
+    //         float ego_half_width = vse_out.host_width / 2.0F;
     //         int near_side = AS_OBS_SD_UNKNOWN;
     //         if ((fabs(obj.long_vel) <= min_lgt_err) &&
     //             (obj.lat_vel > min_lat_err)) {
@@ -964,11 +954,11 @@ void CollisionEvaluator::CheckSideIsClosest(const AsVseOut &vse_out, const activ
     //             // Obstacle is moving foward-left
     //             float left_top =
     //                 obj.lat_posn +
-    //                 (obj.width / 2.0f * obj.m_bounding_box.cos_rotation) +
+    //                 (obj.width / 2.0F * obj.m_bounding_box.cos_rotation) +
     //                 (obj.length * obj.m_bounding_box.sin_rotation);
     //             float right_bot =
     //                 obj.lat_posn -
-    //                 (obj.width / 2.0f * obj.m_bounding_box.cos_rotation);
+    //                 (obj.width / 2.0F * obj.m_bounding_box.cos_rotation);
     //             if ((left_top > ego_half_width) &&
     //                 (right_bot > ego_half_width)) {
     //                 near_side = AS_OBS_SD_REAR;
@@ -983,10 +973,10 @@ void CollisionEvaluator::CheckSideIsClosest(const AsVseOut &vse_out, const activ
     //             // Obstacle is moving forward-right
     //             float left_bot =
     //                 obj.lat_posn +
-    //                 (obj.width / 2.0f * obj.m_bounding_box.cos_rotation);
+    //                 (obj.width / 2.0F * obj.m_bounding_box.cos_rotation);
     //             float right_top =
     //                 obj.lat_posn -
-    //                 (obj.width / 2.0f * obj.m_bounding_box.cos_rotation) +
+    //                 (obj.width / 2.0F * obj.m_bounding_box.cos_rotation) +
     //                 (obj.length * obj.m_bounding_box.sin_rotation);
     //             if ((left_bot > ego_half_width) &&
     //                 (right_top > ego_half_width)) {
@@ -1002,11 +992,11 @@ void CollisionEvaluator::CheckSideIsClosest(const AsVseOut &vse_out, const activ
     //             // Obstacle is moving backward-left
     //             float right_top =
     //                 obj.lat_posn -
-    //                 (obj.width / 2.0f * obj.m_bounding_box.cos_rotation) +
+    //                 (obj.width / 2.0F * obj.m_bounding_box.cos_rotation) +
     //                 (obj.length * obj.m_bounding_box.sin_rotation);
     //             float left_bot =
     //                 obj.lat_posn +
-    //                 (obj.width / 2.0f * obj.m_bounding_box.cos_rotation);
+    //                 (obj.width / 2.0F * obj.m_bounding_box.cos_rotation);
     //             if ((right_top > ego_half_width) &&
     //                 (left_bot > ego_half_width)) {
     //                 near_side = AS_OBS_SD_LEFT;
@@ -1021,11 +1011,11 @@ void CollisionEvaluator::CheckSideIsClosest(const AsVseOut &vse_out, const activ
     //             // Obstacle is moving backward-right
     //             float left_top =
     //                 obj.lat_posn +
-    //                 (obj.width / 2.0f * obj.m_bounding_box.cos_rotation) +
+    //                 (obj.width / 2.0F * obj.m_bounding_box.cos_rotation) +
     //                 (obj.length * obj.m_bounding_box.sin_rotation);
     //             float right_bot =
     //                 obj.lat_posn -
-    //                 (obj.width / 2.0f * obj.m_bounding_box.cos_rotation);
+    //                 (obj.width / 2.0F * obj.m_bounding_box.cos_rotation);
     //             if ((left_top > ego_half_width) &&
     //                 (right_bot > ego_half_width)) {
     //                 near_side = AS_OBS_SD_FRONT;

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'LongSafe_SWC'.
  *
- * Model version                  : 7.3239
+ * Model version                  : 7.3246
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Jan 16 11:06:54 2026
+ * C/C++ source code generated on : Wed Sep 16 13:07:45 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM 64-bit (LP64)
@@ -24,6 +24,8 @@
 #define RTW_HEADER_LongSafe_SWC_types_h_
 #include "rtwtypes.h"
 #include "CllsnRednByBrkgPostStsArbn1Vcc.h"
+#include "DrvrTranMod1Vcc.h"
+#include "DrvrMod1.h"
 #include "BrkArb_DIAG.h"
 #include "Sceniaro_DIAG.h"
 #include "DiagPathGeneration0.h"
@@ -122,7 +124,11 @@ typedef enum {
   ObjClassn3Vcc_ObjGen = 8,
   ObjClassn3Vcc_Bicycle = 9,
   ObjClassn3Vcc_VehOfUkwnClass = 10,
-  ObjClassn3Vcc_God = 11
+  ObjClassn3Vcc_Three_Vehicle = 11,
+  ObjClassn3Vcc_Escooter = 12,
+  ObjClassn3Vcc_Bus = 14,
+  ObjClassn3Vcc_Cone = 15,
+  ObjClassn3Vcc_Occ = 16
 } ObjClassn3Vcc;
 
 #endif
@@ -311,6 +317,19 @@ typedef enum {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_ObjMtnPat1Vcc_
+#define DEFINED_TYPEDEF_FOR_ObjMtnPat1Vcc_
+
+typedef enum {
+  ObjMtnPat1Vcc_Ukwn = 0,              /* Default value */
+  ObjMtnPat1Vcc_Staty,
+  ObjMtnPat1Vcc_MovgFromSelf,
+  ObjMtnPat1Vcc_MovgToSelf,
+  ObjMtnPat1Vcc_MovgToAndStaty
+} ObjMtnPat1Vcc;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_Ctry1VccDrvgSideQly0_
 #define DEFINED_TYPEDEF_FOR_Ctry1VccDrvgSideQly0_
 
@@ -333,16 +352,36 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_ObjMtnPat1Vcc_
-#define DEFINED_TYPEDEF_FOR_ObjMtnPat1Vcc_
+#ifndef DEFINED_TYPEDEF_FOR_DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0_
+#define DEFINED_TYPEDEF_FOR_DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0_
 
 typedef enum {
-  ObjMtnPat1Vcc_Ukwn = 0,              /* Default value */
-  ObjMtnPat1Vcc_Staty,
-  ObjMtnPat1Vcc_MovgFromSelf,
-  ObjMtnPat1Vcc_MovgToSelf,
-  ObjMtnPat1Vcc_MovgToAndStaty
-} ObjMtnPat1Vcc;
+  DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0_TRUE = 1,/* Default value */
+  DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0_FALSE = 0
+} DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_IndcrTypExt1_
+#define DEFINED_TYPEDEF_FOR_IndcrTypExt1_
+
+typedef enum {
+  IndcrTypExt1_Off = 0,                /* Default value */
+  IndcrTypExt1_Le,
+  IndcrTypExt1_Ri
+} IndcrTypExt1;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Snvty1_
+#define DEFINED_TYPEDEF_FOR_Snvty1_
+
+typedef enum {
+  Snvty1_NotInUse = 0,                 /* Default value */
+  Snvty1_LoSnvty,
+  Snvty1_NormSnvty,
+  Snvty1_HiSnvty
+} Snvty1;
 
 #endif
 
@@ -451,28 +490,6 @@ typedef enum {
   Side1Vcc_LeSide,
   Side1Vcc_Ukwn
 } Side1Vcc;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0_
-#define DEFINED_TYPEDEF_FOR_DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0_
-
-typedef enum {
-  DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0_TRUE = 1,/* Default value */
-  DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0_FALSE = 0
-} DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_Snvty1_
-#define DEFINED_TYPEDEF_FOR_Snvty1_
-
-typedef enum {
-  Snvty1_NotInUse = 0,                 /* Default value */
-  Snvty1_LoSnvty,
-  Snvty1_NormSnvty,
-  Snvty1_HiSnvty
-} Snvty1;
 
 #endif
 
@@ -645,6 +662,9 @@ typedef struct {
   uint8_T fctb_switch;
   uint8_T rctb_switch;
   uint8_T rcw_switch;
+  boolean_T aeb_switch;
+  boolean_T fcw_switch;
+  uint8_T fcw_sensitivity_set;
   boolean_T brake_pedal_apld;
   uint8_T abs_active;
   uint8_T aeb_active;
@@ -655,6 +675,7 @@ typedef struct {
   uint16_T host_state;
   uint32_T esp_brake_available_st;
   uint32_T function_did_config;
+  uint32_T state_machine_sts;
 } AsVseOut;
 
 #endif
@@ -665,7 +686,7 @@ typedef struct {
 typedef struct {
   uint8_T Trk_Index;
   uint8_T Status;
-  uint16_T Age;
+  real32_T Age;
   int32_T Vis_TrkID;
   int32_T Fusion_TrackID;
   int32_T ObjectClass;
@@ -980,23 +1001,12 @@ typedef struct {
   uint8_T k_LgSf_ActiveSafeMode;
   uint8_T k_ignore_roadedge_check;
   uint8_T k_LgSf_EnTestScene;
+  uint8_T k_LgSf_EnOcc;
+  uint8_T k_LgSf_EnAebDecelNoFilter;
+  real32_T k_LgSf_AebVehSpdRednLim;
+  real32_T k_AEB_FullBrkSpdThres;
+  real32_T k_AEB_HighReqDecel;
 } AsParamConfig_T;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_Diag_InhibitCdnSts_
-#define DEFINED_TYPEDEF_FOR_Diag_InhibitCdnSts_
-
-typedef struct {
-  uint8_T inhibitFcw;
-  uint8_T belowLowSpeedLimit;
-  uint8_T vehicleNotRollingForward;
-  uint8_T fcwDisabledByFaultManager;
-  uint8_T SceniaroCheckNotOk;
-  uint8_T resv1;
-  uint8_T resv2;
-  uint8_T resv3;
-} Diag_InhibitCdnSts;
 
 #endif
 
@@ -1019,6 +1029,22 @@ typedef struct {
   uint8_T warningState;
   uint8_T resv1;
 } Diag_StartConditions;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Diag_InhibitCdnSts_
+#define DEFINED_TYPEDEF_FOR_Diag_InhibitCdnSts_
+
+typedef struct {
+  uint8_T inhibitFcw;
+  uint8_T belowLowSpeedLimit;
+  uint8_T vehicleNotRollingForward;
+  uint8_T fcwDisabledByFaultManager;
+  uint8_T SceniaroCheckNotOk;
+  uint8_T resv1;
+  uint8_T resv2;
+  uint8_T resv3;
+} Diag_InhibitCdnSts;
 
 #endif
 
@@ -1053,6 +1079,78 @@ typedef struct {
   TqAllwdPosAndNeg SteerTqSgnReq;
   ActtnDataFromCllsnRednByBrkgCtrl1VccSteerGainEna0 SteerGainEna;
 } ActtnDataFromCllsnRednByBrkgCtrl1Vcc;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_BrakeDistDebugData_
+#define DEFINED_TYPEDEF_FOR_BrakeDistDebugData_
+
+typedef struct {
+  real32_T threat_range;
+  real32_T brk_high_delay_time;
+  real32_T brk_high_during_time;
+  real32_T brk_full_delay_time;
+  real32_T brk_full_during_time;
+  real32_T host_dist_highduring;
+  real32_T host_dist_highdelay;
+  real32_T host_dist_fullduring;
+  real32_T host_dist_fulldelay;
+  real32_T BrakeDeadband_Dist;
+  real32_T Dist_LongitudinalOffset;
+} BrakeDistDebugData;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_CollisonDistDebug_
+#define DEFINED_TYPEDEF_FOR_CollisonDistDebug_
+
+typedef struct {
+  real32_T Tap_collsion_dist;
+  real32_T Stright_collsion_dist;
+  real32_T CollisonDist;
+} CollisonDistDebug;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_DistModeDebug_
+#define DEFINED_TYPEDEF_FOR_DistModeDebug_
+
+typedef struct {
+  BrakeDistDebugData BrakeDistDebugData;
+  CollisonDistDebug CollisonDistDebug;
+  boolean_T BrkUnavoidCollision;
+} DistModeDebug;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_BrakeDistData_
+#define DEFINED_TYPEDEF_FOR_BrakeDistData_
+
+typedef struct {
+  real32_T threat_range;
+  real32_T brk_high_delay_time;
+  real32_T brk_high_during_time;
+  real32_T brk_full_delay_time;
+  real32_T brk_full_during_time;
+  real32_T host_dist_highduring;
+  real32_T host_dist_highdelay;
+  real32_T host_dist_fullduring;
+  real32_T host_dist_fulldelay;
+  real32_T BrakeDeadband_Dist;
+  real32_T Dist_LongitudinalOffset;
+  real32_T Tap_collsion_dist;
+  real32_T Stright_collsion_dist;
+  real32_T CollisonDist;
+  boolean_T BrkUnavoidCollision;
+  real32_T reserved1;
+  real32_T reserved2;
+  real32_T reserved3;
+  real32_T reserved4;
+  uint8_T reserved5;
+  uint8_T reserved6;
+  uint8_T reserved7;
+  uint8_T reserved8;
+} BrakeDistData;
 
 #endif
 
@@ -1254,6 +1352,10 @@ typedef struct {
   FCW_DIAG FCW;
   BrkArb_DIAG BrkArb;
   Sceniaro_DIAG Sceniaro;
+  BrakeDistData DistTrig;
+  uint8_T LTAP_Version;
+  uint8_T Version_Month;
+  uint8_T Version_Day;
 } DIAG_AEBFunc;
 
 #endif
@@ -1414,6 +1516,9 @@ typedef struct {
   real32_T HostALgtRaw;
   real32_T acc_brake_cmd;
   boolean_T ACC_BrakeActive;
+  boolean_T Acc_Active;
+  boolean_T Awb_Trig;
+  boolean_T State_exit;
 } VehSelf1Vcc;
 
 #endif
@@ -1634,6 +1739,76 @@ typedef struct {
   ObjClassn3Vcc ObjTypSeldTar;
   real32_T TiToCllsnSeldTar;
 } InhbBrkgForPahTurnOverLe0;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_RoadPpty1Vcc_
+#define DEFINED_TYPEDEF_FOR_RoadPpty1Vcc_
+
+typedef struct {
+  real32_T LaneWidth;
+  real32_T OffsLat;
+  real32_T AgDir;
+  real32_T Crvt;
+  real32_T CrvtRate[3];
+  real32_T SegLen[3];
+  NoYes1Vcc Strtd;
+  NoYes1Vcc Vld;
+  real32_T TiToHiQly[32];
+  uint32_T ObjIdTiToHiQly[32];
+} RoadPpty1Vcc;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_DynCalPrmForJapanMod0_
+#define DEFINED_TYPEDEF_FOR_DynCalPrmForJapanMod0_
+
+typedef enum {
+  DynCalPrmForJapanMod0_TRUE = 1,      /* Default value */
+  DynCalPrmForJapanMod0_FALSE = 0
+} DynCalPrmForJapanMod0;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_DynCalPrmDSE_
+#define DEFINED_TYPEDEF_FOR_DynCalPrmDSE_
+
+typedef struct {
+  real32_T DynCalPrmForBicycleMdlAxleDistFrnt;
+  real32_T DynCalPrmForBicycleMdlCornrgStfnFrnt;
+  real32_T DynCalPrmForBicycleMdlCornrgStfnRe;
+  DynCalPrmForJapanMod0 DynCalPrmForJapanMod;
+  real32_T DynCalPrmForSteerGrdt;
+  real32_T DynCalPrmForVehLen;
+  real32_T DynCalPrmForVehM;
+  real32_T DynCalPrmForVehSteerWhlAgRat;
+  real32_T DynCalPrmForVehWghtDistbn;
+  real32_T DynCalPrmForVehWhlBas;
+  real32_T DynCalPrmForVehWidth;
+} DynCalPrmDSE;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_PahEstimnGroup1Vcc_
+#define DEFINED_TYPEDEF_FOR_PahEstimnGroup1Vcc_
+
+typedef struct {
+  real32_T CtrlAryLat[4];
+  real32_T CtrlAryLgt[4];
+  real32_T TiAry[2];
+} PahEstimnGroup1Vcc;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_DiagPathSelection0_
+#define DEFINED_TYPEDEF_FOR_DiagPathSelection0_
+
+typedef struct {
+  DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0 UseRoadBasedPath;
+  real32_T ACenterMin;
+  real32_T ACenterMax;
+  real32_T ACenterInitial;
+} DiagPathSelection0;
 
 #endif
 
@@ -1912,7 +2087,8 @@ typedef enum {
   Normal,
   CrossingInhibitFlag,
   DrvDetectNoRisk,
-  DrvDetectRisk2Turn
+  DrvDetectRisk2Turn,
+  SpdJumpConf
 } ConfReason;
 
 #endif
@@ -1961,17 +2137,6 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_PahEstimnGroup1Vcc_
-#define DEFINED_TYPEDEF_FOR_PahEstimnGroup1Vcc_
-
-typedef struct {
-  real32_T CtrlAryLat[4];
-  real32_T CtrlAryLgt[4];
-  real32_T TiAry[2];
-} PahEstimnGroup1Vcc;
-
-#endif
-
 #ifndef DEFINED_TYPEDEF_FOR_RqrdALgtLogging_
 #define DEFINED_TYPEDEF_FOR_RqrdALgtLogging_
 
@@ -1999,7 +2164,18 @@ typedef struct {
   real32_T DrvrALgt;
   boolean_T CMbBActive;
   uint8_T EgoMotionType;
+  boolean_T Acc_Active;
 } VehSelfData;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_CollisionDistArray_
+#define DEFINED_TYPEDEF_FOR_CollisionDistArray_
+
+typedef struct {
+  real32_T PredLongArray[150];
+  real32_T PredLatArray[150];
+} CollisionDistArray;
 
 #endif
 
@@ -2090,65 +2266,6 @@ typedef uint8_T VehMtnSt2;
 #define VehMtnSt2_RollgBackwVal2       ((VehMtnSt2)7U)
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_RoadPpty1Vcc_
-#define DEFINED_TYPEDEF_FOR_RoadPpty1Vcc_
-
-typedef struct {
-  real32_T LaneWidth;
-  real32_T OffsLat;
-  real32_T AgDir;
-  real32_T Crvt;
-  real32_T CrvtRate[3];
-  real32_T SegLen[3];
-  NoYes1Vcc Strtd;
-  NoYes1Vcc Vld;
-  real32_T TiToHiQly[32];
-  uint32_T ObjIdTiToHiQly[32];
-} RoadPpty1Vcc;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_DynCalPrmForJapanMod0_
-#define DEFINED_TYPEDEF_FOR_DynCalPrmForJapanMod0_
-
-typedef enum {
-  DynCalPrmForJapanMod0_TRUE = 1,      /* Default value */
-  DynCalPrmForJapanMod0_FALSE = 0
-} DynCalPrmForJapanMod0;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_DynCalPrmDSE_
-#define DEFINED_TYPEDEF_FOR_DynCalPrmDSE_
-
-typedef struct {
-  real32_T DynCalPrmForBicycleMdlAxleDistFrnt;
-  real32_T DynCalPrmForBicycleMdlCornrgStfnFrnt;
-  real32_T DynCalPrmForBicycleMdlCornrgStfnRe;
-  DynCalPrmForJapanMod0 DynCalPrmForJapanMod;
-  real32_T DynCalPrmForSteerGrdt;
-  real32_T DynCalPrmForVehLen;
-  real32_T DynCalPrmForVehM;
-  real32_T DynCalPrmForVehSteerWhlAgRat;
-  real32_T DynCalPrmForVehWghtDistbn;
-  real32_T DynCalPrmForVehWhlBas;
-  real32_T DynCalPrmForVehWidth;
-} DynCalPrmDSE;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_DiagPathSelection0_
-#define DEFINED_TYPEDEF_FOR_DiagPathSelection0_
-
-typedef struct {
-  DiagcBusForDrvrStEstimr1VccUseRoadBasedPath0 UseRoadBasedPath;
-  real32_T ACenterMin;
-  real32_T ACenterMax;
-  real32_T ACenterInitial;
-} DiagPathSelection0;
-
-#endif
-
 #ifndef DEFINED_TYPEDEF_FOR_MachineSts_
 #define DEFINED_TYPEDEF_FOR_MachineSts_
 
@@ -2161,6 +2278,13 @@ typedef struct {
   uint8_T HBA_Level;
   uint8_T PrefillState;
   uint8_T DWState;
+  uint8_T Active2Passive_AbnormReason;
+  uint8_T Standby2Passive_AbnormReason;
+  uint8_T Passive2Standby_AbnormReason;
+  uint8_T reserved1;
+  uint8_T reserved2;
+  uint8_T reserved3;
+  uint8_T reserved4;
 } MachineSts;
 
 #endif
@@ -2362,6 +2486,8 @@ typedef struct {
   real32_T accely;
   real32_T heading;
   real32_T ttc;
+  real32_T width;
+  real32_T length;
 } AsTargetInfo_T;
 
 #endif

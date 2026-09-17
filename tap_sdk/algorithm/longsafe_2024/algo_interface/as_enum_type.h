@@ -2,53 +2,23 @@
  * Copyright (C) 2024 by SenseTime Group Limited. All rights reserved.
  * Liuyong3 <liuyong3@senseauto.com>
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_AS_ENUM_TYPE_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_AS_ENUM_TYPE_H_
 #include <cstddef>
 #include <cstdint>
+#include "../../../common/enum_type.h"
 namespace senseAD {
 namespace tap {
+using active_safety::OnOffStatus;
 enum class LongSafeFunction : uint8_t {
   FCW = 0,
   AEB = 1,
-};
-enum class TrackStatus : uint8_t {
-  INVALID = 0,
-  MERGED = 1,
-  NEW = 2,
-  NEW_COASTED = 3,
-  NEW_UPDATED = 4,
-  UPDATED = 5,
-  COASTED = 6,
-  RESERVED = 7,
-};
-enum class ObjectClass : uint8_t {
-  UNDETERMINED = 0,
-  CAR = 1,
-  MOTORCYCLE = 2,
-  TRUCK = 3,
-  PEDESTRIAN = 4,
-  POLE = 5,
-  TREE = 6,
-  ANIMAL = 7,
-  GOD = 8,
-  BICYCLE = 9,
-  UNIDENTIFIED_VEHICLE = 10,
-  THREEWHEEl_VEHICLE = 11,
-  ESCOOTER = 12,
-  GENOBJ = 13,
 };
 enum class ObjectConf : uint8_t {
   NONE = 0,
   LOW = 1,
   MED = 2,
   HIGH = 3,
-};
-enum class FusionSource : uint8_t {
-  SINGLE_TRACKLET = 0,
-  MULTIPLE_TRACKLET = 1,
-  VISION_ONLY = 2,
-  RADAR_VISION = 3,
-  SRR_ONLY = 4,
 };
 enum class SideEnum : uint8_t {
   INVALID = 0,
@@ -99,12 +69,6 @@ enum class ObjectMotionType : uint8_t {
   LEFT_PROCEEDING,
   RIGHT_PROCEEDING,
 };
-enum AsObstacleMotionPattern {
-  AS_OBS_MP_UNKNOWN,
-  AS_OBS_MP_STATIONARY,
-  AS_OBS_MP_MOV_FROM_SELF,
-  AS_OBS_MP_MOV_TO_SELF
-};
 enum AsObstacleSideNear {
   AS_OBS_SD_UNKNOWN = 0,
   AS_OBS_SD_FRONT,
@@ -113,7 +77,6 @@ enum AsObstacleSideNear {
   AS_OBS_SD_RIGHT
 };
 
-enum class OnOffStatus : uint8_t { NotActive = 0, Active = 1 };
-
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_AS_ENUM_TYPE_H_

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_DOW_DOW_OBS_H_
+#define TAP_SDK_ALGORITHM_DOW_DOW_OBS_H_
 #include "algorithm/obstacle/obstacle.h"
 #include "math/geometry/geometry.h"
 
@@ -13,25 +14,28 @@ enum class DowObjectSide { UNDEF_SIDE = 0, EGO_LANE = 1, EGO_LEFT_SIDE = 2, EGO_
 
 enum class TravelEgoDirection { UNDEF_DIRECTION, REAR_LEFT_DIRECTION, REAR_RIGHT_DIRECTION, FRONT_LEFT_DIRECTION, FRONT_RIGHT_DIRECTION };
 
-struct DowObsData {
+class DowObsData {
   public:
-    DowObsData() { obs = std::make_shared<AsObstacle>(); }
-    std::shared_ptr<AsObstacle> obs = nullptr;
+    DowObsData() { m_obs = std::make_shared<AsObstacle>(); }
+    std::shared_ptr<AsObstacle> m_obs = nullptr;
 
-    bool  f_stationary       = false;
-    bool  f_in_zone          = false;
-    bool  f_alert            = false;
-    float ttc                = 25.0f;
-    float distance           = 0.0f;
-    float intersec_point_lat = 0.0f;
+    static constexpr float k_dow_ttc_init = 25.0F; // TTC默认初始值[s]
 
-    OverlapType        overlap                   = OverlapType::NO_OVERLAP;
-    DowObjectSide      location_side             = DowObjectSide::UNDEF_SIDE;
-    TravelEgoDirection direction_relative_to_ego = TravelEgoDirection::UNDEF_DIRECTION;
-    math::Point2D      reference_point;
+    bool  m_stationary       = false;
+    bool  m_in_zone          = false; //未使用
+    bool  m_alert            = false;
+    float m_ttc                = k_dow_ttc_init;
+    float m_distance           = 0.0F;
+    float m_intersec_point_lat = 0.0F;
 
-    uint8_t cycle_of_alert;
+    OverlapType        m_overlap                   = OverlapType::NO_OVERLAP;
+    DowObjectSide      m_location_side             = DowObjectSide::UNDEF_SIDE;
+    TravelEgoDirection m_direction_relative_to_ego = TravelEgoDirection::UNDEF_DIRECTION;
+    math::Point2D      m_reference_point;
+
+    uint8_t m_cycle_of_alert = 0;
 };
 
 } // namespace dow
 } // namespace active_safety
+#endif // TAP_SDK_ALGORITHM_DOW_DOW_OBS_H_

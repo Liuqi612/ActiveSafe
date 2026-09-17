@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_OBJ_EVAL_TYPES_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_OBJ_EVAL_TYPES_H_
 
 namespace senseAD {
 namespace tap {
@@ -23,3 +24,4 @@ enum AsScenarioDiscInfo {
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_OBJ_EVAL_TYPES_H_

@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_MATH_GEOMETRY_GEOMETRY_H_
+#define TAP_SDK_MATH_GEOMETRY_GEOMETRY_H_
 #include <Eigen/Dense>
 #include <algorithm>
 #include <cmath>
@@ -17,11 +18,11 @@ namespace math {
 struct Point2D {
     float x, y;
 
-    Point2D(float x = 0.0f, float y = 0.0f) : x(x), y(y) {}
+    Point2D(float x = 0.0F, float y = 0.0F) : x(x), y(y) {}
 
-    Point2D  operator-(const Point2D &b) const { return {x - b.x, y - b.y}; }
+    Point2D operator-(const Point2D &b) const { return {x - b.x, y - b.y}; }
     Point2D &operator=(const Point2D &) = default;
-    bool     operator==(const Point2D &b) const { return (x == b.x && y == b.y); }
+    bool operator==(const Point2D &b) const { return (x == b.x && y == b.y); }
 
     Point2D operator/(const float &scale) const { return Point2D(x / scale, y / scale); }
     Point2D operator*(const float &scale) const { return Point2D(x * scale, y * scale); }
@@ -40,20 +41,20 @@ struct Box2D {
         const float cos_theta = std::cos(heading_rad);
         const float sin_theta = std::sin(heading_rad);
 
-        const float half_len = length * 0.5f;
-        const float half_wid = width * 0.5f;
+        const float half_len = length * 0.5F;
+        const float half_wid = width * 0.5F;
 
         const float dx1 = -half_len * cos_theta;
         const float dy1 = -half_len * sin_theta;
         const float dx2 = half_wid * sin_theta;
         const float dy2 = -half_wid * cos_theta;
 
-        left_top.x     = center_x + dx1 - dx2;
-        left_top.y     = center_y + dy1 - dy2;
-        right_top.x    = center_x + dx1 + dx2;
-        right_top.y    = center_y + dy1 + dy2;
-        left_bottom.x  = center_x - dx1 - dx2;
-        left_bottom.y  = center_y - dy1 - dy2;
+        left_top.x = center_x + dx1 - dx2;
+        left_top.y = center_y + dy1 - dy2;
+        right_top.x = center_x + dx1 + dx2;
+        right_top.y = center_y + dy1 + dy2;
+        left_bottom.x = center_x - dx1 - dx2;
+        left_bottom.y = center_y - dy1 - dy2;
         right_bottom.x = center_x - dx1 + dx2;
         right_bottom.y = center_y - dy1 + dy2;
 
@@ -87,18 +88,18 @@ struct Box2D {
 struct Polygon {
     std::vector<Point2D> point_list;
 
-    std::vector<Point2D>::iterator       begin() { return point_list.begin(); }
+    std::vector<Point2D>::iterator begin() { return point_list.begin(); }
     std::vector<Point2D>::const_iterator begin() const { return point_list.begin(); }
-    std::vector<Point2D>::iterator       end() { return point_list.end(); }
+    std::vector<Point2D>::iterator end() { return point_list.end(); }
     std::vector<Point2D>::const_iterator end() const { return point_list.end(); }
-    void                                 clear() { point_list.clear(); }
+    void clear() { point_list.clear(); }
 };
 
 struct Geometry {
     // 线段与圆相交的结果：交点坐标 + 对应的圆弧长度。
     struct SegmentCircleIntersection {
-        Point2D point;      // 交点在原始坐标系下的坐标
-        float   arc_length; // 交点对应的弧长：radius * atan2(y_c, x_c)（以圆心为原点，在圆上坐标为 (x_c, y_c)）
+        Point2D point;    // 交点在原始坐标系下的坐标
+        float arc_length; // 交点对应的弧长：radius * atan2(y_c, x_c)（以圆心为原点，在圆上坐标为 (x_c, y_c)）
     };
     // 射线法（Ray-Casting Algorithm）是判断点是否在多边形内的经典算法，其基本思路是：
     // 1. 从待测点 pt 水平向右发射一条射线；
@@ -118,7 +119,7 @@ struct Geometry {
             const Point2D &p2 = polygon.point_list[j];
 
             // 检查点是否在多边形的顶点上
-            if (pt == p1 || pt == p2)
+            if ((pt == p1)  ||  (pt == p2))
                 return true;
 
             // 检查点是否在边的水平线上
@@ -175,7 +176,7 @@ struct Geometry {
     static std::vector<SegmentCircleIntersection> IntersectSegmentCircle(const Point2D &p0, const Point2D &p1, float radius, const Point2D &center) {
         std::vector<SegmentCircleIntersection> result;
 
-        if (radius <= 0.0f) {
+        if (radius <= 0.0F) {
             return result;
         }
 
@@ -187,26 +188,26 @@ struct Geometry {
 
         const float d2 = d.x * d.x + d.y * d.y; // |d|^2
 
-        if (d2 <= 0.0f) {
+        if (d2 <= 0.0F) {
             // 退化为点（p0 == p1 或近似如此）：
             // 仅当该点“在圆上”时认为存在交点；在圆内但不在圆上不计为交点。
             const float dist2 = p0c.x * p0c.x + p0c.y * p0c.y;
-            const float R2    = radius * radius;
-            const float eps   = 1e-4f; // 半径平方的浮点容差
+            const float R2 = radius * radius;
+            const float eps = 1e-4F; // 半径平方的浮点容差
             if (std::fabs(dist2 - R2) <= eps) {
-                const float angle      = std::atan2(p0c.y, p0c.x);
+                const float angle = std::atan2(p0c.y, p0c.x);
                 const float arc_length = radius * angle;
                 result.push_back(SegmentCircleIntersection{p0, arc_length});
             }
             return result;
         }
 
-        const float R2     = radius * radius;
-        const float cross  = p0c.Cross(p1c);
+        const float R2 = radius * radius;
+        const float cross = p0c.Cross(p1c);
         const float cross2 = cross * cross;
-        const float delta  = R2 * d2 - cross2; // 判别式：<0 无交点，=0 相切，>0 两交点
+        const float delta = R2 * d2 - cross2; // 判别式：<0 无交点，=0 相切，>0 两交点
 
-        if (delta < 0.0f) {
+        if (delta < 0.0F) {
             // 无交点
             return result;
         }
@@ -228,7 +229,7 @@ struct Geometry {
         //      - 使用 sign(d_y) 和 |d_y| 可以在 d_y 为负时保持公式数值稳定；
         //      - “±” 对应圆与直线的两处交点；当 delta = 0 时两者重合（相切）。
         const float delta_sqrt = std::sqrt(delta);
-        const float sign_dy    = (d.y >= 0.0f) ? 1.0f : -1.0f;
+        const float sign_dy = (d.y >= 0.0F) ? 1.0F : -1.0F;
 
         // 两个候选交点（在“圆心为原点”的坐标系里），i0 / i1 分别对应 “+” / “-” 的解。
         Point2D i0;
@@ -245,13 +246,13 @@ struct Geometry {
         // 无论是相交还是相切，统一通过包围盒判断交点是否在线段范围内；
         //   - 若交点在线段延长线上但不在 [p0, p1] 之间，则视为“与线段无交点”。
         if (IsPointOnSegmentBoundingBox(i0, p0c, p1c)) {
-            const float angle0      = std::atan2(i0.y, i0.x); // 在以圆心为原点的局部坐标系下
+            const float angle0 = std::atan2(i0.y, i0.x); // 在以圆心为原点的局部坐标系下
             const float arc_length0 = radius * angle0;
             result.push_back(SegmentCircleIntersection{Point2D(i0.x + center.x, i0.y + center.y), // 平移回原坐标系
                                                        arc_length0});
         }
-        if (delta > 0.0f && IsPointOnSegmentBoundingBox(i1, p0c, p1c)) {
-            const float angle1      = std::atan2(i1.y, i1.x);
+        if ((delta > 0.0F)  &&  IsPointOnSegmentBoundingBox(i1, p0c, p1c)) {
+            const float angle1 = std::atan2(i1.y, i1.x);
             const float arc_length1 = radius * angle1;
             result.push_back(SegmentCircleIntersection{Point2D(i1.x + center.x, i1.y + center.y), arc_length1});
         }
@@ -260,10 +261,10 @@ struct Geometry {
     }
 
     struct LineIntersection {
-        bool    has_intersection = false;
-        Point2D point;     // 交点
-        float   t1 = 0.0f; // 在第一条线上的参数 t
-        float   t2 = 0.0f; // 在第二条线上的参数 u
+        bool has_intersection = false;
+        Point2D point;   // 交点
+        float t1 = 0.0F; // 在第一条线上的参数 t
+        float t2 = 0.0F; // 在第二条线上的参数 u
     };
     enum class LineIntersectionType {
         NO_INTERSECTION,
@@ -284,24 +285,24 @@ struct Geometry {
     static LineIntersection IntersectLinesParametric(const Point2D &p0, const Point2D &p1, const Point2D &q0, const Point2D &q1) {
         LineIntersection res;
 
-        Point2D d1    = p1 - p0;
-        Point2D d2    = q1 - q0;
-        float   denom = d1.Cross(d2); // d1 × d2
+        Point2D d1 = p1 - p0;
+        Point2D d2 = q1 - q0;
+        float denom = d1.Cross(d2); // d1 × d2
 
-        const float eps = 1e-6f;
+        const float eps = 1e-6F;
         if (std::fabs(denom) <= eps) {
             // 平行或共线：这里统一视为“无唯一交点”
             return res;
         }
 
         Point2D r(q0.x - p0.x, q0.y - p0.y);
-        float   t = r.Cross(d2) / denom; // 在第一条线上的参数
-        float   u = r.Cross(d1) / denom; // 在第二条线上的参数
+        float t = r.Cross(d2) / denom; // 在第一条线上的参数
+        float u = r.Cross(d1) / denom; // 在第二条线上的参数
 
         res.has_intersection = true;
-        res.t1               = t;
-        res.t2               = u;
-        res.point            = Point2D(p0.x + d1.x * t, p0.y + d1.y * t);
+        res.t1 = t;
+        res.t2 = u;
+        res.point = Point2D(p0.x + d1.x * t, p0.y + d1.y * t);
         return res;
     };
 
@@ -310,8 +311,8 @@ struct Geometry {
             return LineIntersectionType::NO_INTERSECTION;
         }
 
-        bool t1_in = (inter.t1 >= 0.0f && inter.t1 <= 1.0f);
-        bool t2_in = (inter.t2 >= 0.0f && inter.t2 <= 1.0f);
+        bool t1_in = (inter.t1 >= 0.0F && inter.t1 <= 1.0F);
+        bool t2_in = (inter.t2 >= 0.0F && inter.t2 <= 1.0F);
 
         if (first_is_segment && !t1_in)
             return LineIntersectionType::NO_INTERSECTION;
@@ -334,7 +335,7 @@ struct Geometry {
      * @return 如果重叠返回 true
      */
     static bool IsPolyOverlapSAT(const Polygon &poly1, const Polygon &poly2) {
-        if (poly1.point_list.size() < 3 || poly2.point_list.size() < 3) {
+        if ((poly1.point_list.size() < 3)  ||  (poly2.point_list.size() < 3)) {
             return false;
         }
 
@@ -355,8 +356,8 @@ struct Geometry {
         float max_p = -std::numeric_limits<float>::max();
         for (const auto &pt : poly.point_list) {
             float proj = pt.Dot(axis);
-            min_p      = std::min(min_p, proj);
-            max_p      = std::max(max_p, proj);
+            min_p = std::min(min_p, proj);
+            max_p = std::max(max_p, proj);
         }
         return {min_p, max_p};
     }
@@ -378,7 +379,7 @@ struct Geometry {
             std::pair<float, float> range2 = GetProjectionRange(p2, axis);
 
             // 检查投影是否不重叠
-            if (range1.second < range2.first || range2.second < range1.first) {
+            if ((range1.second < range2.first)  ||  (range2.second < range1.first)) {
                 return true; // 找到分离轴
             }
         }
@@ -388,3 +389,4 @@ struct Geometry {
 
 } // namespace math
 } // namespace active_safety
+#endif // TAP_SDK_MATH_GEOMETRY_GEOMETRY_H_

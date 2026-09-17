@@ -19,7 +19,7 @@ int Sign(float val) {
 }
 
 float SignF(float val) {
-    return (val > m_eps) ? 1.0f : ((val < -m_eps) ? -1.0f : 0.0f);
+    return (val > m_eps) ? 1.0F : ((val < -m_eps) ? -1.0F : 0.0F);
 }
 
 float Clamp(float val, float min, float max) {
@@ -62,20 +62,20 @@ bool SolveQuadratic(float a, float b, float c, float &root1, float &root2) {
 }
 //=== 信号处理实现 ===//
 float LowPassFilter(float current, float prev, float gain) {
-    gain = Clamp(gain, 0.0f, 1.0f); // 确保增益在合理范围
+    gain = Clamp(gain, 0.0F, 1.0F); // 确保增益在合理范围
     return prev + gain * (current - prev);
 }
 
 float DeadZone(float input, float full, float threshold) {
     const float absVal = std::abs(input);
     if (absVal <= threshold)
-        return 0.0f;
+        return 0.0F;
     if (absVal >= full)
         return input;
 
     // 线性过渡段计算
     const float factor = (absVal - threshold) / (full - threshold);
-    return Clamp(factor, 0.0f, 1.0f) * input;
+    return Clamp(factor, 0.0F, 1.0F) * input;
 }
 
 float MapAngToInterval(float max_angle, float angle) {
@@ -83,21 +83,21 @@ float MapAngToInterval(float max_angle, float angle) {
     float angle_tmp = angle;
     if (fabsf(angle) > INT_MAX) {
         // error angle
-        angle_tmp = 0.00001f;
+        angle_tmp = 0.00001F;
     }
-    if (fabsf(angle) > static_cast<float>(M_PI) * 2.0f) {
-        int multiple = static_cast<int>(angle / (static_cast<float>(M_PI) * 2.0f));
-        angle_tmp    = angle - multiple * static_cast<float>(M_PI) * 2.0f;
+    if (fabsf(angle) > static_cast<float>(M_PI) * 2.0F) {
+        int multiple = static_cast<int>(angle / (static_cast<float>(M_PI) * 2.0F));
+        angle_tmp    = angle - multiple * static_cast<float>(M_PI) * 2.0F;
     }
 
     float mapd_ang = max_angle - angle_tmp;
-    if (mapd_ang < 0.0f) {
-        while (mapd_ang < 0.0f) {
-            mapd_ang = mapd_ang + max_angle * 2.0f;
+    if (mapd_ang < 0.0F) {
+        while (mapd_ang < 0.0F) {
+            mapd_ang = mapd_ang + max_angle * 2.0F;
         }
     } else {
-        while (mapd_ang > max_angle * 2.0f) {
-            mapd_ang = mapd_ang - max_angle * 2.0f;
+        while (mapd_ang > max_angle * 2.0F) {
+            mapd_ang = mapd_ang - max_angle * 2.0F;
         }
     }
     mapd_ang = max_angle - mapd_ang;
@@ -107,7 +107,7 @@ float MapAngToInterval(float max_angle, float angle) {
 
 float RemoveNoise(float input, float thres) {
     if (fabsf(input) < thres) {
-        return 0.0f;
+        return 0.0F;
     } else {
         return input;
     }
@@ -119,21 +119,21 @@ void PredictMotionWithStop(float pos, float vel, float acc, float time, float &p
     // 计算理论停止时间
     const float stopTime = (acc != 0) ? -vel / acc : time;
 
-    if (stopTime > 0 && stopTime < time) {
+    if ((stopTime > 0)  &&  (stopTime < time)) {
         // 会在预测时间内停止
-        pred_pos   = pos + vel * stopTime + 0.5f * acc * stopTime * stopTime;
-        pred_vel   = 0.0f;
-        pred_accel = 0.0f;
+        pred_pos   = pos + vel * stopTime + 0.5F * acc * stopTime * stopTime;
+        pred_vel   = 0.0F;
+        pred_accel = 0.0F;
     } else {
         // 不会停止
-        pred_pos   = pos + vel * time + 0.5f * acc * time * time;
+        pred_pos   = pos + vel * time + 0.5F * acc * time * time;
         pred_vel   = vel + acc * time;
         pred_accel = acc;
     }
 }
 
 float PredictPosition(float pos, float vel, float acc, float time) {
-    return pos + vel * time + 0.5f * acc * time * time;
+    return pos + vel * time + 0.5F * acc * time * time;
 }
 
 //=== 坐标转换实现 ===//
@@ -146,7 +146,7 @@ void CalculateCurveCoords(float curvature, float radius, float longitudinal, flo
         *outLongitudinal = -radius * std::atan(SafeDivide(longitudinal, lateral - radius));
 
         *outLateral =
-            radius - Clamp(longitudinal / std::sin(*outLongitudinal * curvature), -1e5f, 1e5f);
+            radius - Clamp(longitudinal / std::sin(*outLongitudinal * curvature), -1e5F, 1e5F);
     } else {
         // 直线特殊情况处理
         *outLongitudinal = longitudinal;

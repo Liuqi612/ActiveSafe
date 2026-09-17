@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_MATH_STATEMACHINE_SIMPLESTATE_HPP_
+#define TAP_SDK_MATH_STATEMACHINE_SIMPLESTATE_HPP_
 #include "statemachine.hpp"
 namespace active_safety {
 namespace math {
@@ -41,3 +42,4 @@ class SimpleState : public IState<StateEnum, ConditionEnum> {
 };
 }  // namespace math
 }  // namespace active_safety
+#endif // TAP_SDK_MATH_STATEMACHINE_SIMPLESTATE_HPP_

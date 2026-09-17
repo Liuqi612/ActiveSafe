@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_EGO_PATH_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_EGO_PATH_H_
 #include "algorithm/longsafe_2024/as_box2d.h"
 #include "math/utils/util_math.h"
 #include <array>
@@ -23,13 +24,13 @@ struct EgoMotionStateAtTime {
     float heading_angle;
     float pred_curv;
     EgoMotionStateAtTime()
-        : long_pos(0.0f),
-          lat_pos(0.0f),
-          lat_vel(0.0f),
-          long_vel(0.0f),
-          long_accel(0.0f),
+        : long_pos(0.0F),
+          lat_pos(0.0F),
+          lat_vel(0.0F),
+          long_vel(0.0F),
+          long_accel(0.0F),
           lat_accel(0.0),
-          heading_angle(0.0f),
+          heading_angle(0.0F),
           pred_curv(0.0) {}
 
     std::string ToString() {
@@ -43,7 +44,7 @@ struct EgoMotionStateAtTime {
 class AsEgoPath {
  public:
     AsEgoPath() {}
-    ~AsEgoPath() {}
+    ~AsEgoPath() = default;
     void UpdatePath(float vlgt,
                     float algt,
                     float c0,
@@ -58,42 +59,42 @@ class AsEgoPath {
 
  public:
     struct VehicleMotionStateT1 {
-        float position_long{0.0};
-        float position_lat{0.0};
-        float speed{0.0};
-        float accel{0.0};
-        float vel_long{0.0};
-        float vel_lat{0.0};
-        float accel_long{0.0};
-        float accel_lat{0.0};
-        float curvature{0.0};
+        float position_long{0.0F};
+        float position_lat{0.0F};
+        float speed{0.0F};
+        float accel{0.0F};
+        float vel_long{0.0F};
+        float vel_lat{0.0F};
+        float accel_long{0.0F};
+        float accel_lat{0.0F};
+        float curvature{0.0F};
         float heading_angle{0.0};
     };
 
     struct VehicleMotionStateT0 {
-        float position_long{0.0};
-        float vel_long{0.0};
-        float accel{0.0};
-        float accel_long{0.0};
-        float position_lat{0.0};
-        float vel_lat{0.0};
-        float accel_lat{0.0};
-        float speed{0.0};
-        float curvature{0.0};
-        float curvature_rate{0.0};
+        float position_long{0.0F};
+        float vel_long{0.0F};
+        float accel{0.0F};
+        float accel_long{0.0F};
+        float position_lat{0.0F};
+        float vel_lat{0.0F};
+        float accel_lat{0.0F};
+        float speed{0.0F};
+        float curvature{0.0F};
+        float curvature_rate{0.0F};
         float heading_angle{0.0};
     };
 
     struct PathEstimnInfo {
-        float ctrl_point_long_p0{0.0};
-        float ctrl_point_long_p1{0.0};
-        float ctrl_point_long_p2{0.0};
-        float ctrl_point_long_p3{0.0};
-        float ctrl_point_lat_p0{0.0};
-        float ctrl_point_lat_p1{0.0};
-        float ctrl_point_lat_p2{0.0};
-        float ctrl_point_lat_p3{0.0};
-        float t0{0.0};
+        float ctrl_point_long_p0{0.0F};
+        float ctrl_point_long_p1{0.0F};
+        float ctrl_point_long_p2{0.0F};
+        float ctrl_point_long_p3{0.0F};
+        float ctrl_point_lat_p0{0.0F};
+        float ctrl_point_lat_p1{0.0F};
+        float ctrl_point_lat_p2{0.0F};
+        float ctrl_point_lat_p3{0.0F};
+        float t0{0.0F};
         float t1{0.0};
     };
 
@@ -123,10 +124,11 @@ class AsEgoPath {
     EgoMotionStateAtTime GetHostStateAtTime(float time);
 
  private:
-    const float spd_thres_in_evaluation = 0.2f;
+    const float spd_thres_in_evaluation = 0.2F;
     static constexpr std::size_t SIZEOFHOST = 201;
     PathEstimnInfo path_estimn[4];
     std::array<HostStateAtTime, SIZEOFHOST> hostPosInfo;
 };
 }  // namespace tap
 }  // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_EGO_PATH_H_

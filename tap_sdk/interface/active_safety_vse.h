@@ -39,9 +39,11 @@ struct AsVseOut {
     float    gas_pedal_pos;          // 加速踏板位置,[0-100]
     float    brake_pedal_pos;        // 制动踏板位置,[0-100]
     float    brake_pressure;         // 主缸压力
+    float    torsion_bar_trq;        // 扭杆扭矩
     float    gas_pedal_pos_rate;     // 加速踏板位置变化率
     float    brake_pedal_pos_rate;   // 制动踏板位置变化率
     float    brake_pressure_rate;    // 主缸压力变化率
+    uint8_t  hod_hands_monitor;      // 电容方向盘HOD: 1=脱手, 2=触摸, 3=握住
     uint8_t  hazard_lamp_st;         // 危险报警灯状态信号
     uint8_t  front_fog_lamp_st;      // 前雾灯状态
     uint8_t  back_fog_lamp_st;       // 后雾灯状态
@@ -50,9 +52,16 @@ struct AsVseOut {
     uint8_t  epb_applied;            // EPB是否拉起
     uint8_t  high_beam_st;           // 远光灯状态
     uint8_t  vdc_active_st;          // VDC激活状态
+    uint8_t  veh_dyn_cntl_stat;      // 车身动态控制状态
     uint8_t  tcs_active_st;          // TCS激活状态
+    uint8_t  tcs_sta;                // TCS状态（多一个fault）
     uint8_t  hdc_active_st;          // HDC激活状态
+    uint8_t  lgctrl_trq_req_sts;     // 纵向执行器状态
+    bool     veh_crash;              // 车辆碰撞
     uint8_t  esc_off_st;             // ESC关闭状态
+    uint8_t  airbag_virt_dev_avl;    // 安全气囊状态
+    uint8_t  tire_presr_fault;       // 胎压异常状态
+    uint8_t  lka_trq_ovl_dlvd_stat;  // EPS状态机
     uint8_t  fl_door_st;             // 左前车门状态信号
     uint8_t  fr_door_st;             // 右前车门状态信号
     uint8_t  rl_door_st;             // 左后车门状态信号
@@ -69,11 +78,21 @@ struct AsVseOut {
     uint8_t  brake_pedal_type;       // 踏板类型
     uint8_t  fcw_warn_dist;          // FCW灵敏度设置
     uint8_t  longsafe_switch;        // AEBS开关状态:
+    uint8_t  lss_switch;             // LSS软开关: 0:关闭，1:预警，2:预警+纠偏
+    uint8_t  lss_sensitivity;        // LSS纠偏灵敏度
+    uint8_t  elk_switch;             // ELK软开关
+    uint8_t  ldw_switch;             // LDW软开关
+    uint8_t  lka_switch;             // LKA软开关
+    uint8_t  esa_switch;             // ESA开关状态
+    uint8_t  aes_switch;             // AES开关状态
     uint8_t  bsd_switch;             // BSD开关状态:
     uint8_t  dow_switch;             // DOW开关状态:
     uint8_t  fctb_switch;            // FCTA/FCTB开关状态:
     uint8_t  rctb_switch;            // RCTA/RCTB开关状态:
     uint8_t  rcw_switch;             // RCW开关状态:
+    uint8_t  aeb_switch;             // AEB开关状态: 0:关闭, 1:开启
+    uint8_t  fcw_switch;             // FCW开关状态: 0:关闭, 1:开启
+    uint8_t  fcw_sensitivity_set;    // FCW灵敏度设置
     bool     brake_pedal_apld;       // 制动踏板是否踩下
     bool     abs_active;             // 底盘反馈ABS是否激活
     bool     aeb_active;             // 底盘反馈AEB是否激活
@@ -83,6 +102,7 @@ struct AsVseOut {
     uint32_t esp_brake_available_st; // ESP可响应制动功能状态
     uint32_t function_did_config;    // 功能DID配置
     uint64_t veh_time_stamp;
+    uint8_t  state_machine_sts;             // 车辆是否上电:
 };
 
 } // namespace active_safety

@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_MATH_STATEMACHINE_STATEMACHINE_HPP_
+#define TAP_SDK_MATH_STATEMACHINE_STATEMACHINE_HPP_
 #include "state.hpp"
 #include <unordered_map>
 #include <map>
@@ -100,3 +101,4 @@ class StateMachine : public IStateMachine<StateEnum, ConditionEnum> {
 };
 }  // namespace math
 }  // namespace active_safety
+#endif // TAP_SDK_MATH_STATEMACHINE_STATEMACHINE_HPP_

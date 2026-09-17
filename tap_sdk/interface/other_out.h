@@ -43,4 +43,14 @@ struct LongCtrlInfo {
     uint64_t time;
 };
 
+struct StateMachineInfo {
+    uint8_t  state_machine_sts = 0;
+    bool mcu_lfp_actv_cdt = false;
+    uint64_t time;
+};
+
+struct PlanningInfo {
+    LongCtrlInfo     long_ctrl;
+    StateMachineInfo state_machine;
+};
 } // namespace active_safety

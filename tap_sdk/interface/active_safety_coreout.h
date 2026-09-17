@@ -13,7 +13,7 @@ namespace active_safety {
 struct AsLongSafeObject {
     uint8_t  index        = 0;
     uint8_t  status       = 0;
-    uint16_t age          = 0;
+    float age          = 0;
     int32_t  vis_trkId    = 0;
     int32_t  fus_trkId    = 0;
     int32_t  object_class = 0;

@@ -1,11 +1,9 @@
 #include "obstacle.h"
 
 #include "./math/utils/util_math.h"
-#include "common/build_config.h"
 
-#if USE_LONGSAFE_LEGACY
+
 #include "algorithm/longsafe/threat_assessor/motion_linear_predict.h"
-#endif
 
 #include <algorithm>
 #include <climits>
@@ -20,8 +18,7 @@ AsObstacle::AsObstacle() {
     fus_heading.set_size(50);
 }
 
-AsObstacle::~AsObstacle() {
-}
+AsObstacle::~AsObstacle() = default;
 
 AsObstacleCal AsObstacle::obj_param;
 
@@ -49,7 +46,7 @@ void AsObstacle::UpdateObstacle(const FusionObs &obs, const AsVseOut &vse_out, c
     heading = obs.heading;
     heading_raw = obs.heading;
     confidence = obs.confidence;
-    curvature = 0.0f;
+    curvature = 0.0F;
     status = obs.status;
     object_class = obs.object_class;
     fusion_source = obs.fusion_source;
@@ -58,13 +55,13 @@ void AsObstacle::UpdateObstacle(const FusionObs &obs, const AsVseOut &vse_out, c
     height = obs.height;
 
     if (object_class == ObjectClass::PEDESTRIAN) {
-        long_accel = 0.0f;
+        long_accel = 0.0F;
     }
     bool t_is_vru = ((object_class == ObjectClass::MOTORCYCLE) || (object_class == ObjectClass::ESCOOTER) || (object_class == ObjectClass::BICYCLE) ||
                      (object_class == ObjectClass::PEDESTRIAN));
-    // lat_accel = t_is_vru ? 0.f : obs.lat_accel;
-    lat_accel = 0.0f;
-    accel = sqrt(powf(obs.long_accel, 2.0f) + powf(obs.lat_accel, 2.0f));
+    // Keep the legacy VRU noise filter, but retain measured lateral acceleration for other targets.
+    lat_accel = t_is_vru ? 0.0F : obs.lat_accel;
+    accel = sqrt(powf(obs.long_accel, 2.0F) + powf(obs.lat_accel, 2.0F));
     float m_a_temp = sqrtf(powf(obs.long_accel, 2.0) + powf(obs.lat_accel, 2.0));
 
     if (fabs(long_vel) > fabs(lat_vel)) {
@@ -76,20 +73,20 @@ void AsObstacle::UpdateObstacle(const FusionObs &obs, const AsVseOut &vse_out, c
     if (speed <= 1.0) {
         motion_pattern = AS_OBS_MP_STATIONARY;
     } else {
-        if (fabs(heading) < 1.57f && long_vel < -2.0f) {
+        if ((fabs(heading) > 1.7F)  &&  (long_vel < -2.0F)) {
             motion_pattern = AS_OBS_MP_MOV_TO_SELF;
         } else {
             motion_pattern = AS_OBS_MP_MOV_FROM_SELF;
         }
     }
 
-    if (motion_pattern == AS_OBS_MP_STATIONARY && object_class == ObjectClass::PEDESTRIAN) {
-        heading = 0.0f;
+    if ((motion_pattern == AS_OBS_MP_STATIONARY)  &&  (object_class == ObjectClass::PEDESTRIAN)) {
+        heading = 0.0F;
     }
 
     // 步骤1：使用帧间位移转换历史轨迹到当前自车坐标系
     if (fus_trkID != 0 &&
-        (std::abs(delta_ego_last_cycle[0]) > 1e-6f || std::abs(delta_ego_last_cycle[1]) > 1e-6f || std::abs(delta_ego_last_cycle[2]) > 1e-6f)) {
+        (std::abs(delta_ego_last_cycle[0]) > 1e-6F || std::abs(delta_ego_last_cycle[1]) > 1e-6F || std::abs(delta_ego_last_cycle[2]) > 1e-6F)) {
         float cosAngle = std::cos(delta_ego_last_cycle[2]);
         float sinAngle = std::sin(delta_ego_last_cycle[2]);
 
@@ -112,17 +109,17 @@ void AsObstacle::UpdateObstacle(const FusionObs &obs, const AsVseOut &vse_out, c
         // 转换历史航向角（角度需要减去自车旋转角度并归一化到 [-π, π]）
         for (size_t i = 0; i < fus_heading.size(); ++i) {
             float hist_heading = fus_heading.get_frame(i);
-            float transformed_heading = std::atan2(std::sin(hist_heading - delta_ego_last_cycle[2]),
-                                                   std::cos(hist_heading - delta_ego_last_cycle[2]));
+            float transformed_heading =
+                std::atan2(std::sin(hist_heading - delta_ego_last_cycle[2]), std::cos(hist_heading - delta_ego_last_cycle[2]));
             fus_heading.modify_frame(i, transformed_heading);
         }
     }
 
     // 步骤2：使用测量延时补偿处理当前点
-    if (object_class == ObjectClass::GENOBJ || object_class == ObjectClass::GOD) {
-        PositionUpdateForLatency(obs_time_comp.gop_comp.delta_ego, obs_time_comp.gop_comp.delta_time);
+    if ((object_class == ObjectClass::GENOBJ)  ||  (object_class == ObjectClass::GOD)) {
+        PositionUpdateForLatency(obs_time_comp.gop_comp.delta_ego, obs_time_comp.gop_comp.delta_time, obs_time_comp.gop_comp.f_input_update);
     } else {
-        PositionUpdateForLatency(obs_time_comp.fus_comp.delta_ego, obs_time_comp.fus_comp.delta_time);
+        PositionUpdateForLatency(obs_time_comp.fus_comp.delta_ego, obs_time_comp.fus_comp.delta_time, obs_time_comp.fus_comp.f_input_update);
     }
 
     ConvertVCSToCurvi(vse_out);
@@ -131,8 +128,9 @@ void AsObstacle::UpdateObstacle(const FusionObs &obs, const AsVseOut &vse_out, c
 
 void AsObstacle::CorrectAttributes() {
     CorrectObstacleType();
-    CorrectObstacleWidth();
     CorrectObstacleCrvt();
+    CheckTurning();
+    CheckCrossDecel();
 }
 
 void AsObstacle::CorrectObstacleType() {
@@ -140,11 +138,11 @@ void AsObstacle::CorrectObstacleType() {
     f_is_vehicle = false;
     f_is_bicycle = false;
     f_is_motor_vehicle = false;
-    if (object_class == ObjectClass::BICYCLE && speed > 4.8) {
+    if ((object_class == ObjectClass::BICYCLE)  &&  (speed > 4.8)) {
         object_class = ObjectClass::ESCOOTER;
     }
 
-    if (object_class == ObjectClass::CAR || object_class == ObjectClass::TRUCK || object_class == ObjectClass::UNIDENTIFIED_VEHICLE) {
+    if ((object_class == ObjectClass::CAR)  ||  (object_class == ObjectClass::TRUCK)  ||  (object_class == ObjectClass::UNIDENTIFIED_VEHICLE)) {
         f_is_vehicle = true;
     }
     if (object_class == ObjectClass::CAR || object_class == ObjectClass::TRUCK || object_class == ObjectClass::UNIDENTIFIED_VEHICLE ||
@@ -152,60 +150,70 @@ void AsObstacle::CorrectObstacleType() {
         f_is_motor_vehicle = true;
     }
 
-    if (object_class == ObjectClass::BICYCLE || object_class == ObjectClass::MOTORCYCLE || object_class == ObjectClass::ESCOOTER) {
+    if ((object_class == ObjectClass::BICYCLE)  ||  (object_class == ObjectClass::MOTORCYCLE)  ||  (object_class == ObjectClass::ESCOOTER)) {
         f_is_bicycle = true;
     }
 }
 
-void AsObstacle::CorrectObstacleWidth() {
-    float max_width = obj_param.k_car_width_max;
-    float min_width = obj_param.k_car_width_min;
-    switch (object_class) {
-        case ObjectClass::PEDESTRIAN: {
-            max_width = obj_param.k_ped_width_max;
-            min_width = obj_param.k_ped_width_min;
-            break;
-        }
-        case ObjectClass::ANIMAL: {
-            max_width = obj_param.k_anim_width_max;
-            min_width = obj_param.k_anim_width_min;
-            break;
-        }
-        case ObjectClass::GENOBJ: {
-            max_width = obj_param.k_gen_obj_width_max;
-            min_width = obj_param.k_gen_obj_width_min;
-            break;
-        }
-        case ObjectClass::ESCOOTER:
-        case ObjectClass::BICYCLE:
-        case ObjectClass::MOTORCYCLE: {
-            max_width = obj_param.k_motorcycle_width_max;
-            min_width = obj_param.k_motorcycle_width_min;
-            break;
-        }
-        case ObjectClass::TRUCK: {
-            max_width = obj_param.k_truck_width_max;
-            min_width = obj_param.k_truck_width_min;
-            break;
-        }
-        case ObjectClass::CAR: {
-            max_width = obj_param.k_car_width_max;
-            min_width = obj_param.k_car_width_min;
-            break;
-        }
-        default: {
-            max_width = obj_param.k_car_width_max;
-            min_width = obj_param.k_car_width_min;
-            break;
-        }
+void AsObstacle::CheckTurning() {
+    f_turning = false;
+
+    const size_t min_history_size = 5;
+    if (fus_heading.size() < min_history_size) {
+        return;
     }
 
-    if (width > max_width) {
-        width = max_width;
+    if (speed < 0.5F) {
+        return;
     }
-    if (width < min_width) {
-        width = min_width;
+
+    float min_heading = fus_heading.get_frame(0);
+    float max_heading = min_heading;
+    float sum_heading = min_heading;
+
+    for (size_t i = 1; i < fus_heading.size(); ++i) {
+        float h = fus_heading.get_frame(i);
+        sum_heading += h;
+
+        float diff_min = std::atan2(std::sin(h - min_heading), std::cos(h - min_heading));
+        float diff_max = std::atan2(std::sin(h - max_heading), std::cos(h - max_heading));
+
+        if (diff_min < 0.0F) {
+            min_heading = h;
+        }
+        if (diff_max > 0.0F) {
+            max_heading = h;
+        }
     }
+    float heading_range = std::atan2(std::sin(max_heading - min_heading), std::cos(max_heading - min_heading));
+    heading_range = std::abs(heading_range);
+    const float heading_range_threshold = 0.2F; // 约 11.5 度
+
+    if (heading_range > heading_range_threshold) {
+        f_turning = true;
+    }
+}
+
+void AsObstacle::CheckCrossDecel() {
+    f_obs_straight_cross = false;
+    for (int i = 0; i < fus_heading.size() && i < 5; ++i) {
+        if (fabs(fabs(fus_heading.get_frame(i)) - 1.57F) < 0.25F) {
+            f_obs_straight_cross = true;
+        } else {
+            f_obs_straight_cross = false;
+        }
+    }
+    //检查历史10帧的横向速度变化
+    f_cross_decel = false;
+    int compare_lat_vel_cnt = 0;
+    for (int i = 1; i < fus_vel.size() && i < 10; ++i) {
+        if (fabs(fus_vel.get_frame(i).y) - fabs(fus_vel.get_frame(i - 1).y) > m_eps) {
+            compare_lat_vel_cnt++;
+        } else {
+            compare_lat_vel_cnt = std::max(compare_lat_vel_cnt - 1, 0);
+        }
+    }
+    f_cross_decel = compare_lat_vel_cnt > 6;
 }
 
 void AsObstacle::CorrectObstacleCrvt() {
@@ -228,7 +236,7 @@ void AsObstacle::CorrectObstacleCrvt() {
             break;
         }
         default: {
-            max_a_lat = 0.0f;
+            max_a_lat = 0.0F;
             break;
         }
     }
@@ -258,50 +266,12 @@ void AsObstacle::CorrectObstacleCrvt() {
     }
 }
 
-void AsObstacle::PositionUpdateForLatency(Eigen::Vector3f deltaEgo, float deltaTm) {
-    float deltaTm_sec = deltaTm * 0.001f;
+void AsObstacle::PositionUpdateForLatency(Eigen::Vector3f deltaEgo, float deltaTm, bool f_input_update) {
+    float deltaTm_sec = deltaTm * 0.001F;
 
-#if USE_LONGSAFE_LEGACY
     // 使用 longsafe 中的实现
     longsafe::MotionLinearPredict::LinearPredictWithStop(long_posn, long_vel, long_accel, deltaTm_sec, true);
     longsafe::MotionLinearPredict::LinearPredictWithStop(lat_posn, lat_vel, lat_accel, deltaTm_sec, true);
-#else
-    // 替代实现：线性预测（包含停止检查）
-    // 注意：当 longsafe 目录不存在时，使用此替代实现
-    // 实现逻辑与 longsafe::MotionLinearPredict::LinearPredictWithStop 相同
-    const float eps = 1e-6f;
-    float stop_time_long = -math::SafeDivide(long_vel, long_accel);
-    float stop_time_lat = -math::SafeDivide(lat_vel, lat_accel);
-
-    float min_time_long = deltaTm_sec;
-    float min_time_lat = deltaTm_sec;
-
-    // 如果物体会停止，限制预测时间
-    if (stop_time_long >= 0.0f && stop_time_long < deltaTm_sec) {
-        min_time_long = stop_time_long;
-    }
-    if (stop_time_lat >= 0.0f && stop_time_lat < deltaTm_sec) {
-        min_time_lat = stop_time_lat;
-    }
-
-    // 更新纵向位置和速度
-    float squrd_time_long = min_time_long * min_time_long;
-    long_posn = long_posn + long_vel * min_time_long + 0.5f * long_accel * squrd_time_long;
-    long_vel = long_vel + long_accel * min_time_long;
-    if (std::abs(deltaTm_sec - min_time_long) > eps) {
-        long_vel = 0.0f;
-        long_accel = 0.0f;
-    }
-
-    // 更新横向位置和速度
-    float squrd_time_lat = min_time_lat * min_time_lat;
-    lat_posn = lat_posn + lat_vel * min_time_lat + 0.5f * lat_accel * squrd_time_lat;
-    lat_vel = lat_vel + lat_accel * min_time_lat;
-    if (std::abs(deltaTm_sec - min_time_lat) > eps) {
-        lat_vel = 0.0f;
-        lat_accel = 0.0f;
-    }
-#endif
 
     // 步骤3：将当前点坐标转换到当前自车坐标系（测量延时补偿）
     float cosAngle = std::cos(deltaEgo[2]);
@@ -329,9 +299,11 @@ void AsObstacle::PositionUpdateForLatency(Eigen::Vector3f deltaEgo, float deltaT
         fus_vel.clear();
         fus_heading.clear();
     } else {
-        fus_pos.push(Point2D(long_posn, lat_posn));
-        fus_vel.push(Point2D(long_vel, lat_vel));
-        fus_heading.push(heading);
+        if (f_input_update  &&  (confidence == ObsConfidence::HIGH_CONF)) {
+            fus_pos.push(Point2D(long_posn, lat_posn));
+            fus_vel.push(Point2D(long_vel, lat_vel));
+            fus_heading.push(heading);
+        }
     }
 }
 
@@ -377,18 +349,18 @@ void AsObstacle::ConvertVCSToCurvi(const AsVseOut &ego) {
         if (f_abs_curvature_LT_cal) {
             /*% small curvature, use clothoid model*/
             posn_squared = long_posn * long_posn;
-            temp_posn = 0.5f * ego.rear_curvature * posn_squared;
+            temp_posn = 0.5F * ego.rear_curvature * posn_squared;
             curvi_long_posn = rotated_x;
             curvi_lat_posn = rotated_y - temp_posn;
         } else {
             /*% large curvature, use exact solution*/
-            r = 1.0f / ego.rear_curvature;
-            if (r == 0.0f) {
-                sign_r = 0.0f;
-            } else if (r < 0.0f) {
-                sign_r = -1.0f;
+            r = 1.0F / ego.rear_curvature;
+            if (r == 0.0F) {
+                sign_r = 0.0F;
+            } else if (r < 0.0F) {
+                sign_r = -1.0F;
             } else {
-                sign_r = 1.0f;
+                sign_r = 1.0F;
             }
 
             rhat = r - rotated_y;
@@ -421,7 +393,7 @@ void AsObstacle::ConvertVCSToCurvi(const AsVseOut &ego) {
             } else {
                 atan_ratio = -m_pi;
             }
-            curvi_long_posn = 2.0f * temp * atan_ratio;
+            curvi_long_posn = 2.0F * temp * atan_ratio;
             curvi_lat_posn = r - sign_r * temp;
 
         } /*end if */
@@ -450,32 +422,32 @@ void AsObstacle::Clear() {
     age = 0;
     fus_trkID = 0;
     vis_trkID = 0;
-    lat_posn = 20.0f;
-    long_posn = 200.0f;
-    lat_vel = 0.0f;
-    long_vel = 0.0f;
-    lat_accel = 0.0f;
-    long_accel = 0.0f;
-    curvi_long_posn = 0.0f;
-    curvi_lat_posn = 0.0f;
-    curvi_long_vel = 0.0f;
-    curvi_lat_vel = 0.0f;
-    curvi_long_accel = 0.0f;
-    curvi_lat_accel = 0.0f;
-    curvi_long_vel_rel = 0.0f;
-    curvi_lat_vel_rel = 0.0f;
-    curvi_heading = 0.0f;
-    speed = 0.0f;
-    accel = 0.0f;
-    heading = 0.0f;
-    lat_accel_raw = 0.0f;
-    long_accel_raw = 0.0f;
-    heading_raw = 0.0f;
-    confidence = 0.0f;
-    curvature = 0.0f;
-    length = 0.0f;
-    width = 0.0f;
-    height = 0.0f;
+    lat_posn = 20.0F;
+    long_posn = 200.0F;
+    lat_vel = 0.0F;
+    long_vel = 0.0F;
+    lat_accel = 0.0F;
+    long_accel = 0.0F;
+    curvi_long_posn = 0.0F;
+    curvi_lat_posn = 0.0F;
+    curvi_long_vel = 0.0F;
+    curvi_lat_vel = 0.0F;
+    curvi_long_accel = 0.0F;
+    curvi_lat_accel = 0.0F;
+    curvi_long_vel_rel = 0.0F;
+    curvi_lat_vel_rel = 0.0F;
+    curvi_heading = 0.0F;
+    speed = 0.0F;
+    accel = 0.0F;
+    heading = 0.0F;
+    lat_accel_raw = 0.0F;
+    long_accel_raw = 0.0F;
+    heading_raw = 0.0F;
+    confidence = ObsConfidence::LOW_CONF;
+    curvature = 0.0F;
+    length = 0.0F;
+    width = 0.0F;
+    height = 0.0F;
     f_is_vehicle = false;
     f_is_bicycle = false;
 

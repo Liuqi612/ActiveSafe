@@ -1,6 +1,7 @@
 
 
-#pragma once
+#ifndef TAP_SDK_MATH_SIGNALPROCESS_SIGNAL_PROCESS_SIGNALPROCESS_H_
+#define TAP_SDK_MATH_SIGNALPROCESS_SIGNAL_PROCESS_SIGNALPROCESS_H_
 #include <algorithm>
 #include <cstdint>
 
@@ -37,8 +38,9 @@ class SignalProcess {
   bool falling_edge_ = false;
   uint32_t count_ = 0U;
   bool last_state_ = false;
-  float cur_delay_time_ = 0.0f;
+  float cur_delay_time_ = 0.0F;
 
 };  // signalProcess
 }  // namespace math
 }  // namespace active_safety
+#endif // TAP_SDK_MATH_SIGNALPROCESS_SIGNAL_PROCESS_SIGNALPROCESS_H_

@@ -3,7 +3,8 @@
  * Liuyong3 <liuyong3@senseauto.com>
  */
 
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_DISPLAY_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_DISPLAY_H_
 #include "active_safety_types.h"
 #include "as_enum_type.h"
 #include <cstddef>
@@ -164,3 +165,4 @@ typedef struct {
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_DISPLAY_H_

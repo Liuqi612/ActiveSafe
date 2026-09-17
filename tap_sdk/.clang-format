@@ -1,0 +1,42 @@
+BasedOnStyle: LLVM
+Language: Cpp
+
+# 缩进与对齐
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+IndentCaseLabels: true
+IndentGotoLabels: false
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: InlineOnly
+
+# 行宽与换行
+ColumnLimit: 150
+ReflowComments: true
+SortIncludes: true
+IncludeBlocks: Regroup
+
+# 空格习惯
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInParentheses: false
+SpacesInAngles:  false
+SpacesInSquareBrackets: false
+SpaceBeforeAssignmentOperators: true
+
+# 对齐连续语句设置
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignConsecutiveMacros: false
+AlignOperands: false
+AlignAfterOpenBracket: Align
+
+# 命名空间与空行
+NamespaceIndentation: None
+CompactNamespaces: false
+MaxEmptyLinesToKeep: 1
+
+# 注释与文档
+CommentPragmas: '^ IWYU pragma:'
+AlignTrailingComments: true

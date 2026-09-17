@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_LONGSAFE_CAL_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_LONGSAFE_CAL_H_
 #include <array>
 namespace senseAD {
 namespace tap {
@@ -10,28 +11,28 @@ namespace tap {
 #define LOOP_TIME_TSEL 20
 
 struct AsObsCollEvaCal {
-  float k_spd_thd_for_stat_lgt = 0.5;
-  float k_spd_thd_for_stat_lat = 0.5;
+  float k_spd_thd_for_stat_lgt = 1.0F;
+  float k_spd_thd_for_stat_lat = 1.0F;
 
-  float k_obs_heading_thd_in_path_long = 1.57;
-  float k_obs_heading_thd_in_path_short = 1.57;
+  float k_obs_heading_thd_in_path_long = 1.57F;
+  float k_obs_heading_thd_in_path_short = 1.57F;
   float k_bicycle_heading_thd_in_path = 0.4;
 
   float k_crvt_thd_for_curved_motion = 0.002;
 
-  float k_tti_low = -100.0;
+  float k_tti_low = -100.0F;
   float k_tti_uppr = 100.0;
 
-  float k_bike_width = 0.5;
+  float k_bike_width = 0.5F;
   float k_bike_spd_thd = 2.0;
 
-  float k_car_length = 5.0;
-  float k_barrier_max_length = 1.5;
-  float k_barrier_max_width = 0.5;
-  float k_motor_tiny_length = 3.0;
-  float k_veh_unknown_length = 0.01;
-  float k_motorcycle_length = 2.0;
-  float k_bicycle_length = 1.5;
+  float k_car_length = 5.0F;
+  float k_barrier_max_length = 1.5F;
+  float k_barrier_max_width = 2.0F;
+  float k_motor_tiny_length = 3.0F;
+  float k_veh_unknown_length = 0.01F;
+  float k_motorcycle_length = 2.0F;
+  float k_bicycle_length = 1.5F;
   float k_truck_length = 8.0;
 
   float k_bike_low_thd = 2.0;
@@ -39,7 +40,7 @@ struct AsObsCollEvaCal {
 
 struct AsSensorPlauCal {
   bool k_ignore_sense_plaus_check = false;
-  float k_vision_lat_vel_thres_use_pctchk = 0.5;
+  float k_vision_lat_vel_thres_use_pctchk = 0.5F;
   float k_vision_lat_pos_thres_use_pctchk = 0.5;
   int k_notsel_lat_pos_fail_cnt_thres = -2;
   int k_sel_lat_pos_fail_cnt_thres = -10;
@@ -60,34 +61,34 @@ struct AsSensorPlauCal {
   std::array<float, 7> k_target_long_momerror_thres{
       {0.8, 0.8, 0.8, 0.8, 1.0, 1.0, 1.0}};
   std::array<float, 7> k_target_latrate_points{
-      {0.0f, 1.0f, 5.5f, 8.33, 11.1, 13.38, 20.0}};
+      {0.0F, 1.0F, 5.5F, 8.33, 11.1, 13.38, 20.0}};
   std::array<float, 7> k_target_lat_momerror_thres{
       {0.8, 0.8, 0.8, 1.0, 1.0, 1.5, 2.0}};
   uint32_t k_target_basic_check_fail_reset_time = 1000;
 };
 
 struct SafetyMarginEvalatorCal {
-  float k_max_aeb_active_ttr_thd = 1.40;
-  float k_max_pred_tti_thd = 3.0;
-  float k_max_pred_dist_thd = 50.0;
-  float k_min_pred_spd_thd = 1.0;
-  float k_ag_dir_spd_thd = 10.0;
-  float k_min_bike_spd_thd = 2.0;
-  float k_bike_width_offset = 0.5;
-  float k_bike_length_offset = 1.50;
-  float k_ang_dir_for_brk_thd = 0.0;
-  float k_fast_bike_spd_thd = 2.78;
-  float k_stationary_bike_spd_thd = 1.2;
+  float k_max_aeb_active_ttr_thd = 1.40F;
+  float k_max_pred_tti_thd = 3.0F;
+  float k_max_pred_dist_thd = 50.0F;
+  float k_min_pred_spd_thd = 1.0F;
+  float k_ag_dir_spd_thd = 10.0F;
+  float k_min_bike_spd_thd = 2.0F;
+  float k_bike_width_offset = 0.5F;
+  float k_bike_length_offset = 1.50F;
+  float k_ang_dir_for_brk_thd = 0.0F;
+  float k_fast_bike_spd_thd = 2.78F;
+  float k_stationary_bike_spd_thd = 1.2F;
   float k_fast_ped_spd_thd = 0.6;
 
-  float k_inpath_ltap_latoffs_veh = 0.3;
+  float k_inpath_ltap_latoffs_veh = 0.3F;
   float k_inpath_obj_detect_spdthd = 0.2;
 
   float k_vel_offs_lgt = 1.0;
 
-  float k_bike_inpath_lat_spd_thd = 0.8;
-  float k_ped_inpath_lat_spd_thdcrvt_rot_thd = 0.7;
-  float k_min_lat_cmbb = 0.3;
+  float k_bike_inpath_lat_spd_thd = 0.8F;
+  float k_ped_inpath_lat_spd_thdcrvt_rot_thd = 0.7F;
+  float k_min_lat_cmbb = 0.3F;
   float k_gop_min_lat_cmbb = 0.1;
 
   std::array<float, 8> k_longlgt_vlgtrel{
@@ -284,28 +285,28 @@ struct SafetyMarginEvalatorCal {
       {0.0, 0.3, 0.3, 0.4, 0.0, 0.0, 0.0, 0.0}};
 };
 struct InPathDecisionCal {
-  float k_ped_decel_long_pred = -0.65;
-  float k_bike_decel_long_pred = -0.65;
-  float k_veh_decel_long_pred = -0.65;
-  float k_ped_decel_short_pred = -2.0;
-  float k_bike_decel_short_pred = -2.0;
+  float k_ped_decel_long_pred = -0.65F;
+  float k_bike_decel_long_pred = -0.65F;
+  float k_veh_decel_long_pred = -0.65F;
+  float k_ped_decel_short_pred = -2.0F;
+  float k_bike_decel_short_pred = -2.0F;
   float k_veh_decel_short_pred = -2.0;
 
-  float k_ped_alat_steer_pred = 2.0;
+  float k_ped_alat_steer_pred = 2.0F;
   float k_bike_alat_steer_pred = 1.4;
 
-  float k_veh_half_width = 0.9;
-  float k_uppr_lim_ttr = 3.0;
-  float k_ang_dir_for_bicycle_steer_thd = 0.4;
+  float k_veh_half_width = 0.9F;
+  float k_uppr_lim_ttr = 3.0F;
+  float k_ang_dir_for_bicycle_steer_thd = 0.4F;
   float k_ang_dir_for_steer_thd = 2.38;
 
-  float k_min_heading_bike_steer = 0.4;
-  float k_min_heading_steer = 2.38;
-  float k_min_heading_brake = 1.0;
+  float k_min_heading_bike_steer = 0.4F;
+  float k_min_heading_steer = 2.38F;
+  float k_min_heading_brake = 1.0F;
   float k_max_spd_obj_mov_to_self = 5.0;
 
-  float k_bike_inpath_lat_spd_thd = 0.8;
-  float k_ped_inpath_lat_spd_thdcrvt_rot_thd = 0.7;
+  float k_bike_inpath_lat_spd_thd = 0.8F;
+  float k_ped_inpath_lat_spd_thdcrvt_rot_thd = 0.7F;
   float k_obj_crvt_rot_thd = 0.001;
 
   bool k_overwrite_offset_short = true;
@@ -316,26 +317,26 @@ struct InPathDecisionCal {
       {0.0, 0.2, 0.4, 1.1, 1.7, 2.0, 2.0, 2.0, 2.0}};
 };
 struct AsThreatAssessorCal {
-  float k_max_spd_warn_qly_check = 60.0;
-  float k_max_spd_mov_to_self_for_warn = -2.0;
-  float k_max_spd_mov_to_self_for_intv = 60.0;
-  float k_min_pred_spd_for_intv = 2.0;
-  float k_driver_brk_dely_time = 0.20;
-  float k_min_brakedelay_thd = 0.01;
-  float k_max_brakedelay_thd = 1.0;
-  float k_max_stop_time_obj_for_intv = 5.0;
-  float k_min_pred_time_thd_for_warn = 3.0;
-  float k_max_pred_dist_thd_for_warn = 50.0;
-  float k_min_pred_spd_thd_for_warn = 1.0;
-  float k_max_pred_spd_thd_for_ag_dir_warn = 10.0;
-  float k_min_a_lat_req_limit_for_warn = -20.0;
-  float k_max_a_lat_req_limit_for_warn = 20.0;
-  float k_max_dist_movment_for_intv = 3.5;
-  float k_v_lgt_obj_noise_thd = 0.20;
-  float k_v_lat_obj_nosie_thd = 0.20;
-  float k_a_lgt_obj_nosie_thd = 0.20;
+  float k_max_spd_warn_qly_check = 60.0F;
+  float k_max_spd_mov_to_self_for_warn = -2.0F;
+  float k_max_spd_mov_to_self_for_intv = 60.0F;
+  float k_min_pred_spd_for_intv = 2.0F;
+  float k_driver_brk_dely_time = 0.20F;
+  float k_min_brakedelay_thd = 0.01F;
+  float k_max_brakedelay_thd = 1.0F;
+  float k_max_stop_time_obj_for_intv = 5.0F;
+  float k_min_pred_time_thd_for_warn = 3.0F;
+  float k_max_pred_dist_thd_for_warn = 50.0F;
+  float k_min_pred_spd_thd_for_warn = 1.0F;
+  float k_max_pred_spd_thd_for_ag_dir_warn = 10.0F;
+  float k_min_a_lat_req_limit_for_warn = -20.0F;
+  float k_max_a_lat_req_limit_for_warn = 20.0F;
+  float k_max_dist_movment_for_intv = 3.5F;
+  float k_v_lgt_obj_noise_thd = 0.20F;
+  float k_v_lat_obj_nosie_thd = 0.20F;
+  float k_a_lgt_obj_nosie_thd = 0.20F;
   float k_a_lat_obj_nosie_thd = 0.20;
-  float k_max_target_select_long_pos_thres = 100.0f;
+  float k_max_target_select_long_pos_thres = 100.0F;
   std::array<float, 10> k_ego_algt{
       {-5.0, -4.0, -3.0, -2.0, -1.0, -0.5, -0.3, 0.3, 1.0, 3.0}};
   std::array<float, 10> k_brake_delay_value{
@@ -350,7 +351,7 @@ struct SafetyObsColliDetecConfig{
     float k_ccft_oncoming_spd_max = -3;
     float k_csta_oncoming_spd_max = -3;
     float k_csta_fromself_spd_max =  3;
-    float k_cpta_oncoming_spd_max = -0.8;
+    float k_cpta_oncoming_spd_max = -0.8F;
     float k_cpta_fromself_spd_max =  0.8;
     float k_turn_left_radius = 70;
     float k_turn_right_radius = -70;
@@ -421,3 +422,4 @@ struct SafetyObsColliDetecConfig{
 };
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_LONGSAFE_CAL_H_

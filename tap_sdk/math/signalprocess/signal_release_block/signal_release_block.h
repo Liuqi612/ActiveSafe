@@ -1,6 +1,7 @@
 
 
-#pragma once
+#ifndef TAP_SDK_MATH_SIGNALPROCESS_SIGNAL_RELEASE_BLOCK_SIGNAL_RELEASE_BLOCK_H_
+#define TAP_SDK_MATH_SIGNALPROCESS_SIGNAL_RELEASE_BLOCK_SIGNAL_RELEASE_BLOCK_H_
 #include <cstdint>
 
 #include "../signal_process/SignalProcess.h"
@@ -26,3 +27,4 @@ class SignalReleaseBlock : public SignalProcess {
 };  // OnDelayBlock
 }  // namespace math
 }  // namespace active_safety
+#endif // TAP_SDK_MATH_SIGNALPROCESS_SIGNAL_RELEASE_BLOCK_SIGNAL_RELEASE_BLOCK_H_

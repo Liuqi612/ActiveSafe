@@ -29,23 +29,23 @@ typedef struct {
     float lat_accel;
     float long_accel;
     float heading;
-    float confidence;
 
-    TrackStatus  status;
-    ObjectClass  object_class;
+    ObsConfidence confidence;
+    TrackStatus status;
+    ObjectClass object_class;
     FusionSource fusion_source;
 
     uint8_t resv1;
-    float   length;
-    float   width;
-    float   height;
+    float length;
+    float width;
+    float height;
 } FusionObs;
 
 typedef struct {
-    uint64_t  time;
-    uint32_t  seq_num;
-    uint64_t  gop_time;
-    uint32_t  gop_seq_num;
+    uint64_t time;
+    uint32_t seq_num;
+    uint64_t gop_time;
+    uint32_t gop_seq_num;
     FusionObs trk[kMaxFusionObject];
 } FusionInfo;
 

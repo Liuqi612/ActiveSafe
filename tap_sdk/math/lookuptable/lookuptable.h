@@ -1,7 +1,9 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_MATH_LOOKUPTABLE_LOOKUPTABLE_H_
+#define TAP_SDK_MATH_LOOKUPTABLE_LOOKUPTABLE_H_
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <stdexcept>
@@ -41,17 +43,25 @@ public:
                 const std::array<float, M> &y_values,
                 const std::array<std::array<float, M>, N> &lookupTable, float x,
                 float y) {
-    int x_index = FindIndex<N>(x_values, x);
-    int y_index = FindIndex<M>(y_values, y);
+    // Clamp inputs to the calibrated range before locating the interval.
+    // This prevents interpolation from becoming extrapolation when an input
+    // is below the first breakpoint or above the last breakpoint.
+    const float clamped_x =
+        std::max(x_values.front(), std::min(x, x_values.back()));
+    const float clamped_y =
+        std::max(y_values.front(), std::min(y, y_values.back()));
 
-    if (x_index == -1 || y_index == -1) {
+    int x_index = FindIndex<N>(x_values, clamped_x);
+    int y_index = FindIndex<M>(y_values, clamped_y);
+
+    if ((x_index == -1)  ||  (y_index == -1)) {
       throw std::out_of_range("x或y超出范围");
     }
 
     if (x_index < static_cast<int>(x_values.size() - 1) &&
         y_index < static_cast<int>(y_values.size() - 1)) {
-      return Interpolate<N, M>(x_values, y_values, lookupTable, x, y, x_index,
-                               y_index);
+      return Interpolate<N, M>(x_values, y_values, lookupTable, clamped_x,
+                               clamped_y, x_index, y_index);
     }
 
     return lookupTable[x_index][y_index];
@@ -103,3 +113,4 @@ private:
 };
 } // namespace math
 } // namespace active_safety
+#endif // TAP_SDK_MATH_LOOKUPTABLE_LOOKUPTABLE_H_

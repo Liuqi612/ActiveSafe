@@ -6,14 +6,13 @@ namespace tap {
 AsObstacleData::AsObstacleData() {
 }
 
-AsObstacleData::~AsObstacleData() {
-}
+AsObstacleData::~AsObstacleData() = default;
 
 void AsObstacleData::ObjectPreProcess(const active_safety::AsObstacle &obj, const AsEgoPath &curv_path, const AsVseOut &vse_out,
                                       const AsSocietyScene &society_scene) {
     coll_eva.ProcessCollisionEvaluator(obj, vse_out, curv_path, society_scene);
     safe_margin.ProcessSafetyMarginEvaluator(obj, coll_eva, curv_path, vse_out);
-    inpath_des.ProcessInPathDecision(obj, coll_eva, safe_margin, vse_out, curv_path);
+    inpath_des.ProcessInPathDecision(obj, coll_eva, safe_margin, vse_out, curv_path,society_scene);
 }
 void AsObstacleData::Clear() {
     safe_margin.Clear();

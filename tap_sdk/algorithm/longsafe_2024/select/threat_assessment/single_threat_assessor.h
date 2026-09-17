@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_SINGLE_THREAT_ASSESSOR_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_SINGLE_THREAT_ASSESSOR_H_
 #include "coll_eval.h"
 #include "ego_path.h"
 #include "inpath_decision.h"
@@ -21,7 +22,7 @@ struct LateralAccForIntv {
     float pos_lat_rel;
     float side_lat;
 
-    LateralAccForIntv() : a_lat_req(0.0f), pos_lat_rel(0.0f), side_lat(0.0f) {}
+    LateralAccForIntv() : a_lat_req(0.0F), pos_lat_rel(0.0F), side_lat(0.0F) {}
 };
 
 struct MtnWarnRequired {
@@ -30,7 +31,7 @@ struct MtnWarnRequired {
     float a_neg_lgt_warn;
     float a_neg_lgt_intv;
 
-    MtnWarnRequired() : a_lat_req(0.0f), a_lat_quality(0.0f), a_neg_lgt_warn(0.0f), a_neg_lgt_intv(0.0f) {}
+    MtnWarnRequired() : a_lat_req(0.0F), a_lat_quality(0.0F), a_neg_lgt_warn(0.0F), a_neg_lgt_intv(0.0F) {}
 };
 
 struct MtnIntvRequired {
@@ -46,15 +47,15 @@ struct MtnIntvRequired {
     float ttc_value;
 
     MtnIntvRequired()
-        : a_lat_req(0.0f), a_lat_quality(0.0f), a_pos_lgt(0.0f), a_neg_lgt(0.0f), jerk_neg_lgt(0.0f), crvt_rate_left(0.0f), crvt_rate_right(0.0f),
-          crvt_left(0.0f), crvt_right(0.0f), ttc_value(0.0f) {}
+        : a_lat_req(0.0F), a_lat_quality(0.0F), a_pos_lgt(0.0F), a_neg_lgt(0.0F), jerk_neg_lgt(0.0F), crvt_rate_left(0.0F), crvt_rate_right(0.0F),
+          crvt_left(0.0F), crvt_right(0.0F), ttc_value(0.0F) {}
 };
 
 struct PrimaryTarget {
     bool                      new_ta_found = false;
     active_safety::AsObstacle obj          = active_safety::AsObstacle{};
     AsObstacleData            obj_data     = AsObstacleData{};
-    float                     a_lat_req    = 0.0;
+    float                     a_lat_req    = 0.0F;
     float                     a_lgt_req    = 0.0;
 };
 
@@ -124,3 +125,4 @@ class AsSingleThreatAssessor {
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_SINGLE_THREAT_ASSESSOR_H_

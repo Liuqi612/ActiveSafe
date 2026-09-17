@@ -3,7 +3,8 @@
  * Liuyong3 <liuyong3@senseauto.com>
  */
 
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_CONTROL_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_CONTROL_H_
 #include <cstddef>
 #include <cstdint>
 namespace senseAD {
@@ -134,6 +135,13 @@ typedef struct {
   uint8_t HBA_Level;
   uint8_t PrefillState;
   uint8_t DWState;
+  uint8_t Active2Passive_AbnormReason;
+  uint8_t Standby2Passive_AbnormReason;
+  uint8_t Passive2Standby_AbnormReason;
+  uint8_t reserved1;
+  uint8_t reserved2;
+  uint8_t reserved3;
+  uint8_t reserved4;
 } MachineSts;
 
 typedef struct {
@@ -291,8 +299,8 @@ typedef struct {
 typedef struct {
   uint8_t CllsnThreat;
   uint8_t BrkArbResult;
-  uint8_t AsySftyDecelReqDendBySpdRedn;
   uint8_t reserved;
+  uint8_t AsySftyDecelReqDendBySpdRedn;
   float DecelRequestBrkArb;
 } BrkArb_DIAG;
 
@@ -308,11 +316,41 @@ typedef struct {
 } Sceniaro_DIAG;
 
 typedef struct {
+  float threat_range;
+  float brk_high_delay_time;
+  float brk_high_during_time;
+  float brk_full_delay_time;
+  float brk_full_during_time;
+  float host_dist_highduring;
+  float host_dist_highdelay;
+  float host_dist_fullduring;
+  float host_dist_fulldelay;
+  float BrakeDeadband_Dist;
+  float Dist_LongitudinalOffset;
+  float Tap_collsion_dist;
+  float Stright_collsion_dist;
+  float CollisonDist;
+  bool BrkUnavoidCollision;
+  float reserved1;
+  float reserved2;
+  float reserved3;
+  float reserved4;
+  uint8_t reserved5;
+  uint8_t reserved6;
+  uint8_t reserved7;
+  uint8_t reserved8;
+} DistTrigDebug;
+
+typedef struct {
   MtnRqrd_DIAG MtnRqrd;
   CMBB_DIAG CMBB;
   FCW_DIAG FCW;
   BrkArb_DIAG BrkArb;
   Sceniaro_DIAG Sceniaro;
+  DistTrigDebug DistTrig;
+  uint8_t LTAP_Version;
+  uint8_t Version_Month;
+  uint8_t Version_Day;
 } DIAG_AEBFunc;
 
 typedef struct {
@@ -384,3 +422,4 @@ typedef struct {
 } AsControl_T;
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_CONTROL_H_

@@ -831,7 +831,7 @@ template <class R, class T, class T0, class T1, class T2, class T3, class T4, cl
 struct is_mem_fun_pointer_impl<R(T::*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)> { BOOST_STATIC_CONSTANT(bool, value = true); };
 #ifndef BOOST_TT_NO_ELLIPSIS_IN_FUNC_TESTING
 template <class R, class T, class T0, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16>
-struct is_mem_fun_pointer_impl<R(T::*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T53, T14, T15, T16 ...)> [ BOOST_STATIC_CONSTANT(bool, value = true); };
+struct is_mem_fun_pointer_impl<R(T::*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16 ...)> { BOOST_STATIC_CONSTANT(bool, value = true); };
 #endif
 #if !defined(BOOST_TT_NO_CV_FUNC_TEST)
 template <class R, class T, class T0, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16>

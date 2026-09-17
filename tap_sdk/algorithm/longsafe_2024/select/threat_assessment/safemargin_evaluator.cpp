@@ -6,8 +6,7 @@ namespace tap {
 SafetyMarginEvaluator::SafetyMarginEvaluator() {
 }
 
-SafetyMarginEvaluator::~SafetyMarginEvaluator() {
-}
+SafetyMarginEvaluator::~SafetyMarginEvaluator() = default;
 
 void SafetyMarginEvaluator::ProcessSafetyMarginEvaluator(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eva,
                                                          const AsEgoPath &curv_path, const AsVseOut &vse_out) {
@@ -20,32 +19,32 @@ void SafetyMarginEvaluator::ProcessSafetyMarginEvaluator(const active_safety::As
 }
 
 void SafetyMarginEvaluator::Clear() {
-    curv_coord_info.curv                           = 0.0f;
-    curv_coord_info.curv_radius                    = 0.0f;
-    curv_coord_info.pos_lat_rel                    = 0.0f;
-    curv_coord_info.spd_lat_rel                    = 0.0f;
-    predict_offset.offs_lgt_long_pred              = 0.0f;
-    predict_offset.offs_lat_long_pred              = 0.0f;
-    predict_offset.offs_lgt_short_pred             = 0.0f;
-    predict_offset.offs_lat_short_pred             = 0.0f;
-    predict_offset.offs_lat_manoeuvre              = 0.0f;
-    predict_offset.offs_lat_in_path_primary_target = 0.0f;
-    predict_offset.offs_lat_in_path_close_edge     = 0.0f;
-    predict_offset.offs_lat_in_path_far_edge       = 0.0f;
-    predict_offset.offs_lat_intersection           = 0.0f;
-    predict_offset.offs_lat_multi_target           = 0.0f;
-    cos_heading                                    = 0.0f;
-    sin_heading                                    = 0.0f;
+    curv_coord_info.curv                           = 0.0F;
+    curv_coord_info.curv_radius                    = 0.0F;
+    curv_coord_info.pos_lat_rel                    = 0.0F;
+    curv_coord_info.spd_lat_rel                    = 0.0F;
+    predict_offset.offs_lgt_long_pred              = 0.0F;
+    predict_offset.offs_lat_long_pred              = 0.0F;
+    predict_offset.offs_lgt_short_pred             = 0.0F;
+    predict_offset.offs_lat_short_pred             = 0.0F;
+    predict_offset.offs_lat_manoeuvre              = 0.0F;
+    predict_offset.offs_lat_in_path_primary_target = 0.0F;
+    predict_offset.offs_lat_in_path_close_edge     = 0.0F;
+    predict_offset.offs_lat_in_path_far_edge       = 0.0F;
+    predict_offset.offs_lat_intersection           = 0.0F;
+    predict_offset.offs_lat_multi_target           = 0.0F;
+    cos_heading                                    = 0.0F;
+    sin_heading                                    = 0.0F;
     pred_ttr_valid                                 = false;
     pred_ttm_valid                                 = false;
-    modified_ttr                                   = 100.0f;
+    modified_ttr                                   = 100.0F;
 }
 
 void SafetyMarginEvaluator::CalcHeadingFromVelocity(const active_safety::AsObstacle &obj) {
     // obj speed calculation
     float obj_abs_spd = sqrtf(obj.lat_vel * obj.lat_vel + obj.long_vel * obj.long_vel);
-    cos_heading       = math::Clamp(math::SafeDivide(obj.long_vel, obj_abs_spd), -100000.0f, 100000.0f);
-    sin_heading       = math::Clamp(math::SafeDivide(obj.lat_vel, obj_abs_spd), -100000.0f, 100000.0f);
+    cos_heading       = math::Clamp(math::SafeDivide(obj.long_vel, obj_abs_spd), -100000.0F, 100000.0F);
+    sin_heading       = math::Clamp(math::SafeDivide(obj.lat_vel, obj_abs_spd), -100000.0F, 100000.0F);
 }
 
 float SafetyMarginEvaluator::CalcModifiedTTR(const active_safety::AsObstacle &obj, const AsVseOut &vse_out, float ttc_raw) {
@@ -62,7 +61,7 @@ float SafetyMarginEvaluator::CalcModifiedTTR(const active_safety::AsObstacle &ob
 }
 
 void SafetyMarginEvaluator::CalcCoordTransformToCurve(const active_safety::AsObstacle &obj, const AsVseOut &vse_out) {
-    float ego_curv_radius = math::SafeDivide(1.0f, vse_out.rear_curvature);
+    float ego_curv_radius = math::SafeDivide(1.0F, vse_out.rear_curvature);
     float t_posn_lat      = obj.lat_posn - ego_curv_radius;
     float t_agdir         = atan2f(t_posn_lat, obj.long_posn);
     float t_v_lat         = obj.long_vel * cosf(t_agdir) + obj.lat_vel * sinf(t_agdir);
@@ -75,7 +74,7 @@ void SafetyMarginEvaluator::CalcCoordTransformToCurve(const active_safety::AsObs
     float t_crv_rad     = sinf(curv_lgt_posn * vse_out.rear_curvature);
     t_crv_rad           = math::SafeDivide(obj.long_posn, t_crv_rad);
 
-    if (fabsf(vse_out.rear_curvature) > 0.0001f) {
+    if (fabsf(vse_out.rear_curvature) > 0.0001F) {
         curv_coord_info.pos_lat_rel = ego_curv_radius - t_crv_rad;
     } else {
         curv_coord_info.pos_lat_rel = obj.lat_posn;
@@ -93,7 +92,7 @@ bool SafetyMarginEvaluator::CheckPredictValidity(const active_safety::AsObstacle
     // Check prediction time with path estimation
     bool  path_estima_ena  = false;
     float endtimeoflastseg = curv_path.GetEndTimeOfPath();
-    if ((ttc > 0.0f) && (ttc < endtimeoflastseg)) {
+    if ((ttc > 0.0F) && (ttc < endtimeoflastseg)) {
         path_estima_ena = true;
     } else {
         path_estima_ena = false;
@@ -155,8 +154,8 @@ bool SafetyMarginEvaluator::CheckPredictValidity(const active_safety::AsObstacle
 }
 
 void SafetyMarginEvaluator::CalcDetermineOffset(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eva, const AsVseOut &vse_out) {
-    float half_proj_cycle_length = 0.0f;
-    float half_proj_cycle_width  = 0.0f;
+    float half_proj_cycle_length = 0.0F;
+    float half_proj_cycle_width  = 0.0F;
     ProjectedBicycleInfo(coll_eva, half_proj_cycle_length, half_proj_cycle_width);
     CalcLongPredTimeOffset(obj, vse_out, half_proj_cycle_width, half_proj_cycle_length, predict_offset);
     CalcShortPredTimeOffset(obj, vse_out, half_proj_cycle_width, half_proj_cycle_length, predict_offset);
@@ -213,8 +212,8 @@ void SafetyMarginEvaluator::CalcLongPredTimeOffset(const active_safety::AsObstac
         }
 
         default: {
-            predoffst.offs_lgt_long_pred = 0.0f;
-            predoffst.offs_lat_long_pred = 0.0f;
+            predoffst.offs_lgt_long_pred = 0.0F;
+            predoffst.offs_lat_long_pred = 0.0F;
             break;
         }
     }
@@ -251,9 +250,9 @@ void SafetyMarginEvaluator::CalcShortPredTimeOffset(const active_safety::AsObsta
             if (vse_out.straight_driving) {
                 predoffst.offs_lgt_short_pred = k_shortlgt_vlgt_vru_offs;
             } else {
-                predoffst.offs_lgt_short_pred = 0.0f;
+                predoffst.offs_lgt_short_pred = 0.0F;
             }
-            predoffst.offs_lat_short_pred = shortlat_vlgt_vlat_vru_offs + 0.5f * obj.width;
+            predoffst.offs_lat_short_pred = shortlat_vlgt_vlat_vru_offs + 0.5F * obj.width;
             break;
         }
         case active_safety::ObjectClass::BICYCLE: {
@@ -280,8 +279,8 @@ void SafetyMarginEvaluator::CalcShortPredTimeOffset(const active_safety::AsObsta
             break;
         }
         default: {
-            predoffst.offs_lgt_short_pred = 0.0f;
-            predoffst.offs_lat_short_pred = 0.0f;
+            predoffst.offs_lgt_short_pred = 0.0F;
+            predoffst.offs_lat_short_pred = 0.0F;
             break;
         }
     }
@@ -295,7 +294,7 @@ void SafetyMarginEvaluator::CalcLateralManoeuverOffset(const active_safety::AsOb
         case active_safety::ObjectClass::PEDESTRIAN:
         case active_safety::ObjectClass::ANIMAL:
         case active_safety::ObjectClass::GENOBJ: {
-            predoffst.offs_lat_manoeuvre = 0.5f * obj.width + LookUpTable::LookupTable1D<8>(safemagin_param.k_manv_vlgt_ego,
+            predoffst.offs_lat_manoeuvre = 0.5F * obj.width + LookUpTable::LookupTable1D<8>(safemagin_param.k_manv_vlgt_ego,
                                                                                             safemagin_param.k_manv_latoffs_vru, vse_out.vcs_long_vel);
             break;
         }
@@ -315,7 +314,7 @@ void SafetyMarginEvaluator::CalcLateralManoeuverOffset(const active_safety::AsOb
             break;
         }
         default: {
-            predoffst.offs_lat_manoeuvre = 0.0f;
+            predoffst.offs_lat_manoeuvre = 0.0F;
             break;
         }
     }
@@ -343,7 +342,7 @@ void SafetyMarginEvaluator::CalcLatInPathOffsetForLTAP(const active_safety::AsOb
         }
 
         default: {
-            predoffst.offs_lat_in_path_primary_target = 0.0f;
+            predoffst.offs_lat_in_path_primary_target = 0.0F;
             break;
         }
     }
@@ -355,13 +354,13 @@ void SafetyMarginEvaluator::CalcLatInPathOffset(const active_safety::AsObstacle 
     //     safemagin_param.k_inpath_offset_optional, vse_out.vcs_long_vel,
     //     vse_out.yawrate);
     // additional far edge offset
-    float dist_to_far_hostedge = 0.0f;
-    if (((curv_coord_info.pos_lat_rel > 0.0f) && (fabsf(curv_coord_info.spd_lat_rel) < 1.0f)) || (curv_coord_info.spd_lat_rel < 0.0f)) {
-        dist_to_far_hostedge = 0.5f * vse_out.host_width + curv_coord_info.pos_lat_rel;
+    float dist_to_far_hostedge = 0.0F;
+    if (((curv_coord_info.pos_lat_rel > 0.0F) && (fabsf(curv_coord_info.spd_lat_rel) < 1.0F)) || (curv_coord_info.spd_lat_rel < 0.0F)) {
+        dist_to_far_hostedge = 0.5F * vse_out.host_width + curv_coord_info.pos_lat_rel;
     } else {
-        dist_to_far_hostedge = 0.5f * vse_out.host_width - curv_coord_info.pos_lat_rel;
+        dist_to_far_hostedge = 0.5F * vse_out.host_width - curv_coord_info.pos_lat_rel;
     }
-    float addition_far_edge_offs = 0.0f;
+    float addition_far_edge_offs = 0.0F;
     if (fabsf(curv_coord_info.spd_lat_rel) > safemagin_param.k_inpath_obj_detect_spdthd) {
         if (vse_out.aeb_active) {
             addition_far_edge_offs =
@@ -374,7 +373,7 @@ void SafetyMarginEvaluator::CalcLatInPathOffset(const active_safety::AsObstacle 
             addition_far_edge_offs = fminf(limit_faredge_offs, far_edge_offs);
         }
     } else {
-        addition_far_edge_offs = 0.0f;
+        addition_far_edge_offs = 0.0F;
     }
     float obj_width = obj.width;
     // selected bicycle width
@@ -392,9 +391,9 @@ void SafetyMarginEvaluator::CalcLatInPathOffset(const active_safety::AsObstacle 
             float inpath_latoffs_vru =
                 LookUpTable::LookupTable1D<8>(safemagin_param.k_inpath_vlgt_ego_ped, safemagin_param.k_inpath_vlgt_ped_offs, vse_out.vcs_long_vel);
             if (vse_out.aeb_active) {
-                predoffst.offs_lat_in_path_close_edge = fmaxf(inpath_latoffs_vru, safemagin_param.k_min_lat_cmbb) + 0.5f * obj_width;
+                predoffst.offs_lat_in_path_close_edge = fmaxf(inpath_latoffs_vru, safemagin_param.k_min_lat_cmbb) + 0.5F * obj_width;
             } else {
-                predoffst.offs_lat_in_path_close_edge = inpath_latoffs_vru + 0.5f * obj_width;
+                predoffst.offs_lat_in_path_close_edge = inpath_latoffs_vru + 0.5F * obj_width;
             }
             float verfied_offs = CalcVerifiedFarEdgeOffset(obj_width, predoffst.offs_lat_in_path_close_edge);
             // bool fast_ped_flag = false;
@@ -405,11 +404,11 @@ void SafetyMarginEvaluator::CalcLatInPathOffset(const active_safety::AsObstacle 
             // }
             // if (obj.object_class == active_safety::ObjectClass::PEDESTRIAN &&
             // fast_ped_flag) { predoffst.offs_lat_in_path_close_edge = 0.0;
-            predoffst.offs_lat_in_path_far_edge = addition_far_edge_offs + 0.5f * obj_width + verfied_offs;
+            predoffst.offs_lat_in_path_far_edge = addition_far_edge_offs + 0.5F * obj_width + verfied_offs;
             // } else {
             // predoffst.offs_lat_in_path_close_edge = 0.0;
             // predoffst.offs_lat_in_path_far_edge =
-            //     addition_far_edge_offs + 0.5f * obj_width +
+            //     addition_far_edge_offs + 0.5F * obj_width +
             //     verfied_offs;
             // }
             break;
@@ -436,7 +435,7 @@ void SafetyMarginEvaluator::CalcLatInPathOffset(const active_safety::AsObstacle 
             // } else {
             // predoffst.offs_lat_in_path_close_edge = 0.0;
             // predoffst.offs_lat_in_path_far_edge =
-            //     addition_far_edge_offs + 0.5f * obj_width +
+            //     addition_far_edge_offs + 0.5F * obj_width +
             //     verfied_offs;
             // }
             break;
@@ -474,7 +473,7 @@ void SafetyMarginEvaluator::CalcLatInPathOffset(const active_safety::AsObstacle 
             predoffst.offs_lat_in_path_far_edge = verfied_offs + addition_far_edge_offs;
             if ((fast_bike_flag == false) && (stationary_bike_flag == false)) {
                 predoffst.offs_lat_in_path_close_edge += 0.5 * safemagin_param.k_bike_width_offset;
-                predoffst.offs_lat_in_path_far_edge += 0.5 * safemagin_param.k_bike_width_offset;
+                predoffst.offs_lat_in_path_far_edge += 0.5F * safemagin_param.k_bike_width_offset;
             }
 
             break;
@@ -512,17 +511,17 @@ void SafetyMarginEvaluator::CalcLatInPathOffset(const active_safety::AsObstacle 
             }
             predoffst.offs_lat_in_path_far_edge = CalcVerifiedFarEdgeOffset(obj_width, predoffst.offs_lat_in_path_close_edge);
             // if ((vse_out.host_state & AsHostState::AS_HOST_IN_HARD_CURVE) > 0) {
-            //   predoffst.offs_lat_in_path_close_edge += 2.0f;
+            //   predoffst.offs_lat_in_path_close_edge += 2.0F;
             // }
 //            if (vse_out.straight_driving == false && obj.f_is_aeb_active_tgt) {
 //                // 2025-02-27 Ly3 add offset when aeb active for ccft scene.
-//                predoffst.offs_lat_in_path_far_edge += 1.0f;
+//                predoffst.offs_lat_in_path_far_edge += 1.0F;
 //            }
             break;
         }
         default: {
-            predoffst.offs_lat_in_path_close_edge = 0.0f;
-            predoffst.offs_lat_in_path_far_edge   = 0.0f;
+            predoffst.offs_lat_in_path_close_edge = 0.0F;
+            predoffst.offs_lat_in_path_far_edge   = 0.0F;
             break;
         }
     }
@@ -572,17 +571,17 @@ void SafetyMarginEvaluator::CalcLateralOffsetForMultipleTgt(const active_safety:
         }
 
         default: {
-            predoffst.offs_lat_in_path_primary_target = 0.0f;
+            predoffst.offs_lat_in_path_primary_target = 0.0F;
             break;
         }
     }
 }
 
 float SafetyMarginEvaluator::CalcVerifiedFarEdgeOffset(float width, float inpath_offs) {
-    float lat_close_edge = inpath_offs + 0.5f * width;
-    float ret            = 0.0f;
-    if (lat_close_edge < 0.0f) {
-        ret = -0.5f * width - lat_close_edge;
+    float lat_close_edge = inpath_offs + 0.5F * width;
+    float ret            = 0.0F;
+    if (lat_close_edge < 0.0F) {
+        ret = -0.5F * width - lat_close_edge;
     } else {
         ret = inpath_offs;
     }
@@ -592,23 +591,23 @@ float SafetyMarginEvaluator::CalcVerifiedFarEdgeOffset(float width, float inpath
 void SafetyMarginEvaluator::ProjectedBicycleInfo(const CollisionEvaluator &coll_eva, float &half_proj_cycle_length, float &half_proj_cycle_width) {
 #if 0
   // projected bicycle width
-  float proj_bike_width = 0.0f;
+  float proj_bike_width = 0.0F;
   if (obj.speed > safemagin_param.k_min_bike_spd_thd) {
     proj_bike_width = 0;
   } else {
     proj_bike_width = safemagin_param.k_bike_width_offset;
   }
-  half_proj_cycle_width = 0.5f * proj_bike_width;
-  half_proj_cycle_length = 0.0f;
+  half_proj_cycle_width = 0.5F * proj_bike_width;
+  half_proj_cycle_length = 0.0F;
 #else
-    float proj_bike_width = 0.0f;
+    float proj_bike_width = 0.0F;
     if (true == coll_eva.motion_type.stationary) {
         proj_bike_width = safemagin_param.k_bike_width_offset;
     } else {
         proj_bike_width = safemagin_param.k_bike_width_offset * fabsf(cos_heading) + safemagin_param.k_bike_length_offset * fabsf(sin_heading);
     }
-    half_proj_cycle_length = 0.0f;
-    half_proj_cycle_width  = 0.5f * proj_bike_width;
+    half_proj_cycle_length = 0.0F;
+    half_proj_cycle_width  = 0.5F * proj_bike_width;
 #endif
 }
 

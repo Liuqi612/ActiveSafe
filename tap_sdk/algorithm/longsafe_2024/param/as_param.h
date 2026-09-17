@@ -2,7 +2,8 @@
  * Copyright (C) 2024 by SenseTime Group Limited. All rights reserved.
  * Liuyong3 <liuyong3@senseauto.com>
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_PARAM_AS_PARAM_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_PARAM_AS_PARAM_H_
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -38,8 +39,29 @@ typedef struct {
     uint8_t k_LgSf_ActiveSafeMode;
     uint8_t k_ignore_roadedge_check;
     uint8_t k_LgSf_EnTestScene;
-
+    uint8_t k_LgSf_EnOcc;
+    uint8_t k_LgSf_EnAebDecelNoFilter;
+    float   k_LgSf_AebVehSpdRednLim;
+    float   k_AEB_FullBrkSpdThres;
+    float   k_AEB_HighReqDecel;
 } AsParamConfig_T;
+
+typedef struct {
+    uint8_t k_enable_aeb_diag;
+    uint8_t k_enable_lka_diag;
+    uint8_t k_enable_esa_diag;
+    uint8_t k_enable_aes_diag;
+    uint8_t k_enable_elk_diag;
+    uint8_t k_enable_locp_diag;
+    uint8_t k_enable_fcta_diag;
+    uint8_t k_enable_rcta_diag;
+    uint8_t k_enable_dow_diag;
+    uint8_t k_enable_bsd_diag;
+    uint8_t k_enable_rcw_diag;
+    uint8_t k_enable_ldw_diag;
+
+} AsDiagParam_T;
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_PARAM_AS_PARAM_H_

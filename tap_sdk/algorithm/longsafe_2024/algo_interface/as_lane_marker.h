@@ -3,7 +3,8 @@
  * Hu Gongman <hugongman@senseauto.com>
  */
 
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_AS_LANE_MARKER_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_AS_LANE_MARKER_H_
 #include <cstddef>
 #include <cstdint>
 // 0x2
@@ -70,3 +71,4 @@ struct AS_LaneMarkerInfo_T {
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_AS_LANE_MARKER_H_

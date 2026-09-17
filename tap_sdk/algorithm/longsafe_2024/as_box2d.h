@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_AS_BOX2D_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_AS_BOX2D_H_
 #include <Eigen/Dense>
 #include <cmath>
 #include <fstream>
@@ -24,8 +25,8 @@ struct Box2D {
     const float cos_theta = std::cos(heading_rad);
     const float sin_theta = std::sin(heading_rad);
 
-    const float half_len = length * 0.5f;
-    const float half_wid = width * 0.5f;
+    const float half_len = length * 0.5F;
+    const float half_wid = width * 0.5F;
 
     const float dx1 = -half_len * cos_theta;
     const float dy1 = -half_len * sin_theta;
@@ -52,8 +53,8 @@ struct Box2D {
     // 简单判断点是否在垂直的矩形内
     //  将点视为一个极小的Box
     Box2D pointBox;
-    pointBox.BuildFromCenter(pt.x(), pt.y(), 0.0f, 0.001f,
-                             0.001f);  // 微小尺寸避免浮点误差
+    pointBox.BuildFromCenter(pt.x(), pt.y(), 0.0F, 0.001F,
+                             0.001F);  // 微小尺寸避免浮点误差
 
     // 用SAT检测碰撞
     return IsCollisionSAT(pointBox);
@@ -115,3 +116,4 @@ struct Box2D {
 
 }  // namespace tap
 }  // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_AS_BOX2D_H_

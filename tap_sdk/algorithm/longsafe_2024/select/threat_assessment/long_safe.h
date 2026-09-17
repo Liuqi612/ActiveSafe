@@ -1,11 +1,12 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_LONG_SAFE_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_LONG_SAFE_H_
 #include "algorithm//vse/vehicle_state_estimed.h"
 #include "algorithm/longsafe_2024/algo_interface/active_safety_coreout.h"
 #include "algorithm/longsafe_2024/algo_interface/active_safety_vse.h"
-#include "algorithm/longsafe_2024/algo_interface/as_fusion_object.h"
+
 #include "algorithm/longsafe_2024/algo_interface/as_lane_marker.h"
 #include "algorithm/longsafe_2024/param/as_param.h"
 #include "algorithm/longsafe_2024/scenario_analysis/society_scene.h"
@@ -76,3 +77,4 @@ class AsLongSafe {
 };
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_THREAT_ASSESSMENT_LONG_SAFE_H_

@@ -3,10 +3,10 @@
 namespace active_safety {
 namespace math {
 static constexpr uint32_t kMaxTick{65534U};
-static constexpr float    kMinDelayTime{0.0f};
-static constexpr float    kMaxDelayTime{1800.0f};
-static constexpr float    kMinUnitTime{0.001f};
-static constexpr float    kMaxUnitTime{1.0f};
+static constexpr float    kMinDelayTime{0.0F};
+static constexpr float    kMaxDelayTime{1800.0F};
+static constexpr float    kMinUnitTime{0.001F};
+static constexpr float    kMaxUnitTime{1.0F};
 
 bool SignalProcess::detectRisingEdge(bool current_state) {
     if (!last_state_ && current_state) {
@@ -37,7 +37,7 @@ void SignalProcess::increaseTime(float unit_time_s) {
 //
 void SignalProcess::resetTime() {
     count_          = 0U;
-    cur_delay_time_ = 0.0f;
+    cur_delay_time_ = 0.0F;
 }
 //
 float SignalProcess::delayTimeLimit(float delay_time) {

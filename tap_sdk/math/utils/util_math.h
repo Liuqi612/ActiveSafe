@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_MATH_UTILS_UTIL_MATH_H_
+#define TAP_SDK_MATH_UTILS_UTIL_MATH_H_
 #include "common/basic_types.h"
 
 #include <Eigen/Dense>
@@ -40,5 +41,12 @@ float PredictPosition(float pos, float vel, float acc, float time);
 void CalculateCurveCoords(float curvature, float radius, float longitudinal, float lateral,
                           float *outLongitudinal, float *outLateral);
 
+// 读取指定位的值
+template<typename T>
+inline bool GetDiagBitValue(const T& value, const uint32_t bit_idx) {
+    return (value & (T(1U) << bit_idx)) != 0;
+}
+
 } // namespace math
 } // namespace active_safety
+#endif // TAP_SDK_MATH_UTILS_UTIL_MATH_H_

@@ -9,8 +9,7 @@ namespace senseAD {
 namespace tap {
 AsScenarioDisc::AsScenarioDisc() {
 }
-AsScenarioDisc::~AsScenarioDisc() {
-}
+AsScenarioDisc::~AsScenarioDisc() = default;
 
 uint32_t AsScenarioDisc::GetAsScenarioDisc() const {
     return scenario_define;

@@ -2,7 +2,8 @@
  * Copyright (C) 2024 by SenseTime Group Limited. All rights reserved.
  * Liuyong3 <liuyong3@senseauto.com>
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_COREOUT_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_COREOUT_H_
 #include <cstddef>
 #include <cstdint>
 
@@ -14,44 +15,44 @@ namespace tap {
 struct AsLongSafeObject {
   uint8_t index = 0;
   uint8_t status = 0;
-  uint16_t age = 0;
+  float age = 0;
   int32_t vis_trkId = 0;
   int32_t fus_trkId = 0;
   int32_t object_class = 0;
   /* 0:SINGLE_TRACKLET;1:MULTIPLE_TRACKLET;2:VISION_ONLY;3:RADAR_VISION;4:SRR_ONLY*/
   int32_t detection_sensor = 0;
-  float long_posn = 0.0f;
-  float lat_posn = 0.0f;
-  float heading = 0.0f;
-  float speed = 0.0f;
-  float lat_vel = 0.0f;
-  float long_vel = 0.0f;
-  float lat_accel = 0.0f;
-  float long_accel = 0.0f;
-  float ttc = 0.0f;
-  float xolc = 0.0f;
-  float lat_est = 0.0f;
-  float accel_lat_req = 0.0f;
+  float long_posn = 0.0F;
+  float lat_posn = 0.0F;
+  float heading = 0.0F;
+  float speed = 0.0F;
+  float lat_vel = 0.0F;
+  float long_vel = 0.0F;
+  float lat_accel = 0.0F;
+  float long_accel = 0.0F;
+  float ttc = 0.0F;
+  float xolc = 0.0F;
+  float lat_est = 0.0F;
+  float accel_lat_req = 0.0F;
   float accel_lgt_req = 0.0;
-  float length = 0.0f;
-  float width = 0.0f;
-  float pred_long_accel = 0.0f;
-  float pred_lat_accel = 0.0f;
-  float pred_accel = 0.0f;
-  float pred_cvt = 0.0f;
-  float offs_lgt_pred = 0.0f;
-  float offs_lat_pred = 0.0f;
-  float offs_lat_manoeuvre = 0.0f;
-  float offs_lat_in_path_primary_target = 0.0f;
-  float offs_lat_in_path_close_edge = 0.0f;
-  float offs_lat_in_path_far_edge = 0.0f;
-  float offs_lat_intersection = 0.0f;
-  float offs_lat_multi_target = 0.0f;
+  float length = 0.0F;
+  float width = 0.0F;
+  float pred_long_accel = 0.0F;
+  float pred_lat_accel = 0.0F;
+  float pred_accel = 0.0F;
+  float pred_cvt = 0.0F;
+  float offs_lgt_pred = 0.0F;
+  float offs_lat_pred = 0.0F;
+  float offs_lat_manoeuvre = 0.0F;
+  float offs_lat_in_path_primary_target = 0.0F;
+  float offs_lat_in_path_close_edge = 0.0F;
+  float offs_lat_in_path_far_edge = 0.0F;
+  float offs_lat_intersection = 0.0F;
+  float offs_lat_multi_target = 0.0F;
   float abs_heading = 0.0;
-  float length_side_lgt = 0.0f;
-  float length_side_lat = 0.0f;
-  float sin_rotation = 0.0f;
-  float cos_rotation = 0.0f;
+  float length_side_lgt = 0.0F;
+  float length_side_lat = 0.0F;
+  float sin_rotation = 0.0F;
+  float cos_rotation = 0.0F;
   uint8_t inpath_current = false;
   uint8_t inpath_predict = false;
   uint8_t match_conf = 0;
@@ -241,3 +242,4 @@ struct AsCoreOut_T {
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_COREOUT_H_

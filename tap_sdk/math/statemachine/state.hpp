@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TAP_SDK_MATH_STATEMACHINE_STATE_HPP_
+#define TAP_SDK_MATH_STATEMACHINE_STATE_HPP_
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -94,3 +95,4 @@ class IStateMachine {
 
 }  // namespace math
 }  // namespace active_safety
+#endif // TAP_SDK_MATH_STATEMACHINE_STATE_HPP_

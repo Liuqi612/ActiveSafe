@@ -22,5 +22,5 @@ typedef double float64;
 #define m_pi 3.1415927
 #define deg_2_rad 0.0175
 #define rad_2_deg 57.3
-
+#define EQUALS_TOLERANCE 0.000001f
 }

@@ -1,9 +1,10 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_CIP_EVALUATOR_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_CIP_EVALUATOR_H_
 #include "algorithm/longsafe_2024/algo_interface/active_safety_vse.h"
-#include "algorithm/longsafe_2024/algo_interface/as_fusion_object.h"
+
 #include "math/lookuptable/lookuptable.h"
 #include "algorithm/obstacle/obstacle.h"
 #include "evaluator_base.h"
@@ -28,3 +29,4 @@ class AsCipEvaluator : public AsBaseEvaluator {
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_CIP_EVALUATOR_H_

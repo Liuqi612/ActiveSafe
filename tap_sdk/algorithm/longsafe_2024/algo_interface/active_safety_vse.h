@@ -2,7 +2,8 @@
  * Copyright (C) 2024 by SenseTime Group Limited. All rights reserved.
  * Liuyong3 <liuyong3@senseauto.com>
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_VSE_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_VSE_H_
 #include <cstddef>
 #include <cstdint>
 
@@ -97,6 +98,9 @@ struct AsVseOut {
   uint8_t fctb_switch;           // FCTA/FCTB开关状态:
   uint8_t rctb_switch;           // RCTA/RCTB开关状态:
   uint8_t rcw_switch;            // RCW开关状态:
+  uint8_t aeb_switch;            // AEB开关状态: 0:关闭, 1:开启
+  uint8_t fcw_switch;            // FCW开关状态: 0:关闭, 1:开启
+  uint8_t fcw_sensitivity_set;   // FCW灵敏度设置
   bool brake_pedal_apld;         // 制动踏板是否踩下
   bool abs_active;               // 底盘反馈ABS是否激活
   bool aeb_active;               // 底盘反馈AEB是否激活
@@ -108,7 +112,9 @@ struct AsVseOut {
       host_state; // 车辆状态:Bit0:自车匀速,Bit1:自车大转角快速转向,Bit2:自车匀直行;
   uint32_t esp_brake_available_st; // ESP可响应制动功能状态
   uint32_t function_did_config;    // 功能DID配置
+  uint8_t state_machine_sts;      // 智驾状态
 };
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_VSE_H_

@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_OBJ_EVAL_PARAM_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_OBJ_EVAL_PARAM_H_
 #include <array>
 namespace senseAD {
 namespace tap {
@@ -14,11 +15,12 @@ struct AsCipEvaluatorParam {
 };
 
 struct AsHostEvaluatorParam {
-  float k_host_spd_at_curve_thres = 9.0f;
-  float k_host_curvature_at_curve_enter_thres = 0.001f;
-  float k_host_curvature_at_curve_exit_thres = 0.0005f;
+  float k_host_spd_at_curve_thres = 9.0F;
+  float k_host_curvature_at_curve_enter_thres = 0.001F;
+  float k_host_curvature_at_curve_exit_thres = 0.0005F;
   uint16_t k_host_in_curve_reset_cnt = 5000;
   uint8_t k_host_fast_steer_cnt_thres = 10;
 };
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_SELECT_OBJECT_EVALUATOR_OBJ_EVAL_PARAM_H_

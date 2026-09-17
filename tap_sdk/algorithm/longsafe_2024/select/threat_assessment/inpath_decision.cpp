@@ -24,8 +24,8 @@ const InPathData &AsInPathDecision::GetPredictInPathData() const {
 
 void AsInPathDecision::ProcessInPathDecision(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
                                              const SafetyMarginEvaluator &safemargin_eval, const AsVseOut &vse_out,
-                                             const AsEgoPath &curv_path) {
-    CalInPathDataWithPredictPose(obj, coll_eval, safemargin_eval, vse_out, curv_path);
+                                             const AsEgoPath &curv_path,const AsSocietyScene &society_scene) {
+    CalInPathDataWithPredictPose(obj, coll_eval, safemargin_eval, vse_out, curv_path,society_scene);
     CalInPathDataWithCurrentPose(obj, coll_eval, safemargin_eval, vse_out);
 
     inpath_data = SelectInPathData(obj, coll_eval, vse_out, safemargin_eval.pred_ttr_valid);
@@ -45,162 +45,162 @@ void AsInPathDecision::ProcessInPathDecision(const active_safety::AsObstacle &ob
 }
 
 void AsInPathDecision::Clear() {
-    corner_points.close_left_lgt   = 0.0f;
-    corner_points.close_left_lat   = 0.0f;
-    corner_points.close_right_lgt  = 0.0f;
-    corner_points.close_right_lat  = 0.0f;
-    corner_points.remote_left_lgt  = 0.0f;
-    corner_points.remote_left_lat  = 0.0f;
-    corner_points.remote_right_lgt = 0.0f;
-    corner_points.remote_right_lat = 0.0f;
+    corner_points.close_left_lgt   = 0.0F;
+    corner_points.close_left_lat   = 0.0F;
+    corner_points.close_right_lgt  = 0.0F;
+    corner_points.close_right_lat  = 0.0F;
+    corner_points.remote_left_lgt  = 0.0F;
+    corner_points.remote_left_lat  = 0.0F;
+    corner_points.remote_right_lgt = 0.0F;
+    corner_points.remote_right_lat = 0.0F;
 
-    corner_corved_points.close_left_lgt_corved   = 0.0f;
-    corner_corved_points.close_left_lat_corved   = 0.0f;
-    corner_corved_points.close_right_lgt_corved  = 0.0f;
-    corner_corved_points.close_right_lat_corved  = 0.0f;
-    corner_corved_points.remote_left_lgt_corved  = 0.0f;
-    corner_corved_points.remote_left_lat_corved  = 0.0f;
-    corner_corved_points.remote_right_lgt_corved = 0.0f;
-    corner_corved_points.remote_right_lat_corved = 0.0f;
+    corner_corved_points.close_left_lgt_corved   = 0.0F;
+    corner_corved_points.close_left_lat_corved   = 0.0F;
+    corner_corved_points.close_right_lgt_corved  = 0.0F;
+    corner_corved_points.close_right_lat_corved  = 0.0F;
+    corner_corved_points.remote_left_lgt_corved  = 0.0F;
+    corner_corved_points.remote_left_lat_corved  = 0.0F;
+    corner_corved_points.remote_right_lgt_corved = 0.0F;
+    corner_corved_points.remote_right_lat_corved = 0.0F;
 
-    inpath_curr_data.inpath_long_pred.p_lgt           = 0.0f;
-    inpath_curr_data.inpath_long_pred.p_lat           = 0.0f;
-    inpath_curr_data.inpath_long_pred.spd             = 0.0f;
-    inpath_curr_data.inpath_long_pred.v_lgt           = 0.0f;
-    inpath_curr_data.inpath_long_pred.v_lat           = 0.0f;
-    inpath_curr_data.inpath_long_pred.heading         = 0.0f;
-    inpath_curr_data.inpath_long_pred.a               = 0.0f;
-    inpath_curr_data.inpath_long_pred.a_lgt           = 0.0f;
-    inpath_curr_data.inpath_long_pred.a_lat           = 0.0f;
-    inpath_curr_data.inpath_long_pred.curv            = 0.0f;
-    inpath_curr_data.inpath_long_pred.in_path         = 0.0f;
-    inpath_curr_data.inpath_long_pred.dist_from_left  = 0.0f;
-    inpath_curr_data.inpath_long_pred.dist_from_right = 0.0f;
-    inpath_curr_data.inpath_long_pred.pred_offset     = 0.0f;
+    inpath_curr_data.inpath_long_pred.p_lgt           = 0.0F;
+    inpath_curr_data.inpath_long_pred.p_lat           = 0.0F;
+    inpath_curr_data.inpath_long_pred.spd             = 0.0F;
+    inpath_curr_data.inpath_long_pred.v_lgt           = 0.0F;
+    inpath_curr_data.inpath_long_pred.v_lat           = 0.0F;
+    inpath_curr_data.inpath_long_pred.heading         = 0.0F;
+    inpath_curr_data.inpath_long_pred.a               = 0.0F;
+    inpath_curr_data.inpath_long_pred.a_lgt           = 0.0F;
+    inpath_curr_data.inpath_long_pred.a_lat           = 0.0F;
+    inpath_curr_data.inpath_long_pred.curv            = 0.0F;
+    inpath_curr_data.inpath_long_pred.in_path         = 0.0F;
+    inpath_curr_data.inpath_long_pred.dist_from_left  = 0.0F;
+    inpath_curr_data.inpath_long_pred.dist_from_right = 0.0F;
+    inpath_curr_data.inpath_long_pred.pred_offset     = 0.0F;
     inpath_curr_data.inpath_long_pred.manv_type       = 0;
 
-    inpath_pred_data.inpath_long_pred.p_lgt           = 0.0f;
-    inpath_pred_data.inpath_long_pred.p_lat           = 0.0f;
-    inpath_pred_data.inpath_long_pred.spd             = 0.0f;
-    inpath_pred_data.inpath_long_pred.v_lgt           = 0.0f;
-    inpath_pred_data.inpath_long_pred.v_lat           = 0.0f;
-    inpath_pred_data.inpath_long_pred.heading         = 0.0f;
-    inpath_pred_data.inpath_long_pred.a               = 0.0f;
-    inpath_pred_data.inpath_long_pred.a_lgt           = 0.0f;
-    inpath_pred_data.inpath_long_pred.a_lat           = 0.0f;
-    inpath_pred_data.inpath_long_pred.curv            = 0.0f;
-    inpath_pred_data.inpath_long_pred.in_path         = 0.0f;
-    inpath_pred_data.inpath_long_pred.dist_from_left  = 0.0f;
-    inpath_pred_data.inpath_long_pred.dist_from_right = 0.0f;
-    inpath_pred_data.inpath_long_pred.pred_offset     = 0.0f;
+    inpath_pred_data.inpath_long_pred.p_lgt           = 0.0F;
+    inpath_pred_data.inpath_long_pred.p_lat           = 0.0F;
+    inpath_pred_data.inpath_long_pred.spd             = 0.0F;
+    inpath_pred_data.inpath_long_pred.v_lgt           = 0.0F;
+    inpath_pred_data.inpath_long_pred.v_lat           = 0.0F;
+    inpath_pred_data.inpath_long_pred.heading         = 0.0F;
+    inpath_pred_data.inpath_long_pred.a               = 0.0F;
+    inpath_pred_data.inpath_long_pred.a_lgt           = 0.0F;
+    inpath_pred_data.inpath_long_pred.a_lat           = 0.0F;
+    inpath_pred_data.inpath_long_pred.curv            = 0.0F;
+    inpath_pred_data.inpath_long_pred.in_path         = 0.0F;
+    inpath_pred_data.inpath_long_pred.dist_from_left  = 0.0F;
+    inpath_pred_data.inpath_long_pred.dist_from_right = 0.0F;
+    inpath_pred_data.inpath_long_pred.pred_offset     = 0.0F;
     inpath_pred_data.inpath_long_pred.manv_type       = 0;
 
-    inpath_data.inpath_long_pred.p_lgt           = 0.0f;
-    inpath_data.inpath_long_pred.p_lat           = 0.0f;
-    inpath_data.inpath_long_pred.spd             = 0.0f;
-    inpath_data.inpath_long_pred.v_lgt           = 0.0f;
-    inpath_data.inpath_long_pred.v_lat           = 0.0f;
-    inpath_data.inpath_long_pred.heading         = 0.0f;
-    inpath_data.inpath_long_pred.a               = 0.0f;
-    inpath_data.inpath_long_pred.a_lgt           = 0.0f;
-    inpath_data.inpath_long_pred.a_lat           = 0.0f;
-    inpath_data.inpath_long_pred.curv            = 0.0f;
-    inpath_data.inpath_long_pred.in_path         = 0.0f;
-    inpath_data.inpath_long_pred.dist_from_left  = 0.0f;
-    inpath_data.inpath_long_pred.dist_from_right = 0.0f;
-    inpath_data.inpath_long_pred.pred_offset     = 0.0f;
+    inpath_data.inpath_long_pred.p_lgt           = 0.0F;
+    inpath_data.inpath_long_pred.p_lat           = 0.0F;
+    inpath_data.inpath_long_pred.spd             = 0.0F;
+    inpath_data.inpath_long_pred.v_lgt           = 0.0F;
+    inpath_data.inpath_long_pred.v_lat           = 0.0F;
+    inpath_data.inpath_long_pred.heading         = 0.0F;
+    inpath_data.inpath_long_pred.a               = 0.0F;
+    inpath_data.inpath_long_pred.a_lgt           = 0.0F;
+    inpath_data.inpath_long_pred.a_lat           = 0.0F;
+    inpath_data.inpath_long_pred.curv            = 0.0F;
+    inpath_data.inpath_long_pred.in_path         = 0.0F;
+    inpath_data.inpath_long_pred.dist_from_left  = 0.0F;
+    inpath_data.inpath_long_pred.dist_from_right = 0.0F;
+    inpath_data.inpath_long_pred.pred_offset     = 0.0F;
     inpath_data.inpath_long_pred.manv_type       = 0;
 
-    inpath_curr_data.inpath_short_pred.p_lgt           = 0.0f;
-    inpath_curr_data.inpath_short_pred.p_lat           = 0.0f;
-    inpath_curr_data.inpath_short_pred.spd             = 0.0f;
-    inpath_curr_data.inpath_short_pred.v_lgt           = 0.0f;
-    inpath_curr_data.inpath_short_pred.v_lat           = 0.0f;
-    inpath_curr_data.inpath_short_pred.heading         = 0.0f;
-    inpath_curr_data.inpath_short_pred.a               = 0.0f;
-    inpath_curr_data.inpath_short_pred.a_lgt           = 0.0f;
-    inpath_curr_data.inpath_short_pred.a_lat           = 0.0f;
-    inpath_curr_data.inpath_short_pred.curv            = 0.0f;
-    inpath_curr_data.inpath_short_pred.in_path         = 0.0f;
-    inpath_curr_data.inpath_short_pred.dist_from_left  = 0.0f;
-    inpath_curr_data.inpath_short_pred.dist_from_right = 0.0f;
-    inpath_curr_data.inpath_short_pred.pred_offset     = 0.0f;
+    inpath_curr_data.inpath_short_pred.p_lgt           = 0.0F;
+    inpath_curr_data.inpath_short_pred.p_lat           = 0.0F;
+    inpath_curr_data.inpath_short_pred.spd             = 0.0F;
+    inpath_curr_data.inpath_short_pred.v_lgt           = 0.0F;
+    inpath_curr_data.inpath_short_pred.v_lat           = 0.0F;
+    inpath_curr_data.inpath_short_pred.heading         = 0.0F;
+    inpath_curr_data.inpath_short_pred.a               = 0.0F;
+    inpath_curr_data.inpath_short_pred.a_lgt           = 0.0F;
+    inpath_curr_data.inpath_short_pred.a_lat           = 0.0F;
+    inpath_curr_data.inpath_short_pred.curv            = 0.0F;
+    inpath_curr_data.inpath_short_pred.in_path         = 0.0F;
+    inpath_curr_data.inpath_short_pred.dist_from_left  = 0.0F;
+    inpath_curr_data.inpath_short_pred.dist_from_right = 0.0F;
+    inpath_curr_data.inpath_short_pred.pred_offset     = 0.0F;
     inpath_curr_data.inpath_short_pred.manv_type       = 0;
 
-    inpath_pred_data.inpath_short_pred.p_lgt           = 0.0f;
-    inpath_pred_data.inpath_short_pred.p_lat           = 0.0f;
-    inpath_pred_data.inpath_short_pred.spd             = 0.0f;
-    inpath_pred_data.inpath_short_pred.v_lgt           = 0.0f;
-    inpath_pred_data.inpath_short_pred.v_lat           = 0.0f;
-    inpath_pred_data.inpath_short_pred.heading         = 0.0f;
-    inpath_pred_data.inpath_short_pred.a               = 0.0f;
-    inpath_pred_data.inpath_short_pred.a_lgt           = 0.0f;
-    inpath_pred_data.inpath_short_pred.a_lat           = 0.0f;
-    inpath_pred_data.inpath_short_pred.curv            = 0.0f;
-    inpath_pred_data.inpath_short_pred.in_path         = 0.0f;
-    inpath_pred_data.inpath_short_pred.dist_from_left  = 0.0f;
-    inpath_pred_data.inpath_short_pred.dist_from_right = 0.0f;
-    inpath_pred_data.inpath_short_pred.pred_offset     = 0.0f;
+    inpath_pred_data.inpath_short_pred.p_lgt           = 0.0F;
+    inpath_pred_data.inpath_short_pred.p_lat           = 0.0F;
+    inpath_pred_data.inpath_short_pred.spd             = 0.0F;
+    inpath_pred_data.inpath_short_pred.v_lgt           = 0.0F;
+    inpath_pred_data.inpath_short_pred.v_lat           = 0.0F;
+    inpath_pred_data.inpath_short_pred.heading         = 0.0F;
+    inpath_pred_data.inpath_short_pred.a               = 0.0F;
+    inpath_pred_data.inpath_short_pred.a_lgt           = 0.0F;
+    inpath_pred_data.inpath_short_pred.a_lat           = 0.0F;
+    inpath_pred_data.inpath_short_pred.curv            = 0.0F;
+    inpath_pred_data.inpath_short_pred.in_path         = 0.0F;
+    inpath_pred_data.inpath_short_pred.dist_from_left  = 0.0F;
+    inpath_pred_data.inpath_short_pred.dist_from_right = 0.0F;
+    inpath_pred_data.inpath_short_pred.pred_offset     = 0.0F;
     inpath_pred_data.inpath_short_pred.manv_type       = 0;
 
-    inpath_data.inpath_short_pred.p_lgt           = 0.0f;
-    inpath_data.inpath_short_pred.p_lat           = 0.0f;
-    inpath_data.inpath_short_pred.spd             = 0.0f;
-    inpath_data.inpath_short_pred.v_lgt           = 0.0f;
-    inpath_data.inpath_short_pred.v_lat           = 0.0f;
-    inpath_data.inpath_short_pred.heading         = 0.0f;
-    inpath_data.inpath_short_pred.a               = 0.0f;
-    inpath_data.inpath_short_pred.a_lgt           = 0.0f;
-    inpath_data.inpath_short_pred.a_lat           = 0.0f;
-    inpath_data.inpath_short_pred.curv            = 0.0f;
-    inpath_data.inpath_short_pred.in_path         = 0.0f;
-    inpath_data.inpath_short_pred.dist_from_left  = 0.0f;
-    inpath_data.inpath_short_pred.dist_from_right = 0.0f;
-    inpath_data.inpath_short_pred.pred_offset     = 0.0f;
+    inpath_data.inpath_short_pred.p_lgt           = 0.0F;
+    inpath_data.inpath_short_pred.p_lat           = 0.0F;
+    inpath_data.inpath_short_pred.spd             = 0.0F;
+    inpath_data.inpath_short_pred.v_lgt           = 0.0F;
+    inpath_data.inpath_short_pred.v_lat           = 0.0F;
+    inpath_data.inpath_short_pred.heading         = 0.0F;
+    inpath_data.inpath_short_pred.a               = 0.0F;
+    inpath_data.inpath_short_pred.a_lgt           = 0.0F;
+    inpath_data.inpath_short_pred.a_lat           = 0.0F;
+    inpath_data.inpath_short_pred.curv            = 0.0F;
+    inpath_data.inpath_short_pred.in_path         = 0.0F;
+    inpath_data.inpath_short_pred.dist_from_left  = 0.0F;
+    inpath_data.inpath_short_pred.dist_from_right = 0.0F;
+    inpath_data.inpath_short_pred.pred_offset     = 0.0F;
     inpath_data.inpath_short_pred.manv_type       = 0;
 
-    obj_avoidance.decel_long_pretime  = 0.0f;
-    obj_avoidance.decel_short_pretime = 0.0f;
-    obj_avoidance.alat_steer          = 0.0f;
+    obj_avoidance.decel_long_pretime  = 0.0F;
+    obj_avoidance.decel_short_pretime = 0.0F;
+    obj_avoidance.alat_steer          = 0.0F;
 
-    rel_pos_def.heading            = 0.0f;
-    rel_pos_def.sin_rotation       = 0.0f;
-    rel_pos_def.cos_rotation       = 0.0f;
-    rel_pos_def.p_lgt              = 0.0f;
-    rel_pos_def.p_lat              = 0.0f;
-    rel_pos_def.v_lat              = 0.0f;
+    rel_pos_def.heading            = 0.0F;
+    rel_pos_def.sin_rotation       = 0.0F;
+    rel_pos_def.cos_rotation       = 0.0F;
+    rel_pos_def.p_lgt              = 0.0F;
+    rel_pos_def.p_lat              = 0.0F;
+    rel_pos_def.v_lat              = 0.0F;
     rel_pos_def.point_on_dist_side = false;
 
-    rel_pos_long_time.heading            = 0.0f;
-    rel_pos_long_time.sin_rotation       = 0.0f;
-    rel_pos_long_time.cos_rotation       = 0.0f;
-    rel_pos_long_time.p_lgt              = 0.0f;
-    rel_pos_long_time.p_lat              = 0.0f;
-    rel_pos_long_time.v_lat              = 0.0f;
+    rel_pos_long_time.heading            = 0.0F;
+    rel_pos_long_time.sin_rotation       = 0.0F;
+    rel_pos_long_time.cos_rotation       = 0.0F;
+    rel_pos_long_time.p_lgt              = 0.0F;
+    rel_pos_long_time.p_lat              = 0.0F;
+    rel_pos_long_time.v_lat              = 0.0F;
     rel_pos_long_time.point_on_dist_side = false;
 
-    rel_pos_short_time.heading            = 0.0f;
-    rel_pos_short_time.sin_rotation       = 0.0f;
-    rel_pos_short_time.cos_rotation       = 0.0f;
-    rel_pos_short_time.p_lgt              = 0.0f;
-    rel_pos_short_time.p_lat              = 0.0f;
-    rel_pos_short_time.v_lat              = 0.0f;
+    rel_pos_short_time.heading            = 0.0F;
+    rel_pos_short_time.sin_rotation       = 0.0F;
+    rel_pos_short_time.cos_rotation       = 0.0F;
+    rel_pos_short_time.p_lgt              = 0.0F;
+    rel_pos_short_time.p_lat              = 0.0F;
+    rel_pos_short_time.v_lat              = 0.0F;
     rel_pos_short_time.point_on_dist_side = false;
 
-    rel_pos_turn_left.heading            = 0.0f;
-    rel_pos_turn_left.sin_rotation       = 0.0f;
-    rel_pos_turn_left.cos_rotation       = 0.0f;
-    rel_pos_turn_left.p_lgt              = 0.0f;
-    rel_pos_turn_left.p_lat              = 0.0f;
-    rel_pos_turn_left.v_lat              = 0.0f;
+    rel_pos_turn_left.heading            = 0.0F;
+    rel_pos_turn_left.sin_rotation       = 0.0F;
+    rel_pos_turn_left.cos_rotation       = 0.0F;
+    rel_pos_turn_left.p_lgt              = 0.0F;
+    rel_pos_turn_left.p_lat              = 0.0F;
+    rel_pos_turn_left.v_lat              = 0.0F;
     rel_pos_turn_left.point_on_dist_side = false;
 
-    rel_pos_turn_right.heading            = 0.0f;
-    rel_pos_turn_right.sin_rotation       = 0.0f;
-    rel_pos_turn_right.cos_rotation       = 0.0f;
-    rel_pos_turn_right.p_lgt              = 0.0f;
-    rel_pos_turn_right.p_lat              = 0.0f;
-    rel_pos_turn_right.v_lat              = 0.0f;
+    rel_pos_turn_right.heading            = 0.0F;
+    rel_pos_turn_right.sin_rotation       = 0.0F;
+    rel_pos_turn_right.cos_rotation       = 0.0F;
+    rel_pos_turn_right.p_lgt              = 0.0F;
+    rel_pos_turn_right.p_lat              = 0.0F;
+    rel_pos_turn_right.v_lat              = 0.0F;
     rel_pos_turn_right.point_on_dist_side = false;
 
     in_path_info.in_path_default          = false;
@@ -210,28 +210,28 @@ void AsInPathDecision::Clear() {
     in_path_info.in_path_pred_trun_left   = false;
     in_path_info.in_path_pred_trun_right  = false;
 
-    proj_dist_info.proj_dist_defult.dist_from_host_left      = 0.0f;
-    proj_dist_info.proj_dist_zero_length.dist_from_host_left = 0.0f;
-    proj_dist_info.proj_dist_long_pred.dist_from_host_left   = 0.0f;
-    proj_dist_info.proj_dist_short_pred.dist_from_host_left  = 0.0f;
-    proj_dist_info.proj_dist_trun_left.dist_from_host_left   = 0.0f;
-    proj_dist_info.proj_dist_trun_right.dist_from_host_left  = 0.0f;
+    proj_dist_info.proj_dist_defult.dist_from_host_left      = 0.0F;
+    proj_dist_info.proj_dist_zero_length.dist_from_host_left = 0.0F;
+    proj_dist_info.proj_dist_long_pred.dist_from_host_left   = 0.0F;
+    proj_dist_info.proj_dist_short_pred.dist_from_host_left  = 0.0F;
+    proj_dist_info.proj_dist_trun_left.dist_from_host_left   = 0.0F;
+    proj_dist_info.proj_dist_trun_right.dist_from_host_left  = 0.0F;
 
-    proj_dist_info.proj_dist_defult.dist_from_host_right      = 0.0f;
-    proj_dist_info.proj_dist_zero_length.dist_from_host_right = 0.0f;
-    proj_dist_info.proj_dist_long_pred.dist_from_host_right   = 0.0f;
-    proj_dist_info.proj_dist_short_pred.dist_from_host_right  = 0.0f;
-    proj_dist_info.proj_dist_trun_left.dist_from_host_right   = 0.0f;
-    proj_dist_info.proj_dist_trun_right.dist_from_host_right  = 0.0f;
+    proj_dist_info.proj_dist_defult.dist_from_host_right      = 0.0F;
+    proj_dist_info.proj_dist_zero_length.dist_from_host_right = 0.0F;
+    proj_dist_info.proj_dist_long_pred.dist_from_host_right   = 0.0F;
+    proj_dist_info.proj_dist_short_pred.dist_from_host_right  = 0.0F;
+    proj_dist_info.proj_dist_trun_left.dist_from_host_right   = 0.0F;
+    proj_dist_info.proj_dist_trun_right.dist_from_host_right  = 0.0F;
 
     obj_try_brake = false;
 }
 
 void AsInPathDecision::CalInPathDataWithPredictPose(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
                                                     const SafetyMarginEvaluator &safemargin_eval, const AsVseOut &vse_out,
-                                                    const AsEgoPath &curv_path) {
+                                                    const AsEgoPath &curv_path,const AsSocietyScene &society_scene) {
     // Calculate the avoidance manoeuvers
-    CalcAvoidanceManoeuvers(obj);
+    CalcAvoidanceManoeuvers(obj,society_scene);
 
     // Creat in path data ttr
     InPathData obj_inpath_ttr = CalcCreatInPathDataAtTTC(obj, coll_eval, safemargin_eval, vse_out, curv_path, safemargin_eval.modified_ttr, true);
@@ -265,7 +265,7 @@ void AsInPathDecision::CalInPathDataWithCurrentPose(const active_safety::AsObsta
                                                     const SafetyMarginEvaluator &safemagin_eval, const AsVseOut &vse_out) {
     CalCornerPoints(vse_out, coll_eval.bounding_box, obj);
 
-    float min_lat      = 0.0f;
+    float min_lat      = 0.0F;
     bool  cross_flag   = CalClosestCornerDistance(vse_out, obj, min_lat);
     bool  in_path_def  = CheckInPathGeometrically(safemagin_eval.predict_offset, cross_flag, min_lat);
     bool  in_path_flag = CheckSteeringOutOfPath(vse_out, obj, coll_eval, in_path_def);
@@ -322,7 +322,7 @@ InPathData AsInPathDecision::CalcCreatInPathDataAtTTC(const active_safety::AsObs
     rel_pos_turn_right = CalcRelativePositionToHostPath(obj, coll_eval, obj_pred_pose.rel_pos_dec_trun_right, host_pred_info);
 
     // Determine in Path calculation
-    float ego_half_width = 0.5f * vse_out.host_width;
+    float ego_half_width = 0.5F * vse_out.host_width;
 
     in_path_info.in_path_default          = CalcInPathAsymmetricOffset(obj, coll_eval, rel_pos_def, proj_dist_info.proj_dist_defult,
                                                               safemargin_eval.predict_offset.offs_lat_in_path_close_edge,
@@ -394,8 +394,8 @@ InPathData AsInPathDecision::CalcCreatInPathDataAtTTC(const active_safety::AsObs
     // creat in path data at short pred time
     ret.inpath_short_pred = DetermineInPathDataAtPredTime(obj, coll_eval, obj_posible_manv, obj_pred_pose, false, obj_short_offs);
 
-    ret.inpath_long_pred.in_path  = (vse_out.straight_driving == false) && (coll_eval.ttr == 4.0f) ? false : ret.inpath_long_pred.in_path;
-    ret.inpath_short_pred.in_path = (vse_out.straight_driving == false) && (coll_eval.ttr == 4.0f) ? false : ret.inpath_short_pred.in_path;
+    ret.inpath_long_pred.in_path  = (vse_out.straight_driving == false) && (coll_eval.ttr == 4.0F) ? false : ret.inpath_long_pred.in_path;
+    ret.inpath_short_pred.in_path = (vse_out.straight_driving == false) && (coll_eval.ttr == 4.0F) ? false : ret.inpath_short_pred.in_path;
 
     return ret;
 }
@@ -407,7 +407,7 @@ bool AsInPathDecision::CalcInPathAsymmetricOffset(const active_safety::AsObstacl
     // First Module: Lateral Edge To Edge Distances.
     // Calculate the sin rotation mod
     float sin_rotation_mod = rel_pos.sin_rotation;
-    if (rel_pos.cos_rotation > -0.41f) {
+    if (rel_pos.cos_rotation > -0.41F) {
         // do nothing
     } else {
         sin_rotation_mod = -rel_pos.sin_rotation;
@@ -415,12 +415,12 @@ bool AsInPathDecision::CalcInPathAsymmetricOffset(const active_safety::AsObstacl
 
     bool proj_to_left  = false;
     bool proj_to_right = false;
-    if (((sin_rotation_mod < 0.0f) && rel_pos.point_on_dist_side) || ((sin_rotation_mod > 0.0f) && (!rel_pos.point_on_dist_side))) {
+    if (((sin_rotation_mod < 0.0F) && rel_pos.point_on_dist_side) || ((sin_rotation_mod > 0.0F) && (!rel_pos.point_on_dist_side))) {
         proj_to_left = true;
     } else {
         proj_to_left = false;
     }
-    if (((sin_rotation_mod > 0.0f) && rel_pos.point_on_dist_side) || ((sin_rotation_mod < 0.0f) && (!rel_pos.point_on_dist_side))) {
+    if (((sin_rotation_mod > 0.0F) && rel_pos.point_on_dist_side) || ((sin_rotation_mod < 0.0F) && (!rel_pos.point_on_dist_side))) {
         proj_to_right = true;
     } else {
         proj_to_right = false;
@@ -428,11 +428,11 @@ bool AsInPathDecision::CalcInPathAsymmetricOffset(const active_safety::AsObstacl
     // Computes the right and left edge to edge distances.
     // The leftmost and rightmost points of the object are seen from host's
     // point of view. Calculate the rigth and left edge to edge distance
-    float abs_proj_lgt = 0.0f;
-    float abs_proj_lat = 0.0;
+    float abs_proj_lgt = 0.0F;
+    float abs_proj_lat = 0.0F;
     if (true == zero_length) {
         // For zero length scene.
-        abs_proj_lgt = fabsf(0.01f * rel_pos.sin_rotation);
+        abs_proj_lgt = fabsf(0.01F * rel_pos.sin_rotation);
     } else {
         if (coll_eval.motion_type.side_closest) {
             abs_proj_lat = fabsf(coll_eval.bounding_box.length_side_lat * rel_pos.sin_rotation);
@@ -441,12 +441,12 @@ bool AsInPathDecision::CalcInPathAsymmetricOffset(const active_safety::AsObstacl
         }
     }
     if (coll_eval.motion_type.side_closest) {
-        abs_proj_lat = fabsf(0.5f * coll_eval.bounding_box.length_side_lgt * rel_pos.cos_rotation);
+        abs_proj_lat = fabsf(0.5F * coll_eval.bounding_box.length_side_lgt * rel_pos.cos_rotation);
     } else {
-        abs_proj_lat = fabsf(0.5f * coll_eval.bounding_box.length_side_lat * rel_pos.cos_rotation);
+        abs_proj_lat = fabsf(0.5F * coll_eval.bounding_box.length_side_lat * rel_pos.cos_rotation);
     }
-    float dist_from_host_left  = 0.0f;
-    float dist_from_host_right = 0.0f;
+    float dist_from_host_left  = 0.0F;
+    float dist_from_host_right = 0.0F;
     if (proj_to_left) {
         dist_from_host_right = rel_pos.p_lat + abs_proj_lgt + abs_proj_lat + ego_half_width;
     } else {
@@ -470,13 +470,13 @@ bool AsInPathDecision::CalcInPathAsymmetricOffset(const active_safety::AsObstacl
     edge_dist.far_dist_l = dist_from_host_right + lat_far_offs;
     edge_dist.far_dist_r = -dist_from_host_left + lat_far_offs;
 
-    float close_edge_dist = 0.0f;
-    float far_edge_dist   = 0.0f;
+    float close_edge_dist = 0.0F;
+    float far_edge_dist   = 0.0F;
 
     if (false == symmetric_sta) {
         // Host left side is closest to the object when they reach each other.
         // 0.01 is to avoid floating-point equality.
-        if (rel_pos.p_lat > 0.0f) {
+        if (rel_pos.p_lat > 0.0F) {
             close_edge_dist = edge_dist.closet_dist_l;
             far_edge_dist   = edge_dist.far_dist_l;
         } else {
@@ -494,7 +494,7 @@ bool AsInPathDecision::CalcInPathAsymmetricOffset(const active_safety::AsObstacl
     //           << " dist_from_host_left:" << dist_from_host_left
     //           << " lat_far_offs:" << lat_far_offs
     //           << " lat_close_offs:" << lat_close_offs << std::endl;
-    if ((close_edge_dist < 0.0f) ^ (far_edge_dist < 0.0f)) {
+    if ((close_edge_dist < 0.0F) ^ (far_edge_dist < 0.0F)) {
         ret = true;
     } else {
         ret = false;
@@ -505,7 +505,7 @@ bool AsInPathDecision::CalcInPathAsymmetricOffset(const active_safety::AsObstacl
 bool AsInPathDecision::CalClosestCornerDistance(const AsVseOut &vse_out, const active_safety::AsObstacle &obj, float &min_lat) {
     (void)(obj);
     float curv        = vse_out.rear_curvature;
-    float curv_radius = math::SafeDivide(1.0, vse_out.rear_curvature);
+    float curv_radius = math::SafeDivide(1.0F, vse_out.rear_curvature);
 
     int sing_count = 0;
     min_lat        = std::numeric_limits<float>::max();
@@ -513,7 +513,7 @@ bool AsInPathDecision::CalClosestCornerDistance(const AsVseOut &vse_out, const a
     math::CalculateCurveCoords(curv, curv_radius, corner_points.close_left_lgt, corner_points.close_left_lat,
                                    &corner_corved_points.close_left_lgt_corved, &corner_corved_points.close_left_lat_corved);
 
-    if (corner_corved_points.close_left_lat_corved > 0.0f) {
+    if (corner_corved_points.close_left_lat_corved > 0.0F) {
         sing_count += 1;
     } else {
         sing_count -= 1;
@@ -525,7 +525,7 @@ bool AsInPathDecision::CalClosestCornerDistance(const AsVseOut &vse_out, const a
     math::CalculateCurveCoords(curv, curv_radius, corner_points.close_right_lgt, corner_points.close_right_lat,
                                    &corner_corved_points.close_right_lgt_corved, &corner_corved_points.close_right_lat_corved);
 
-    if (corner_corved_points.close_right_lat_corved > 0.0f) {
+    if (corner_corved_points.close_right_lat_corved > 0.0F) {
         sing_count += 1;
     } else {
         sing_count -= 1;
@@ -537,7 +537,7 @@ bool AsInPathDecision::CalClosestCornerDistance(const AsVseOut &vse_out, const a
     math::CalculateCurveCoords(curv, curv_radius, corner_points.remote_left_lgt, corner_points.remote_left_lat,
                                    &corner_corved_points.remote_left_lgt_corved, &corner_corved_points.remote_left_lat_corved);
 
-    if (corner_corved_points.remote_left_lat_corved > 0.0f) {
+    if (corner_corved_points.remote_left_lat_corved > 0.0F) {
         sing_count += 1;
     } else {
         sing_count -= 1;
@@ -549,7 +549,7 @@ bool AsInPathDecision::CalClosestCornerDistance(const AsVseOut &vse_out, const a
     math::CalculateCurveCoords(curv, curv_radius, corner_points.remote_right_lgt, corner_points.remote_right_lat,
                                    &corner_corved_points.remote_right_lgt_corved, &corner_corved_points.remote_right_lat_corved);
 
-    if (corner_corved_points.remote_right_lat_corved > 0.0f) {
+    if (corner_corved_points.remote_right_lat_corved > 0.0F) {
         sing_count += 1;
     } else {
         sing_count -= 1;
@@ -572,7 +572,7 @@ bool AsInPathDecision::CalClosestCornerDistance(const AsVseOut &vse_out, const a
     //             << " CorCloseRight:" << corner_points.close_right_lat
     //             << " CorCloseLeft:" << corner_points.close_left_lat;
 #endif
-    if (4 == sing_count || -4 == sing_count) {
+    if ((4 == sing_count)  ||  (-4 == sing_count)) {
         return false;
     } else {
         return true;
@@ -591,25 +591,25 @@ void AsInPathDecision::CalCornerPoints(const AsVseOut &vse_out, const BoundingBo
         if (obj.object_class == active_safety::ObjectClass::BICYCLE || obj.object_class == active_safety::ObjectClass::ESCOOTER ||
             obj.object_class == active_safety::ObjectClass::THREEWHEEl_VEHICLE || obj.object_class == active_safety::ObjectClass::CAR ||
             obj.object_class == active_safety::ObjectClass::TRUCK || obj.object_class == active_safety::ObjectClass::UNIDENTIFIED_VEHICLE) {
-            if ((fabs(obj.heading) < 1.2) || (obj.speed > 1.5)) {
-                len_side_lgt = 0.01f;
+            if ((fabs(obj.heading) < 1.2) || (fabs(obj.heading) > 2.0)   ||  (obj.speed > 1.5)) {
+                len_side_lgt = 0.01F;
             }
         } else {
-            len_side_lgt = 0.01f;
+            len_side_lgt = 0.01F;
         }
     }
 
-    corner_points.close_left_lgt  = obj.long_posn - 0.5f * len_side_lat * bd_box.sin_rotation;
-    corner_points.close_right_lgt = obj.long_posn + 0.5f * len_side_lat * bd_box.sin_rotation;
+    corner_points.close_left_lgt  = obj.long_posn - 0.5F * len_side_lat * bd_box.sin_rotation;
+    corner_points.close_right_lgt = obj.long_posn + 0.5F * len_side_lat * bd_box.sin_rotation;
 
-    corner_points.close_left_lat  = obj.lat_posn + 0.5f * len_side_lat * bd_box.cos_rotation;
-    corner_points.close_right_lat = obj.lat_posn - 0.5f * len_side_lat * bd_box.cos_rotation;
+    corner_points.close_left_lat  = obj.lat_posn + 0.5F * len_side_lat * bd_box.cos_rotation;
+    corner_points.close_right_lat = obj.lat_posn - 0.5F * len_side_lat * bd_box.cos_rotation;
 
-    corner_points.remote_left_lgt  = obj.long_posn - 0.5f * len_side_lat * bd_box.sin_rotation + len_side_lgt * bd_box.cos_rotation;
-    corner_points.remote_right_lgt = obj.long_posn + 0.5f * len_side_lat * bd_box.sin_rotation + len_side_lgt * bd_box.cos_rotation;
+    corner_points.remote_left_lgt  = obj.long_posn - 0.5F * len_side_lat * bd_box.sin_rotation + len_side_lgt * bd_box.cos_rotation;
+    corner_points.remote_right_lgt = obj.long_posn + 0.5F * len_side_lat * bd_box.sin_rotation + len_side_lgt * bd_box.cos_rotation;
 
-    corner_points.remote_left_lat  = obj.lat_posn + 0.5f * len_side_lat * bd_box.cos_rotation + len_side_lgt * bd_box.sin_rotation;
-    corner_points.remote_right_lat = obj.lat_posn - 0.5f * len_side_lat * bd_box.cos_rotation + len_side_lgt * bd_box.sin_rotation;
+    corner_points.remote_left_lat  = obj.lat_posn + 0.5F * len_side_lat * bd_box.cos_rotation + len_side_lgt * bd_box.sin_rotation;
+    corner_points.remote_right_lat = obj.lat_posn - 0.5F * len_side_lat * bd_box.cos_rotation + len_side_lgt * bd_box.sin_rotation;
     // std::cout << "close_left_lat" << corner_points.close_left_lat
     //           << "close_right_lat" << corner_points.close_right_lat
     //           << "remote_left_lat" << corner_points.remote_left_lat
@@ -624,9 +624,9 @@ void AsInPathDecision::CalCornerPoints(const AsVseOut &vse_out, const BoundingBo
 PredictPoseInfo AsInPathDecision::CalcPredictAccelerationAndPosition(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
                                                                      const SafetyMarginEvaluator &safemargin_eval, float ttc_value) {
     // Calculate the heading stationary
-    float head_stationary = 0.0f;
+    float head_stationary = 0.0F;
     float temp_angle      = atan2f(coll_eval.bounding_box.sin_rotation, coll_eval.bounding_box.cos_rotation);
-    if ((true == coll_eval.motion_type.obs_is_vehicle) && (coll_eval.motion_type.abs_heading > M_PI / 2.0f)) {
+    if ((true == coll_eval.motion_type.obs_is_vehicle) && (coll_eval.motion_type.abs_heading > M_PI / 2.0F)) {
         head_stationary = temp_angle + (-static_cast<float>(M_PI) * math::SignF(temp_angle));
     } else {
         head_stationary = temp_angle;
@@ -764,18 +764,18 @@ PredictObjMotion AsInPathDecision::DetermineInPathDataAtPredTime(const active_sa
     // select the input value for long and short pred.
     bool  obj_can_brake   = false;
     bool  paral_vehicle   = false;
-    float a_lgt_obj_brake = 0.0f;
-    float a_lat_obj_brake = 0.0f;
-    float rel_pos_lat     = 0.0f;
-    float rel_pos_lgt     = 0.0f;
-    float rel_pos_yaw     = 0.0f;
+    float a_lgt_obj_brake = 0.0F;
+    float a_lat_obj_brake = 0.0F;
+    float rel_pos_lat     = 0.0F;
+    float rel_pos_lgt     = 0.0F;
+    float rel_pos_yaw     = 0.0F;
     bool  in_path_def     = false;
     // bool in_path_zero = false;
     bool  in_path_obj_brake = false;
-    float decel             = 0.0f;
+    float decel             = 0.0F;
 
-    float dist_left  = 0.0;
-    float dist_right = 0.0;
+    float dist_left  = 0.0F;
+    float dist_right = 0.0F;
 
     in_path_def = in_path_info.in_path_default;
     // in_path_zero = in_path_info.in_path_pred_zero_length;
@@ -845,7 +845,7 @@ PredictObjMotion AsInPathDecision::DetermineInPathDataAtPredTime(const active_sa
 
         // TODO: need add standard trigger_flag @liuqi
         bool m_standard_trigger_flag = false;
-        if (obj.object_class == active_safety::ObjectClass::BICYCLE && m_standard_trigger_flag) {
+        if ((obj.object_class == active_safety::ObjectClass::BICYCLE)  &&  m_standard_trigger_flag) {
             obj_can_brake = false;
         }
 
@@ -896,7 +896,7 @@ PredictObjMotion AsInPathDecision::DetermineInPathDataAtPredTime(const active_sa
     }
     // determine the in path data according to the obj actual manoeuver
     PredictObjMotion ret;
-    obj_act_manv = OBJ_MANV_PRED_DEF;
+    //obj_act_manv = OBJ_MANV_PRED_DEF;
     switch (obj_act_manv) {
         case (OBJ_MANV_PRED_BRAKE): {
             ret.a               = decel;
@@ -1002,57 +1002,51 @@ bool AsInPathDecision::CompareManoeuvers(bool manv1, float a_manv1, bool manv2, 
 
 InPathData AsInPathDecision::SelectInPathData(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval, const AsVseOut &vse_out,
                                               bool ttr_pred_valid) {
-    // define the strict in path scenarios
-    bool use_inpath_short = false;
-    bool use_inpath_long  = false;
-    // Judge whether the lateral speed of the target is small enough
-    bool obj_low_lateral_spd = (vse_out.straight_driving == false) ? false : CheckObjLowLateralSpd(obj);
-
-    if (((active_safety::ObjectClass::UNDETERMINED == obj.object_class) && (true == coll_eval.motion_type.moving_oncoming)) ||
-        (true == obj_low_lateral_spd) || (true == coll_eval.motion_type.para_veh_short_pred)) {
-        use_inpath_short = true;
-    } else {
-        // do nothing;
-    }
-
-    // long pred scenario
-    if (((active_safety::ObjectClass::UNDETERMINED == obj.object_class) && (true == coll_eval.motion_type.moving_oncoming)) ||
-        (true == obj_low_lateral_spd) || (true == coll_eval.motion_type.para_veh_long_pred)) {
-        use_inpath_long = true;
-    } else {
-        // do nothing;
-    }
-
-    // define the strict out of path scenarios
-    bool use_outpath_short = vse_out.aeb_active;
-    bool use_outpath_long  = false;
-
-    bool use_pred_long = CheckUsePredictionSta(use_outpath_long, use_inpath_long, inpath_pred_data.inpath_long_pred.in_path,
-                                               inpath_curr_data.inpath_long_pred.in_path, ttr_pred_valid);
-
-    bool       use_pred_short    = CheckUsePredictionSta(use_outpath_short, use_inpath_short, inpath_pred_data.inpath_short_pred.in_path,
-                                                inpath_curr_data.inpath_short_pred.in_path, ttr_pred_valid);
-    bool       use_predict_truck = CheckUsePredForTruck(obj);
     InPathData ret;
-    if (true == use_pred_long && use_predict_truck) {
-        ret.inpath_long_pred = inpath_pred_data.inpath_long_pred;
-    } else {
-        ret.inpath_long_pred = inpath_curr_data.inpath_long_pred;
+    bool is_truck = (obj.object_class == active_safety::ObjectClass::TRUCK);
+
+    // predict invalid or truck: use current directly
+    if (!ttr_pred_valid || is_truck) {
+        ret.inpath_long_pred  = inpath_curr_data.inpath_long_pred;
+        ret.inpath_short_pred = inpath_curr_data.inpath_short_pred;
+        return ret;
     }
 
-    if (true == use_pred_short && use_predict_truck) {
-        ret.inpath_short_pred = inpath_pred_data.inpath_short_pred;
-    } else {
-        ret.inpath_short_pred = inpath_curr_data.inpath_short_pred;
-    }
+    // determine strict inpath conditions
+    bool obj_low_lateral_spd = vse_out.straight_driving && CheckObjLowLateralSpd(obj);
+    bool undetermined_oncoming = (active_safety::ObjectClass::UNDETERMINED == obj.object_class) && coll_eval.motion_type.moving_oncoming;
+
+    bool strict_inpath_long  = undetermined_oncoming || obj_low_lateral_spd || coll_eval.motion_type.para_veh_long_pred;
+    bool strict_inpath_short = undetermined_oncoming || obj_low_lateral_spd || coll_eval.motion_type.para_veh_short_pred;
+
+    // long pred: aeb_active for long is always false, so no outpath relaxation
+    ret.inpath_long_pred = SelectSingleInPathData(
+        inpath_pred_data.inpath_long_pred, inpath_curr_data.inpath_long_pred, false, strict_inpath_long);
+
+    // short pred: aeb_active relaxes inpath condition
+    ret.inpath_short_pred = SelectSingleInPathData(
+        inpath_pred_data.inpath_short_pred, inpath_curr_data.inpath_short_pred, vse_out.aeb_active, strict_inpath_short);
+
     return ret;
 }
-bool AsInPathDecision::CheckUsePredForTruck(const active_safety::AsObstacle &obj) {
-    if (obj.object_class == active_safety::ObjectClass::TRUCK) {
-        return false;
-    } else {
-        return true;
+PredictObjMotion AsInPathDecision::SelectSingleInPathData(
+    const PredictObjMotion &pred_data, const PredictObjMotion &curr_data, bool aeb_active, bool strict_inpath) {
+    // AEB active: relax — cur || pred (use pred if pred=inpath or curr=not_inpath)
+    if (aeb_active) {
+        if (pred_data.in_path || !curr_data.in_path) {
+            return pred_data;
+        }
+        return curr_data;
     }
+    // Strict scenario: tighten — cur && pred (use pred if pred=not_inpath or curr=inpath)
+    if (strict_inpath) {
+        if (!pred_data.in_path || curr_data.in_path) {
+            return pred_data;
+        }
+        return curr_data;
+    }
+    // Default: use prediction
+    return pred_data;
 }
 bool AsInPathDecision::CheckObjLowLateralSpd(const active_safety::AsObstacle &obj) {
     bool ret = false;
@@ -1096,34 +1090,8 @@ bool AsInPathDecision::CheckObjLowLateralSpd(const active_safety::AsObstacle &ob
     return ret;
 }
 
-bool AsInPathDecision::CheckUsePredictionSta(bool use_outpath, bool use_inpath, bool inpath_ttr, bool inpath_curr, bool pred_valid) {
-    // Select the long pred time path data
-    bool use_pred = false;
-    if (true == pred_valid) {
-        if (true == use_outpath) {
-            if ((true == inpath_ttr) || (false == inpath_curr)) {
-                use_pred = true;
-            } else {
-                use_pred = false;
-            }
-        } else {
-            if (true == use_inpath) {
-                if ((false == inpath_ttr) || (true == inpath_curr)) {
-                    use_pred = true;
-                } else {
-                    use_pred = false;
-                }
-            } else {
-                use_pred = true;
-            }
-        }
-    } else {
-        use_pred = false;
-    }
-    return use_pred;
-}
 
-void AsInPathDecision::CalcAvoidanceManoeuvers(const active_safety::AsObstacle &obj) {
+void AsInPathDecision::CalcAvoidanceManoeuvers(const active_safety::AsObstacle &obj,const AsSocietyScene &society_scene) {
     // Avoidance manoeuvers calculation
     switch (obj.object_class) {
         case active_safety::ObjectClass::PEDESTRIAN: {
@@ -1133,15 +1101,15 @@ void AsInPathDecision::CalcAvoidanceManoeuvers(const active_safety::AsObstacle &
             break;
         }
         case active_safety::ObjectClass::ANIMAL: {
-            obj_avoidance.decel_long_pretime  = 0.0f;
-            obj_avoidance.decel_short_pretime = 0.0f;
-            obj_avoidance.alat_steer          = 0.0f;
+            obj_avoidance.decel_long_pretime  = 0.0F;
+            obj_avoidance.decel_short_pretime = 0.0F;
+            obj_avoidance.alat_steer          = 0.0F;
             break;
         }
         case active_safety::ObjectClass::GENOBJ: {
-            obj_avoidance.decel_long_pretime  = 0.0f;
-            obj_avoidance.decel_short_pretime = 0.0f;
-            obj_avoidance.alat_steer          = 0.0f;
+            obj_avoidance.decel_long_pretime  = 0.0F;
+            obj_avoidance.decel_short_pretime = 0.0F;
+            obj_avoidance.alat_steer          = 0.0F;
             break;
         }
         case active_safety::ObjectClass::BICYCLE: {
@@ -1183,77 +1151,80 @@ void AsInPathDecision::CalcAvoidanceManoeuvers(const active_safety::AsObstacle &
             break;
         }
         default: {
-            obj_avoidance.decel_long_pretime  = 0.0f;
-            obj_avoidance.decel_short_pretime = 0.0f;
-            obj_avoidance.alat_steer          = 0.0f;
+            obj_avoidance.decel_long_pretime  = 0.0F;
+            obj_avoidance.decel_short_pretime = 0.0F;
+            obj_avoidance.alat_steer          = 0.0F;
             break;
         }
     }
-    obj_avoidance.decel_long_pretime  = 0.0f;
-    obj_avoidance.decel_short_pretime = 0.0f;
-    obj_avoidance.alat_steer          = 0.0f;
+    if (society_scene.GetTestSceneFlg()  ||  (obj.object_class == active_safety::ObjectClass::PEDESTRIAN))
+    {
+        obj_avoidance.decel_long_pretime  = 0.0F;
+        obj_avoidance.decel_short_pretime = 0.0F;
+        obj_avoidance.alat_steer          = 0.0F;
+    }
 }
 
 PredictPoseInfo AsInPathDecision::CalcNoPredAccAndPos(const active_safety::AsObstacle &obj, float head_sta) {
     PredictPoseInfo ret;
     ret.rel_pos_def.p_lgt   = obj.long_posn;
     ret.rel_pos_def.p_lat   = obj.lat_posn;
-    ret.rel_pos_def.v_lgt   = 0.0f;
-    ret.rel_pos_def.v_lat   = 0.0f;
-    ret.rel_pos_def.a_lgt   = 0.0f;
-    ret.rel_pos_def.a_lat   = 0.0f;
+    ret.rel_pos_def.v_lgt   = 0.0F;
+    ret.rel_pos_def.v_lat   = 0.0F;
+    ret.rel_pos_def.a_lgt   = 0.0F;
+    ret.rel_pos_def.a_lat   = 0.0F;
     ret.rel_pos_def.heading = head_sta;
-    ret.rel_pos_def.spd     = 0.0f;
-    ret.rel_pos_def.a       = 0.0f;
-    ret.rel_pos_def.curv    = 0.0f;
+    ret.rel_pos_def.spd     = 0.0F;
+    ret.rel_pos_def.a       = 0.0F;
+    ret.rel_pos_def.curv    = 0.0F;
     ret.rel_pos_def.in_path = false;
 
     ret.rel_pos_dec_long_time.p_lgt   = obj.long_posn;
     ret.rel_pos_dec_long_time.p_lat   = obj.lat_posn;
-    ret.rel_pos_dec_long_time.v_lgt   = 0.0f;
-    ret.rel_pos_dec_long_time.v_lat   = 0.0f;
-    ret.rel_pos_dec_long_time.a_lgt   = 0.0f;
-    ret.rel_pos_dec_long_time.a_lat   = 0.0f;
+    ret.rel_pos_dec_long_time.v_lgt   = 0.0F;
+    ret.rel_pos_dec_long_time.v_lat   = 0.0F;
+    ret.rel_pos_dec_long_time.a_lgt   = 0.0F;
+    ret.rel_pos_dec_long_time.a_lat   = 0.0F;
     ret.rel_pos_dec_long_time.heading = head_sta;
-    ret.rel_pos_dec_long_time.spd     = 0.0f;
-    ret.rel_pos_dec_long_time.a       = 0.0f;
-    ret.rel_pos_dec_long_time.curv    = 0.0f;
+    ret.rel_pos_dec_long_time.spd     = 0.0F;
+    ret.rel_pos_dec_long_time.a       = 0.0F;
+    ret.rel_pos_dec_long_time.curv    = 0.0F;
     ret.rel_pos_dec_long_time.in_path = false;
 
     ret.rel_pos_dec_short_time.p_lgt   = obj.long_posn;
     ret.rel_pos_dec_short_time.p_lat   = obj.lat_posn;
-    ret.rel_pos_dec_short_time.v_lgt   = 0.0f;
-    ret.rel_pos_dec_short_time.v_lat   = 0.0f;
-    ret.rel_pos_dec_short_time.a_lgt   = 0.0f;
-    ret.rel_pos_dec_short_time.a_lat   = 0.0f;
+    ret.rel_pos_dec_short_time.v_lgt   = 0.0F;
+    ret.rel_pos_dec_short_time.v_lat   = 0.0F;
+    ret.rel_pos_dec_short_time.a_lgt   = 0.0F;
+    ret.rel_pos_dec_short_time.a_lat   = 0.0F;
     ret.rel_pos_dec_short_time.heading = head_sta;
-    ret.rel_pos_dec_short_time.spd     = 0.0f;
-    ret.rel_pos_dec_short_time.a       = 0.0f;
-    ret.rel_pos_dec_short_time.curv    = 0.0f;
+    ret.rel_pos_dec_short_time.spd     = 0.0F;
+    ret.rel_pos_dec_short_time.a       = 0.0F;
+    ret.rel_pos_dec_short_time.curv    = 0.0F;
     ret.rel_pos_dec_short_time.in_path = false;
 
     ret.rel_pos_dec_trun_left.p_lgt   = obj.long_posn;
     ret.rel_pos_dec_trun_left.p_lat   = obj.lat_posn;
-    ret.rel_pos_dec_trun_left.v_lgt   = 0.0f;
-    ret.rel_pos_dec_trun_left.v_lat   = 0.0f;
-    ret.rel_pos_dec_trun_left.a_lgt   = 0.0f;
-    ret.rel_pos_dec_trun_left.a_lat   = 0.0f;
+    ret.rel_pos_dec_trun_left.v_lgt   = 0.0F;
+    ret.rel_pos_dec_trun_left.v_lat   = 0.0F;
+    ret.rel_pos_dec_trun_left.a_lgt   = 0.0F;
+    ret.rel_pos_dec_trun_left.a_lat   = 0.0F;
     ret.rel_pos_dec_trun_left.heading = head_sta;
-    ret.rel_pos_dec_trun_left.spd     = 0.0f;
-    ret.rel_pos_dec_trun_left.a       = 0.0f;
-    ret.rel_pos_dec_trun_left.curv    = 0.0f;
+    ret.rel_pos_dec_trun_left.spd     = 0.0F;
+    ret.rel_pos_dec_trun_left.a       = 0.0F;
+    ret.rel_pos_dec_trun_left.curv    = 0.0F;
     ret.rel_pos_dec_trun_left.in_path = false;
 
     ret.rel_pos_dec_trun_right.p_lgt   = obj.long_posn;
     ret.rel_pos_dec_trun_right.p_lat   = obj.lat_posn;
-    ret.rel_pos_dec_trun_right.v_lgt   = 0.0f;
-    ret.rel_pos_dec_trun_right.v_lat   = 0.0f;
-    ret.rel_pos_dec_trun_right.a_lgt   = 0.0f;
-    ret.rel_pos_dec_trun_right.a_lat   = 0.0f;
+    ret.rel_pos_dec_trun_right.v_lgt   = 0.0F;
+    ret.rel_pos_dec_trun_right.v_lat   = 0.0F;
+    ret.rel_pos_dec_trun_right.a_lgt   = 0.0F;
+    ret.rel_pos_dec_trun_right.a_lat   = 0.0F;
     ret.rel_pos_dec_trun_right.heading = head_sta;
-    ret.rel_pos_dec_trun_right.spd     = 0.0f;
-    ret.rel_pos_dec_trun_right.a       = 0.0f;
-    ret.rel_pos_dec_trun_right.curv    = 0.0f;
+    ret.rel_pos_dec_trun_right.spd     = 0.0F;
+    ret.rel_pos_dec_trun_right.a       = 0.0F;
+    ret.rel_pos_dec_trun_right.curv    = 0.0F;
     ret.rel_pos_dec_trun_right.in_path = false;
 
     return ret;
@@ -1286,13 +1257,13 @@ PredictPoseInfo AsInPathDecision::CalcLinearPredAccAndPos(const active_safety::A
                                                           float head_sta) {
     PredictPoseInfo ret;
     // Default prediction TTR longitudinal and lateral
-    ret.rel_pos_def = CalcDefaultObjLinearMotion(obj, ttc_value);
+    ret.rel_pos_def = CalcDefaultObjLinearMotion(obj, ttc_value,head_sta);
     // Braking object linear prediction
     ret.rel_pos_dec_long_time  = CalcBrakingObjLinearMotion(obj, safemargin_eval, avoid_a.decel_long_pretime, ttc_value, head_sta);
     ret.rel_pos_dec_short_time = CalcBrakingObjLinearMotion(obj, safemargin_eval, avoid_a.decel_short_pretime, ttc_value, head_sta);
     // Turning object linear prediction
-    ret.rel_pos_dec_trun_left  = CalcTurningObjLinearMotion(obj, coll_eval, safemargin_eval, avoid_a.alat_steer, ttc_value, true);
-    ret.rel_pos_dec_trun_right = CalcTurningObjLinearMotion(obj, coll_eval, safemargin_eval, avoid_a.alat_steer, ttc_value, false);
+    ret.rel_pos_dec_trun_left  = CalcTurningObjLinearMotion(obj, coll_eval, safemargin_eval, avoid_a.alat_steer, ttc_value, true,head_sta);
+    ret.rel_pos_dec_trun_right = CalcTurningObjLinearMotion(obj, coll_eval, safemargin_eval, avoid_a.alat_steer, ttc_value, false,head_sta);
 
     return ret;
 }
@@ -1329,7 +1300,7 @@ PredictObjMotion AsInPathDecision::CalcBrakingObjCircularMotion(const active_saf
 PredictObjMotion AsInPathDecision::CalcTurningObjCircularMotion(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
                                                                 float ttc_value, float alat_steer, bool turn_left) {
     // Calculate curvature
-    float temp_crvt      = 0.0f;
+    float temp_crvt      = 0.0F;
     float sign_speed_sqr = obj.speed * obj.speed * math::SignF(obj.speed);
 
     if (turn_left) {
@@ -1363,19 +1334,24 @@ PredictObjMotion AsInPathDecision::CalcTurningObjCircularMotion(const active_saf
     return ret;
 }
 
-PredictObjMotion AsInPathDecision::CalcDefaultObjLinearMotion(const active_safety::AsObstacle &obj, float ttc_value) {
+PredictObjMotion AsInPathDecision::CalcDefaultObjLinearMotion(const active_safety::AsObstacle &obj, float ttc_value,float head_sta) {
     PredictObjMotion ret;
     // Calculate the longitudinal linear movement
     ret.p_lgt = obj.long_posn;
     ret.v_lgt = obj.long_vel;
     ret.a_lgt = obj.long_accel;
-    LinearMovementPredictorWithStop(true, ret.p_lgt, ret.v_lgt, ret.a_lgt, ttc_value);
+    (void)LinearMovementPredictorWithStop(true, ret.p_lgt, ret.v_lgt, ret.a_lgt, ttc_value);
     // Calculate the lateral linear movement
     ret.p_lat = obj.lat_posn;
     ret.v_lat = obj.lat_vel;
     ret.a_lat = obj.lat_accel;
-    LinearMovementPredictorWithStop(true, ret.p_lat, ret.v_lat, ret.a_lat, ttc_value);
-    ret.heading = atan2f(ret.v_lat, ret.v_lgt);
+    (void)LinearMovementPredictorWithStop(true, ret.p_lat, ret.v_lat, ret.a_lat, ttc_value);
+    
+    if (sqrt(pow(ret.v_lgt,2) + pow(ret.v_lat,2)) < 1) {
+        ret.heading = head_sta;
+    } else {
+        ret.heading = atan2f(ret.v_lat, ret.v_lgt);
+    }
     return ret;
 }
 
@@ -1393,14 +1369,14 @@ PredictObjMotion AsInPathDecision::CalcBrakingObjLinearMotion(const active_safet
     // Linear longitudinal movement with brake
     ret.p_lgt      = obj.long_posn;
     ret.v_lgt      = obj.long_vel;
-    bool lgt_stops = LinearMovementPredictorWithStop(true, ret.p_lgt, ret.v_lgt, ret.a_lgt, ttc_value);
+    (void)LinearMovementPredictorWithStop(true, ret.p_lgt, ret.v_lgt, ret.a_lgt, ttc_value);
 
     // Linear lateral movement with brake
     ret.p_lat      = obj.lat_posn;
     ret.v_lat      = obj.lat_vel;
-    bool lat_stops = LinearMovementPredictorWithStop(true, ret.p_lat, ret.v_lat, ret.a_lat, ttc_value);
+    (void)LinearMovementPredictorWithStop(true, ret.p_lat, ret.v_lat, ret.a_lat, ttc_value);
     // Heading filter
-    if (true == lgt_stops && true == lat_stops) {
+    if (sqrt(pow(ret.v_lgt,2) + pow(ret.v_lat,2)) < 1) {
         ret.heading = head_sta;
     } else {
         ret.heading = atan2f(ret.v_lat, ret.v_lgt);
@@ -1410,7 +1386,7 @@ PredictObjMotion AsInPathDecision::CalcBrakingObjLinearMotion(const active_safet
 
 PredictObjMotion AsInPathDecision::CalcTurningObjLinearMotion(const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
                                                               const SafetyMarginEvaluator &safemargin_eval, float decel_pre, float ttc_value,
-                                                              bool turn_left) {
+                                                              bool turn_left,float head_sta) {
     PredictObjMotion ret;
     // the crvt of pred
     ret.curv = obj.curvature;
@@ -1436,11 +1412,15 @@ PredictObjMotion AsInPathDecision::CalcTurningObjLinearMotion(const active_safet
     ret.v_lgt = obj.long_vel;
     ret.v_lat = obj.lat_vel;
 
-    LinearMovementPredictorWithStop(false, ret.p_lgt, ret.v_lgt, ret.a_lgt, ttc_value);
+    (void)LinearMovementPredictorWithStop(false, ret.p_lgt, ret.v_lgt, ret.a_lgt, ttc_value);
 
-    LinearMovementPredictorWithStop(false, ret.p_lat, ret.v_lat, ret.a_lat, ttc_value);
+    (void)LinearMovementPredictorWithStop(false, ret.p_lat, ret.v_lat, ret.a_lat, ttc_value);
 
-    ret.heading = atan2f(ret.v_lat, ret.v_lgt);
+    if (sqrt(pow(ret.v_lgt,2) + pow(ret.v_lat,2)) < 1) {
+        ret.heading = head_sta;
+    } else {
+        ret.heading = atan2f(ret.v_lat, ret.v_lgt);
+    }
     // modify the predicted obj  postion if turning
     if (active_safety::AS_OBS_MP_MOV_TO_SELF == obj.motion_pattern) {
         ret.p_lgt = CalcTransPosnFromRemoteSide(ret.p_lgt, Leng_sgn_spd, cosf(ret.heading));
@@ -1512,17 +1492,17 @@ PredictObjMotion AsInPathDecision::PredictObjectCurveMotion(const active_safety:
                                                             PredictObjMotion pre_motion, float pred_time) {
     PredictObjMotion ret;
     // Linear movement predict with stop detection
-    ret.p_lgt = 0.0f;
+    ret.p_lgt = 0.0F;
     ret.spd   = obj.speed;
     ret.a     = pre_motion.a;
-    LinearMovementPredictorWithStop(true, ret.p_lgt, ret.spd, ret.a, pred_time);
+    (void)LinearMovementPredictorWithStop(true, ret.p_lgt, ret.spd, ret.a, pred_time);
 
     // Calculate the length with speed sign
     float Length_sgnspd = math::SignF(obj.long_vel) * coll_eval.bounding_box.length_side_lgt;
 
     // Calculate the position of lateral and longitudinal remote
-    float lgt_posn = 0.0f;
-    float lat_posn = 0.0f;
+    float lgt_posn = 0.0F;
+    float lat_posn = 0.0F;
     if (active_safety::AS_OBS_MP_MOV_TO_SELF == obj.motion_pattern) {
         lat_posn = obj.lat_posn - Length_sgnspd * sinf(obj.heading);
         lgt_posn = obj.long_posn - Length_sgnspd * cosf(obj.heading);
@@ -1532,8 +1512,8 @@ PredictObjMotion AsInPathDecision::PredictObjectCurveMotion(const active_safety:
     }
 
     // Calculate the center rotation
-    float obj_radius      = math::Clamp(math::SafeDivide(1.0f, pre_motion.curv), -1000.0f, 1000.0f);
-    float obj_agdir_rad   = 0.0f;
+    float obj_radius      = math::Clamp(math::SafeDivide(1.0F, pre_motion.curv), -1000.0F, 1000.0F);
+    float obj_agdir_rad   = 0.0F;
     obj_agdir_rad         = obj.heading + static_cast<float>(M_PI_2);
     float center_rota_lgt = obj.long_posn + cosf(obj_agdir_rad) * obj_radius;
     float center_rota_lat = obj.lat_posn + sinf(obj_agdir_rad) * obj_radius;
@@ -1558,9 +1538,9 @@ PredictObjMotion AsInPathDecision::PredictObjectCurveMotion(const active_safety:
 }
 
 float AsInPathDecision::CalcDeclerationForAovidance(const active_safety::AsObstacle &obj, float conf_value) {
-    float ret       = 0.0f;
+    float ret       = 0.0F;
     float signDecel = conf_value * math::SignF(obj.speed);
-    if (obj.speed < 0.0f) {
+    if (obj.speed < 0.0F) {
         ret = fmaxf(signDecel, obj.accel);
     } else {
         ret = fminf(signDecel, obj.accel);
@@ -1574,10 +1554,10 @@ bool AsInPathDecision::CheckInPathGeometrically(const PredictOffset &pred_offst,
     if (true == cross_flag) {
         in_path_flag = true;
     } else {
-        float offset = 0.0f;
+        float offset = 0.0F;
         // radar only
         // if (0 >= obj.vis_trk_id) {
-        //     offset = 0.0f;
+        //     offset = 0.0F;
         // } else {
         offset = pred_offst.offs_lat_in_path_close_edge;
         // }
@@ -1605,7 +1585,7 @@ PredictObjMotion AsInPathDecision::CalcCartesianMovement(const active_safety::As
 bool AsInPathDecision::CheckSteeringOutOfPath(const AsVseOut &vse_out, const active_safety::AsObstacle &obj, const CollisionEvaluator &coll_eval,
                                               bool in_path_def) {
     bool is_moter_veh = false;
-    if (true == coll_eval.motion_type.obs_is_vehicle && active_safety::ObjectClass::BICYCLE != obj.object_class) {
+    if ((true == coll_eval.motion_type.obs_is_vehicle)  &&  (active_safety::ObjectClass::BICYCLE != obj.object_class)) {
         is_moter_veh = true;
     }
 
@@ -1615,9 +1595,9 @@ bool AsInPathDecision::CheckSteeringOutOfPath(const AsVseOut &vse_out, const act
     }
 
     bool  heading_ok  = false;
-    float abs_heading = 0.0f;
+    float abs_heading = 0.0F;
     abs_heading       = fabsf(atan2f(obj.lat_vel, obj.long_vel));
-    if (active_safety::ObjectClass::BICYCLE == obj.object_class && false == vse_out.aeb_active) {
+    if ((active_safety::ObjectClass::BICYCLE == obj.object_class)  &&  (false == vse_out.aeb_active)) {
         if (abs_heading > inpath_decision_param.k_ang_dir_for_bicycle_steer_thd) {
             heading_ok = true;
         }
@@ -1628,13 +1608,13 @@ bool AsInPathDecision::CheckSteeringOutOfPath(const AsVseOut &vse_out, const act
     }
 
     bool tries_to_steer = false;
-    if (false == vse_out.aeb_active && false == coll_eval.motion_type.stationary && true == heading_ok) {
+    if ((false == vse_out.aeb_active)  &&  (false == coll_eval.motion_type.stationary)  &&  (true == heading_ok)) {
         tries_to_steer = true;
     }
 
     // if the object cannot steer out of path
     bool in_path = false;
-    if (false == is_moter_veh || true == ttr_valid || false == tries_to_steer) {
+    if ((false == is_moter_veh)  ||  (true == ttr_valid)  ||  (false == tries_to_steer)) {
         if (true == in_path_def) {
             in_path = true;
         }
@@ -1647,7 +1627,7 @@ bool AsInPathDecision::LinearMovementPredictorWithStop(bool stopena, float &posn
     // Min of ti or obj stopped
     float stoptime = -math::SafeDivide(spd, a);
     float mintime  = t;
-    if ((stoptime > 0.0f) && (stopena)) {
+    if ((stoptime > 0.0F) && (stopena)) {
         mintime = fminf(t, stoptime);
     } else {
         // do noting
@@ -1655,14 +1635,14 @@ bool AsInPathDecision::LinearMovementPredictorWithStop(bool stopena, float &posn
 
     // Linear movement predictor
     float powtime = mintime * mintime;
-    posn          = posn + spd * mintime + 0.5f * a * powtime;
+    posn          = posn + spd * mintime + 0.5F * a * powtime;
     spd           = spd + a * mintime;
 
     // Obj stop state detected
     bool objstops = false;
-    if (fabs(t - mintime) > 0.0001f) {
-        spd      = 0.0f;
-        a        = 0.0f;
+    if (fabs(t - mintime) > 0.0001F) {
+        spd      = 0.0F;
+        a        = 0.0F;
         objstops = true;
     } else {
         // do nothing

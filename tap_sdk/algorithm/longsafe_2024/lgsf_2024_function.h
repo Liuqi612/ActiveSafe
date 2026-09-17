@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_LGSF_2024_FUNCTION_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_LGSF_2024_FUNCTION_H_
 extern "C" {
 #include "algorithm/longsafe_2024/aeb/LongSafe_SWC_ert_rtw/LongSafe_SWC.h"
 }
@@ -64,6 +65,7 @@ extern "C" {
 #undef Awb_Active
 #endif
 
+#include "algorithm/longsafe/threat_assessor/longsafe_obs.h"
 #include "algorithm/longsafe_2024/algo_interface/active_safety_command.h"
 #include "algorithm/longsafe_2024/algo_interface/active_safety_control.h"
 #include "algorithm/longsafe_2024/algo_interface/active_safety_coreout.h"
@@ -82,24 +84,41 @@ class LgSafe2024Function {
     ~LgSafe2024Function();
 
     void Init();
-    void Update(const active_safety::AsVseOut &vse_out, const active_safety::AsObstacleList &obs_list, const active_safety::LanesInfo &road_info,
-                const senseAD::tap::AsParamConfig_T &long_safe_param);
-
+    void Update(const active_safety::AsVseOut &vse_in, const active_safety::AsObstacleList &obs_list, const active_safety::LanesInfo &road_info,
+                const senseAD::tap::AsParamConfig_T &long_safe_param,const uint8_T aeb_fcw_exit_inhibit,const GlobalConfig &config);
+    void UpdateNewTsel(const active_safety::AsVseOut &vse_in, const active_safety::AsObstacleList &obs_list,
+                       const active_safety::longsafe::LongSafeObject lgsf_obj,
+                       const senseAD::tap::AsParamConfig_T &long_safe_param,const uint8_T aeb_fcw_exit_inhibit,const GlobalConfig &config);
+                       
     // Outputs
-    const senseAD::tap::AsCmdLgSafe_T &    GetCmd() const { return cmd_output_; }
+    const senseAD::tap::AsCmdLgSafe_T &GetCmd() const { return cmd_output_; }
     const senseAD::tap::AsDisplayLgSafe_T &GetDisplay() const { return display_output_; }
-    const senseAD::tap::AsLongSafeOut &    GetSelectOut() const { return select_output_; }
-    const senseAD::tap::LgSf_Ltap_T &      GetLtapOut() const { return ltap_output_; }
-    const senseAD::tap::LgSafe_T &      GetLgSf() const { return simulink_y_lg_safe_; }
+    const senseAD::tap::AsLongSafeOut &GetSelectOut() const { return select_output_; }
+    const senseAD::tap::LgSf_Ltap_T &GetLtapOut() const { return ltap_output_; }
+    const senseAD::tap::LgSafe_T &GetLgSf() const { return simulink_y_lg_safe_; }
+
+    const senseAD::tap::AsVseOut &GetSimulinkVse() const { return simulink_u_vse_; }
+    const senseAD::tap::AsCoreOut_T &GetSimulinkCoreOut() const { return simulink_u_core_out_; }
+    const senseAD::tap::AsParamConfig_T &GetSimulinkParamConfig() const { return simulink_u_param_config_; }
+    void AbortAebCmd();
+    void SetAebUnavoidCollision(const uint8_T unavoid_collision_flag);
+    void SetFcwThreatFlag(const uint8_T fcw_threat_flag);
+    void SetAebThreatFlag(const uint8_T aeb_threat_flag);
 
   private:
     void MapToSimulinkInput(const senseAD::tap::AsVseOut &vse_out, const senseAD::tap::AsLongSafeOut &select_out,
                             const senseAD::tap::AsParamConfig_T &long_safe_param);
 
     void MapFromSimulinkOutput(const senseAD::tap::LgSafe_T &lg_safe_internal, const senseAD::tap::AsCmdLgSafe_T &cmd_internal,
-                               const senseAD::tap::AsDisplayLgSafe_T &display_internal);
+                               const senseAD::tap::AsDisplayLgSafe_T &display_internal, const senseAD::tap::AsVseOut &vse_out,
+                               const senseAD::tap::AsParamConfig_T &long_safe_param);
 
-    void MapVseInput(const active_safety::AsVseOut &vse_in, senseAD::tap::AsVseOut &vse_out);
+    void MapNewTselRes2SelectOut(senseAD::tap::AsLongSafeObject &res, active_safety::longsafe::LongSafeObject lgsf_obj);
+
+    // 用 CoreOut 输入中的 longsafe_aeb 主目标属性，直接覆盖 step 输出的 lgsf_target 主目标属性
+    void OverrideLgsfTargetFromCoreOut();
+
+    void MapVseInput(const active_safety::AsVseOut &vse_in, senseAD::tap::AsVseOut &vse_out,const GlobalConfig &config);
     void MapRoadInfo(const active_safety::LanesInfo &road_info_in, senseAD::tap::AS_LaneMarkerInfo_T &lane_info_out);
 
   private:
@@ -109,21 +128,22 @@ class LgSafe2024Function {
     senseAD::tap::AsLongSafe select_module_;
 
     // Simulink Internal States and Structures
-    RT_MODEL_LongSafe_SWC_T *       rtm_;
-    senseAD::tap::AsVseOut          simulink_u_vse_;
-    senseAD::tap::AsCoreOut_T       simulink_u_core_out_;
-    senseAD::tap::AsParamConfig_T   simulink_u_param_config_;
-    senseAD::tap::LgSafe_T          simulink_y_lg_safe_;
-    senseAD::tap::AsCmdLgSafe_T     simulink_y_cmd_lg_safe_;
+    RT_MODEL_LongSafe_SWC_T *rtm_;
+    senseAD::tap::AsVseOut simulink_u_vse_;
+    senseAD::tap::AsCoreOut_T simulink_u_core_out_;
+    senseAD::tap::AsParamConfig_T simulink_u_param_config_;
+    senseAD::tap::LgSafe_T simulink_y_lg_safe_;
+    senseAD::tap::AsCmdLgSafe_T simulink_y_cmd_lg_safe_;
     senseAD::tap::AsDisplayLgSafe_T simulink_y_display_lg_safe_;
 
     senseAD::tap::AsSocietyScene society_scene_;
     // Final SDK Outputs
-    senseAD::tap::AsLongSafeOut     select_output_;
-    senseAD::tap::AsCmdLgSafe_T     cmd_output_;
+    senseAD::tap::AsLongSafeOut select_output_;
+    senseAD::tap::AsCmdLgSafe_T cmd_output_;
     senseAD::tap::AsDisplayLgSafe_T display_output_;
-    senseAD::tap::LgSf_Ltap_T       ltap_output_;
+    senseAD::tap::LgSf_Ltap_T ltap_output_;
 };
 
 } // namespace longsafe_2024
 } // namespace active_safety
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_LGSF_2024_FUNCTION_H_

@@ -14,8 +14,7 @@ AsLongSafe::AsLongSafe() {
         obs_list_[i] = std::make_shared<active_safety::AsObstacle>();
     }
 }
-AsLongSafe::~AsLongSafe() {
-}
+AsLongSafe::~AsLongSafe() = default;
 
 int32_t AsLongSafe::GetAebObjFusId() const {
     return long_safe_out_.longsafe_aeb.prm_tgt.obj.fus_trkID;
@@ -33,13 +32,13 @@ void AsLongSafe::Run(const active_safety::AsObstacleList &obs_list, const AS_Lan
     }
     // 修改位置：将位置从物体中心调整到物体后边缘（用于碰撞检测）
     for (std::size_t i = 0; i < obs_list_.size(); ++i) {
-        if (obs_list_[i] != nullptr &&
+        if (obs_list_[i] != nullptr && 
             (obs_list_[i]->object_class == active_safety::ObjectClass::BUS || obs_list_[i]->object_class == active_safety::ObjectClass::TRUCK ||
              obs_list_[i]->object_class == active_safety::ObjectClass::CAR || obs_list_[i]->object_class == active_safety::ObjectClass::BICYCLE ||
              obs_list_[i]->object_class == active_safety::ObjectClass::ESCOOTER ||
              obs_list_[i]->object_class == active_safety::ObjectClass::MOTORCYCLE)) {
-            obs_list_[i]->lat_posn = obs_list_[i]->lat_posn - 0.5f * sinf(obs_list_[i]->heading) * obs_list_[i]->length;
-            obs_list_[i]->long_posn = obs_list_[i]->long_posn - 0.5f * cosf(obs_list_[i]->heading) * obs_list_[i]->length;
+            obs_list_[i]->lat_posn = obs_list_[i]->lat_posn - 0.5F * sinf(obs_list_[i]->heading) * obs_list_[i]->length;
+            obs_list_[i]->long_posn = obs_list_[i]->long_posn - 0.5F * cosf(obs_list_[i]->heading) * obs_list_[i]->length;
         }
     }
     curv_path_.UpdatePath(vse_.vcs_long_vel, vse_.long_accel, vse_.rear_curvature, vse_.rear_curvaturerate, vse_.host_width, vse_.host_length,
@@ -58,7 +57,7 @@ void AsLongSafe::Run(const active_safety::AsObstacleList &obs_list, const AS_Lan
 
 void AsLongSafe::CalcObstacleData(const active_safety::AsObstacleList &obs_list, const AsSocietyScene &society_scene) {
 
-    for (std::size_t i = 0; i < kMaxFusionObject; i++) {
+    for (std::size_t i = 0; i < active_safety::kMaxFusionObject; i++) {
 
         if (!CheckValidLongSafeObject(vse_, *obs_list[i])) {
             obstacle_data_[i].Clear();
@@ -82,7 +81,7 @@ void AsLongSafe::FindThreatTarget(const active_safety::AsObstacleList &obs_list,
     (void)(society_scene);
     single_ass.ResetPrimaryTargetData();
 
-    for (std::size_t i = 0; i < kMaxFusionObject; i++) {
+    for (std::size_t i = 0; i < active_safety::kMaxFusionObject; i++) {
         if (obstacle_data_[i].GetInpathData().GetResultData().inpath_short_pred.in_path) {
             single_ass.FindPrimaryTargetForIntv(*obs_list[i], obstacle_data_[i], curv_path_, vse_);
         }
@@ -138,12 +137,12 @@ bool AsLongSafe::CheckValidLongSafeObject(const AsVseOut &ego, const active_safe
     bool road_edge_check = true;
     if (obs.fus_trkID > 0 && obs.object_class > active_safety::ObjectClass::UNDETERMINED &&
         (obs.fusion_source == active_safety::FusionSource::RADAR_VISION || obs.fusion_source == active_safety::FusionSource::VISION_ONLY) &&
-        obs.confidence < 4.8f) {
+        obs.confidence != active_safety::ObsConfidence::LOW_CONF) {
         simple_check = true;
     }
     // Check valid position for forward
     float rear_valid_posn_lgt = 0;
-    if (obs.object_class == active_safety::ObjectClass::ESCOOTER && obs.long_vel > 3) {
+    if ((obs.object_class == active_safety::ObjectClass::ESCOOTER)  &&  (obs.long_vel > 3)) {
         rear_valid_posn_lgt = -8;
     } else {
         rear_valid_posn_lgt = -2;
@@ -161,7 +160,7 @@ bool AsLongSafe::CheckValidLongSafeObject(const AsVseOut &ego, const active_safe
 
             position_check = true;
         }
-        if ((obs.object_class == active_safety::ObjectClass::CAR || obs.object_class == active_safety::ObjectClass::TRUCK) && obs.long_posn < 0.0f) {
+        if ((obs.object_class == active_safety::ObjectClass::CAR || obs.object_class == active_safety::ObjectClass::TRUCK)  &&  (obs.long_posn < 0.0F)) {
             position_check = false;
         }
     }

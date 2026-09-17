@@ -3,7 +3,7 @@
 namespace senseAD {
 namespace tap {
 AsCrossEvaluator::AsCrossEvaluator() {}
-AsCrossEvaluator::~AsCrossEvaluator() {}
+AsCrossEvaluator::~AsCrossEvaluator() = default;
 
 void AsCrossEvaluator::ProcessScpEvaluator(const active_safety::AsObstacle &scp_obj,
                                            const active_safety::AsObstacleList &obj_list,
@@ -27,7 +27,7 @@ void AsCrossEvaluator::CheckIsScpScene(const active_safety::AsObstacle &scp_obj,
   //                      scp_obj.object_class == active_safety::ObjectClass::ESCOOTER ||
   //                      scp_obj.object_class == active_safety::ObjectClass::MOTORCYCLE ||
   //                      scp_obj.object_class == active_safety::ObjectClass::TRUCK);
-  //   bool validLatSpd = std::abs(scp_obj.long_vel) < 3.0f &&
+  //   bool validLatSpd = std::abs(scp_obj.long_vel) < 3.0F &&
   //                      (scp_obj.lat_vel * scp_obj.lat_posn < 0);
   //   scp_flag = validClass && validLatSpd;
   // }
@@ -35,7 +35,7 @@ void AsCrossEvaluator::CheckIsScpScene(const active_safety::AsObstacle &scp_obj,
 
 void AsCrossEvaluator::CheckObjectCorrectDirection(const active_safety::AsObstacle &scp_obj,
                                                    const AsVseOut &vse_out) {
-  // float probabilityLateralMoving = 0.0f;
+  // float probabilityLateralMoving = 0.0F;
   // float objHdg = M_PI_2;
   // float vel_heading = atan2(scp_obj.lat_vel, scp_obj.long_vel);
   // float scp_object_heading_factor = 0.5;
@@ -54,7 +54,7 @@ void AsCrossEvaluator::CheckObjectCorrectDirection(const active_safety::AsObstac
 
 void AsCrossEvaluator::CheckObjSpdLeanToStraight(const active_safety::AsObstacle &scp_obj) {
   // int rate_up_cnt = 0;
-  // float prev_moving_rate = 0.0f;
+  // float prev_moving_rate = 0.0F;
   // for (std::size_t i = 0; i < scp_obj.fus_vel.capacity(); i++) {
   //   float vel_y = scp_obj.fus_vel.get_frame(i).y();
   //   if (std::abs(vel_y) < 0.01) {
@@ -92,9 +92,9 @@ void AsCrossEvaluator::CheckObjectNearSideScpObj(
 //           trk.object_class == active_safety::ObjectClass::THREEWHEEl_VEHICLE);
 //      bool objHdgAngValid = fabsf(trk.heading) < M_1_PI;
 //      bool objLongPosValid = (trk.long_posn + trk.length < scp_obj.long_posn &&
-//                              trk.long_posn > 0.0f);
+//                              trk.long_posn > 0.0F);
 //      bool objLatPosValid = false;
-//      if (fabsf(trk.lat_posn) - fabsf(scp_obj.lat_posn) < -3.0f) {
+//      if (fabsf(trk.lat_posn) - fabsf(scp_obj.lat_posn) < -3.0F) {
 //        objLatPosValid = true;
 //      }
 //      if (objClassValid && objHdgAngValid && objLongPosValid &&
@@ -113,7 +113,7 @@ void AsCrossEvaluator::CheckObjBoundaryInOppsiteSide(
     const AS_LaneMarkerInfo_T &lane) {
   // check if there is boundary in scp obj's direction.
   bool scpObjTurnToFwd = false;
-  if (lane.LeftRoadEdge.LineValid && scp_obj.lat_posn < -1.2f) {
+  if (lane.LeftRoadEdge.LineValid  &&  (scp_obj.lat_posn < -1.2F)) {
     float dist = vse_out.host_dist_to_front;
     float dist_squard = dist * dist;
     float offset = lane.LeftRoadEdge.LinePolyC0 +
@@ -123,11 +123,11 @@ void AsCrossEvaluator::CheckObjBoundaryInOppsiteSide(
     bool boundaryLongPosValid =
         lane.LeftRoadEdge.LineViewRangeStart < scp_obj.long_posn &&
         lane.LeftRoadEdge.LineViewRangeEnd > scp_obj.long_posn;
-    if (offset < 3.5f && boundaryLongPosValid) {
+    if ((offset < 3.5F)  &&  boundaryLongPosValid) {
       scpObjTurnToFwd = true;
     }
   }
-  if (lane.RightRoadEdge.LineValid && scp_obj.lat_posn > 1.2f) {
+  if (lane.RightRoadEdge.LineValid  &&  (scp_obj.lat_posn > 1.2F)) {
     float dist = vse_out.host_dist_to_front;
     float dist_squard = dist * dist;
     float offset = lane.RightRoadEdge.LinePolyC0 +
@@ -137,7 +137,7 @@ void AsCrossEvaluator::CheckObjBoundaryInOppsiteSide(
     bool boundaryLongPosValid =
         lane.RightRoadEdge.LineViewRangeStart < scp_obj.long_posn &&
         lane.RightRoadEdge.LineViewRangeEnd > scp_obj.long_posn;
-    if (offset > -3.5f && boundaryLongPosValid) {
+    if ((offset > -3.5F)  &&  boundaryLongPosValid) {
       scpObjTurnToFwd = true;
     }
   }

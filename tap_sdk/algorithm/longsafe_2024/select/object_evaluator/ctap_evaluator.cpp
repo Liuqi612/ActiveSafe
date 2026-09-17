@@ -3,7 +3,7 @@
 namespace senseAD {
 namespace tap {
 AsCtapEvaluator::AsCtapEvaluator() {}
-AsCtapEvaluator::~AsCtapEvaluator() {}
+AsCtapEvaluator::~AsCtapEvaluator() = default;
 
 void AsCtapEvaluator::ProcessScpEvaluator(const active_safety::AsObstacle &scp_obj,
                                           const active_safety::AsObstacleList &obj_list,

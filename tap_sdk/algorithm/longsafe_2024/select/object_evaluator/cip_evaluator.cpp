@@ -7,8 +7,7 @@ namespace senseAD {
 namespace tap {
 AsCipEvaluator::AsCipEvaluator() {
 }
-AsCipEvaluator::~AsCipEvaluator() {
-}
+AsCipEvaluator::~AsCipEvaluator() = default;
 AsCipEvaluatorParam cip_param;
 void                AsCipEvaluator::ProcessCipEvaluator(const active_safety::AsObstacle &cip_obj, const AsVseOut &vse_out) {
     CheckIsCipScene(cip_obj, vse_out);

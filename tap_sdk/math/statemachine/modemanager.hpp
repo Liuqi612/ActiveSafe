@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_MATH_STATEMACHINE_MODEMANAGER_HPP_
+#define TAP_SDK_MATH_STATEMACHINE_MODEMANAGER_HPP_
 #include "compositestate.hpp"
 #include "simplestate.hpp"
 namespace active_safety {
@@ -123,3 +124,4 @@ public:
 };
 } // namespace math
 } // namespace active_safety
+#endif // TAP_SDK_MATH_STATEMACHINE_MODEMANAGER_HPP_

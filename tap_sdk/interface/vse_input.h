@@ -24,6 +24,8 @@ typedef struct {
     float   display_speed;                // WI_VehicleSpeedDisplay:km/h:
     float   accel_ped_pos;                // WI_AccelPedPos:%,[0,100]
     float   brk_pedal_pos;                // WI_BrkPedalPos:%,[0,100]
+    float   torsion_bar_trq;              // WI_TorsionBarTrq
+    uint8_t hod_hands_monitor;            // Unused_uint8_14: 1=Hands Off, 2=Hands Touch, 3=Hands Shake
     uint8_t long_ctrl_active;             // WI_LgCtrlBrakeAct:0:Not Active,1:Active
     uint8_t auto_brake_active;            // WI_AutoBrakeAct:0:Not Active,1:Active
     uint8_t brk_pedal_prsd;               // WI_BrkPedalPrsd:0:Not Press,1:Press
@@ -31,8 +33,19 @@ typedef struct {
     uint8_t epb_stat;                     // WI_EPBStat:0:Released,1:Applied,2:Fault
     uint8_t sys_pwr_mod;                  // WI_SysPwrMod: 0:Off,1:Accessory,2:ON/Run,3:Crank
     uint8_t vse_act;                      // WI_VSEAct: 0:Not Active,1:Active
+    uint8_t veh_dyn_cntl_stat;            // WI_VehDynCntlStat
     uint8_t tcs_act;                      // WI_TCSAct: 0:Not Active,1:Active
+    uint8_t tcs_sta;                      // WI_TCSStat: 0=Inactive; 1=Active; 2=Fault
+    uint8_t lgctrl_trq_req_sts;           /*WI_LgCtrlTrqRqStat 
+                                            0: No Request
+                                            1: Request Honored
+                                            3: Request Denied
+                                            4: Request Suspended till driver input/wait until driver input*/
+    uint8_t veh_crash;                    // WI_VehCrashTrig: 0=False; 1=True
     uint8_t hdc_stat;                     // WI_HDCStat: 2:Active,Ohter:Not Active
+    uint8_t airbag_virt_dev_avl;          // WI_AirbagVirtDevAvl
+    uint8_t tire_presr_fault;             // WI_TirePresrFault
+    uint8_t lka_trq_ovl_dlvd_stat;        // WI_LKATrqOvlDlvdStat
     uint8_t brake_sys_avail_mask;         // WI_AutoBrkSysAvailMask:
                                           // Bit0: AebAvailable;
                                           // Bit1: AbpAvailable;
@@ -60,11 +73,24 @@ typedef struct {
                                           // 2:Alert;
                                           // 3:Alert and Brake;
                                           // 4:Alert And Brake And Steer;
+    uint8_t lss_switch;                   // WI_LSSSw: 0:关闭，1:预警，2:预警+纠偏
+    uint8_t lss_sensitivity;              // WI_LatSafeSnvtySet
+                                          // 0x00:Normal
+                                          // 0x01:High sensitivity
+                                          // 0x02:Low sensitivity
+                                          // 0x03:Reserved
+    uint8_t elk_switch;                   // WI_ELKSw: 0:关闭，1：开启
+    uint8_t ldw_switch;                   // Unused_uint8_8派生: LDW开关
+    uint8_t lka_switch;                   // Unused_uint8_8派生: LKA开关
+    uint8_t esa_switch;                   // WI_ESASw
+    uint8_t aes_switch;                   // WI_AESSw
     uint8_t bsd_switch_req;               // WI_LCA_BSDSwitchReq: Undefined
     uint8_t rcta_switch_req;              // WI_RCTASwitchReq: Undefined
     uint8_t fcta_switch_req;              // WI_FCTASwitchReq: Undefined
     uint8_t rcw_switch_req;               // WI_RECWSwitchReq: Undefined
     uint8_t dow_switch_req;               // WI_DOWSwitchReq: Undefined
+    uint8_t aeb_switch;                   // WI_AEBSw: 0:关闭，1：开启
+    uint8_t fcw_switch;                   // WI_FCWSw: 0:关闭，1：开启
     uint8_t hazard_light_stat;            // WI_HazLightStat: 0:Not Pressed,1:Pressed
     uint8_t hl_beam_sw_stat;              // WI_HLBeamSwStat: 0:Off,1:On
     uint8_t frnt_fog_lmp_stat;            // WI_FrntFogLmpStat: 0:Off, 1:On

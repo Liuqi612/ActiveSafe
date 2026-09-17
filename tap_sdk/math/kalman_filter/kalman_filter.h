@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_MATH_KALMAN_FILTER_KALMAN_FILTER_H_
+#define TAP_SDK_MATH_KALMAN_FILTER_KALMAN_FILTER_H_
 #include <cstdint>
 #include <cstddef>
 #include <vector>
@@ -105,3 +106,4 @@ class KalmanFilter {
 };
 }  // namespace math
 }  // namespace active_safety
+#endif // TAP_SDK_MATH_KALMAN_FILTER_KALMAN_FILTER_H_

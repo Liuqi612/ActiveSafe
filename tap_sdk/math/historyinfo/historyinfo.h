@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2020 by SenseTime Group Limited. All rights reserved.
  */
-#pragma once
+#ifndef TAP_SDK_MATH_HISTORYINFO_HISTORYINFO_H_
+#define TAP_SDK_MATH_HISTORYINFO_HISTORYINFO_H_
 #include <algorithm>
 #include <deque>
 namespace active_safety {
@@ -32,7 +33,7 @@ class AsHistoryInfo {
     return *(history.rbegin() + last_num);
   }
   void modify_frame(std::size_t index, T newValue) {
-    if (index < 0 || index >= history.size()) {
+    if ((index < 0)  ||  (index >= history.size())) {
       return;
     }
     *(history.rbegin() + index) = newValue;
@@ -63,3 +64,4 @@ class AsHistoryInfo {
 };
 }  // namespace math
 }  // namespace active_safety
+#endif // TAP_SDK_MATH_HISTORYINFO_HISTORYINFO_H_

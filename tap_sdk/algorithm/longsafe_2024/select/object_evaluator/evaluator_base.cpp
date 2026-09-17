@@ -2,7 +2,7 @@
 namespace senseAD {
 namespace tap {
 AsBaseEvaluator::AsBaseEvaluator() {}
-AsBaseEvaluator::~AsBaseEvaluator() {}
+AsBaseEvaluator::~AsBaseEvaluator() = default;
 
 uint32_t AsBaseEvaluator::behavior = 0;
 

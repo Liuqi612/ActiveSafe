@@ -8,8 +8,7 @@ namespace tap {
 AsSingleThreatAssessor::AsSingleThreatAssessor() {
 }
 
-AsSingleThreatAssessor::~AsSingleThreatAssessor() {
-}
+AsSingleThreatAssessor::~AsSingleThreatAssessor() = default;
 
 AsThreatAssessorCal ta_param;
 AsPrimDataForIntv   AsSingleThreatAssessor::GetIntvPrimData() const {
@@ -27,7 +26,7 @@ void AsSingleThreatAssessor::FindPrimaryTargetForWarn(const active_safety::AsObs
     }
     // Required Longitudinal Acceleration Computer For Warn
     // const zero now.
-    float drv_react_ti = 0.0f;
+    float drv_react_ti = 0.0F;
     float pred_time    = drv_react_ti + ta_param.k_driver_brk_dely_time;
 
     float algt_req_warn = RequireLgtAccelerationCalc(obj, obj_data.GetCollisionEvalData(), curv_path, vse_out,
@@ -54,13 +53,13 @@ void AsSingleThreatAssessor::FindPrimaryTargetForWarn(const active_safety::AsObs
     }
 
     // Primary Target selector for warn
-    if (m_prim_algt_warn.a_lgt_req < 0.0f) {
+    if (m_prim_algt_warn.a_lgt_req < 0.0F) {
         prim_data_warn.prim_tgt = m_prim_algt_warn;
     } else {
         prim_data_warn.prim_tgt = m_prim_posnlgt_warn;
     }
 
-    if (((true == m_prim_algt_warn.new_ta_found) && (m_prim_algt_warn.a_lgt_req < 0.0f)) || (m_prim_posnlgt_warn.new_ta_found)) {
+    if (((true == m_prim_algt_warn.new_ta_found) && (m_prim_algt_warn.a_lgt_req < 0.0F)) || (m_prim_posnlgt_warn.new_ta_found)) {
         prim_data_warn.prim_tgt.new_ta_found = true;
     } else {
         // do thing
@@ -144,9 +143,9 @@ void AsSingleThreatAssessor::FindPrimaryTargetForIntv(const active_safety::AsObs
     }
 
     // Find Primary Target For Intv
-    if (fabsf(m_prim_alat_intv.a_lat_req) > 2.0f) {
+    if (fabsf(m_prim_alat_intv.a_lat_req) > 2.0F) {
         prim_data_intv.prim_tgt = m_prim_alat_intv;
-    } else if (m_prim_algt_intv.a_lgt_req < -0.5f) {
+    } else if (m_prim_algt_intv.a_lgt_req < -0.5F) {
         prim_data_intv.prim_tgt = m_prim_algt_intv;
     } else {
         prim_data_intv.prim_tgt = m_prim_posnlgt_intv;
@@ -165,7 +164,7 @@ bool AsSingleThreatAssessor::CheckEnableForWarn(const active_safety::AsObstacle 
     }
 #else
     bool is_qulity_ok_for_warn = false;
-    if ((coll_eval.motion_type.obs_is_motor_veh == true || obj.object_class == active_safety::ObjectClass::BICYCLE) && (coll_eval.ttr < 4.0f) &&
+    if ((coll_eval.motion_type.obs_is_motor_veh == true || obj.object_class == active_safety::ObjectClass::BICYCLE) && (coll_eval.ttr < 4.0F) &&
         (vse_out.speed < ta_param.k_max_spd_warn_qly_check)) {
         is_qulity_ok_for_warn = true;
     } else {
@@ -253,20 +252,20 @@ void AsSingleThreatAssessor::ThreatAssesorForWarn(const active_safety::AsObstacl
         prim_data_warn.mtn_req.a_lat_req      = lat_acc_warn.a_lat_req;
         prim_data_warn.mtn_req.a_lat_req      = fmax(prim_data_warn.mtn_req.a_lat_req, ta_param.k_min_a_lat_req_limit_for_warn);
         prim_data_warn.mtn_req.a_lat_req      = fmin(prim_data_warn.mtn_req.a_lat_req, ta_param.k_max_a_lat_req_limit_for_warn);
-        prim_data_warn.mtn_req.a_lat_quality  = 1.0f;
+        prim_data_warn.mtn_req.a_lat_quality  = 1.0F;
         prim_data_warn.mtn_req.a_neg_lgt_warn = prim_data_warn.mtn_req.a_neg_lgt_warn;
         prim_data_warn.mtn_req.a_neg_lgt_warn = fmax(prim_data_warn.mtn_req.a_neg_lgt_warn, ta_param.k_min_a_lat_req_limit_for_warn);
-        prim_data_warn.mtn_req.a_neg_lgt_warn = fmin(prim_data_warn.mtn_req.a_neg_lgt_warn, 0.0f);
+        prim_data_warn.mtn_req.a_neg_lgt_warn = fmin(prim_data_warn.mtn_req.a_neg_lgt_warn, 0.0F);
         prim_data_warn.mtn_req.a_neg_lgt_intv = RequireLgtAccelerationCalc(
             obj, coll_eval, curv_path, vse_out, ip_des.GetResultData().inpath_short_pred, safemargin_eval.predict_offset.offs_lgt_short_pred,
             safemargin_eval.predict_offset.offs_lat_short_pred, predtime);
         prim_data_warn.mtn_req.a_neg_lgt_intv = fmax(prim_data_warn.mtn_req.a_neg_lgt_intv, ta_param.k_min_a_lat_req_limit_for_warn);
-        prim_data_warn.mtn_req.a_neg_lgt_intv = fmin(prim_data_warn.mtn_req.a_neg_lgt_intv, 0.0f);
+        prim_data_warn.mtn_req.a_neg_lgt_intv = fmin(prim_data_warn.mtn_req.a_neg_lgt_intv, 0.0F);
     } else {
-        prim_data_warn.mtn_req.a_lat_req      = 0.0f;
-        prim_data_warn.mtn_req.a_lat_quality  = 0.0f;
-        prim_data_warn.mtn_req.a_neg_lgt_warn = 0.0f;
-        prim_data_warn.mtn_req.a_neg_lgt_intv = 0.0f;
+        prim_data_warn.mtn_req.a_lat_req      = 0.0F;
+        prim_data_warn.mtn_req.a_lat_quality  = 0.0F;
+        prim_data_warn.mtn_req.a_neg_lgt_warn = 0.0F;
+        prim_data_warn.mtn_req.a_neg_lgt_intv = 0.0F;
     }
 }
 
@@ -288,23 +287,23 @@ void AsSingleThreatAssessor::ThreatAssesorForIntv(const active_safety::AsObstacl
         } else {
             prim_data_intv.mtn_req.a_lat_req = lat_ttr_intv.a_lat_req;
         }
-        prim_data_intv.mtn_req.a_lat_quality = 1.0f;
+        prim_data_intv.mtn_req.a_lat_quality = 1.0F;
         prim_data_intv.mtn_req.ttc_value     = coll_eval.ttr;
     } else {
-        prim_data_intv.mtn_req.a_lat_req       = 0.0f;
-        prim_data_intv.mtn_req.a_lat_quality   = 0.0f;
-        prim_data_intv.mtn_req.a_neg_lgt       = 0.0f;
-        prim_data_intv.mtn_req.a_pos_lgt       = 0.0f;
-        prim_data_intv.mtn_req.crvt_left       = 0.0f;
-        prim_data_intv.mtn_req.crvt_rate_left  = 0.0f;
-        prim_data_intv.mtn_req.crvt_right      = 0.0f;
-        prim_data_intv.mtn_req.crvt_rate_right = 0.0f;
-        prim_data_intv.mtn_req.ttc_value       = 0.0f;
+        prim_data_intv.mtn_req.a_lat_req       = 0.0F;
+        prim_data_intv.mtn_req.a_lat_quality   = 0.0F;
+        prim_data_intv.mtn_req.a_neg_lgt       = 0.0F;
+        prim_data_intv.mtn_req.a_pos_lgt       = 0.0F;
+        prim_data_intv.mtn_req.crvt_left       = 0.0F;
+        prim_data_intv.mtn_req.crvt_rate_left  = 0.0F;
+        prim_data_intv.mtn_req.crvt_right      = 0.0F;
+        prim_data_intv.mtn_req.crvt_rate_right = 0.0F;
+        prim_data_intv.mtn_req.ttc_value       = 0.0F;
     }
 }
 
 float AsSingleThreatAssessor::CalcBrakeDelayTime(const AsVseOut &vse_out) const {
-    float ret = 0.0f;
+    float ret = 0.0F;
     ret       = LookUpTable::LookupTable1D<10>(ta_param.k_ego_algt, ta_param.k_brake_delay_value, vse_out.long_accel);
 
     ret = fmaxf(ta_param.k_min_brakedelay_thd, ret);
@@ -332,7 +331,7 @@ float AsSingleThreatAssessor::RequireLgtAccelerationCalc(const active_safety::As
     // Linear movement predictor with stop host longitual
     float ego_v_lgt = vse_out.vcs_long_vel;
     float ego_a_lgt = vse_out.long_accel;
-    float ego_posn  = 0.0f;
+    float ego_posn  = 0.0F;
     AsInPathDecision::LinearMovementPredictorWithStop(true, ego_posn, ego_v_lgt, ego_a_lgt, pred_time);
 
     // Relative Heading and Rotation
@@ -353,11 +352,11 @@ float AsSingleThreatAssessor::RequireLgtAccelerationCalc(const active_safety::As
     EdgeDistance obj_edge_dist = LateralEdgeDistCalc(vse_out, obj_rel_pos, coll_eval.bounding_box, obj_trans_motion, offset_lat, on_distance_side);
 
     // Define relative speed and acceleration
-    float v_lat_rel = 0.0f;
-    float a_lat_rel = 0.0f;
+    float v_lat_rel = 0.0F;
+    float a_lat_rel = 0.0F;
     // the threshold should be discussed
-    if (fabsf(obj_trans_motion.v_lat) < 0.3f) {
-        a_lat_rel = 0.0f;
+    if (fabsf(obj_trans_motion.v_lat) < 0.3F) {
+        a_lat_rel = 0.0F;
     } else {
         a_lat_rel = obj_trans_motion.a_lat;
     }
@@ -365,15 +364,15 @@ float AsSingleThreatAssessor::RequireLgtAccelerationCalc(const active_safety::As
 
     // Determine lateral closet side
     bool ego_left_closet = false;
-    if (((!(fabs(obj_trans_motion.v_lat) > 0.01f)) && (obj_trans_motion.p_lat > 0.0f)) || (obj_trans_motion.v_lat < 0.0f)) {
+    if (((!(fabs(obj_trans_motion.v_lat) > 0.01F)) && (obj_trans_motion.p_lat > 0.0F)) || (obj_trans_motion.v_lat < 0.0F)) {
         ego_left_closet = true;
     } else {
         ego_left_closet = false;
     }
 
     // Actual Close And Far Edge Distance calculation
-    float close_edge_dist = 0.0f;
-    float far_edge_dist   = 0.0f;
+    float close_edge_dist = 0.0F;
+    float far_edge_dist   = 0.0F;
     if (true == ego_left_closet) {
         close_edge_dist = obj_edge_dist.closet_dist_l;
         far_edge_dist   = obj_edge_dist.far_dist_l;
@@ -388,16 +387,16 @@ float AsSingleThreatAssessor::RequireLgtAccelerationCalc(const active_safety::As
     // Lateral ttp Computer
     float ttp = LateralTtcCalc(ego_left_closet, v_lat_rel, a_lat_rel, obj_edge_dist.far_dist_l, obj_edge_dist.far_dist_r);
     // Modify ttr and  ttp  at Same Speed And Acceleration
-    if ((fabs(obj_trans_motion.v_lat) < 0.01f) && (fabs(obj_trans_motion.a_lat) < 0.01f)) {
+    if ((fabs(obj_trans_motion.v_lat) < 0.01F) && (fabs(obj_trans_motion.a_lat) < 0.01F)) {
         bool neg_clost_dist = false;
         bool neg_far_dist   = false;
-        if (close_edge_dist < 0.0f) {
+        if (close_edge_dist < 0.0F) {
             neg_clost_dist = true;
         } else {
             neg_clost_dist = false;
         }
 
-        if (far_edge_dist < 0.0f) {
+        if (far_edge_dist < 0.0F) {
             neg_far_dist = true;
         } else {
             neg_far_dist = false;
@@ -423,7 +422,7 @@ float AsSingleThreatAssessor::RequireLgtAccelerationCalc(const active_safety::As
         // do nothing
     }
 
-    float algt_req_lat = (2.0f * (posn_lgt_rel - ego_v_lgt * ttp)) / (ttp * ttp);
+    float algt_req_lat = (2.0F * (posn_lgt_rel - ego_v_lgt * ttp)) / (ttp * ttp);
     // Required Acceleration for in path object
     float algt_req_inpath =
         RequiredAccForInPathObject(obj_trans_motion.a_lgt, obj_trans_motion.v_lgt, posn_lgt_rel, ego_v_lgt, coll_eval.motion_type);
@@ -444,21 +443,21 @@ float AsSingleThreatAssessor::RequireLgtAccelerationCalc(const active_safety::As
     // Check the obj will never in path
     // 1. obj has already passed
     // 2. obj drives parallel outside path
-    if ((ttp < 0.0f) || obj_outside) {
+    if ((ttp < 0.0F) || obj_outside) {
         obj_never_inpath = true;
     } else {
         obj_never_inpath = false;
     }
 
-    float ret = 0.0f;
+    float ret = 0.0F;
     if (obj_never_inpath) {
-        ret = 0.0f;
+        ret = 0.0F;
     } else {
         // Choose the longtudinal acceleration required from lateral and in path
         // check the lateral condition is fulfilled
         bool lat_enable = false;
-        if ((ttp < 100.0f) && (true == use_predict_value) &&
-            ((algt_req_lat > 0.0f) || (true == coll_eval.motion_type.moving_oncoming) || ((ttr > rel_spd_ttz) && (rel_spd_ttz > 0.0f)) ||
+        if ((ttp < 100.0F) && (true == use_predict_value) &&
+            ((algt_req_lat > 0.0F) || (true == coll_eval.motion_type.moving_oncoming) || ((ttr > rel_spd_ttz) && (rel_spd_ttz > 0.0F)) ||
              ((rel_spd_ttz > ttp) && (obj_stop_time > ttp)))) {
             lat_enable = true;
         } else {
@@ -496,7 +495,7 @@ RelativePose AsSingleThreatAssessor::RelativePositionCalc(BoundingBox boudbox, A
     } else {
         // Relative heading  and lengthangle
         ret.heading       = obj_heading - ego_heading;
-        float lengthangle = 0.0f;
+        float lengthangle = 0.0F;
         lengthangle       = active_safety::math::MapAngToInterval(static_cast<float>(M_PI_2), ret.heading);
         ret.heading       = active_safety::math::MapAngToInterval(static_cast<float>(M_PI), ret.heading);
 
@@ -522,7 +521,7 @@ EdgeDistance AsSingleThreatAssessor::LateralEdgeDistCalc(const AsVseOut &vse_out
     EdgeDistance edge_dist;
     // Calculate the sin rotation mod
     float sin_rotation_mod = boudbox.sin_rotation;
-    if (boudbox.cos_rotation > 0.0f) {
+    if (boudbox.cos_rotation > 0.0F) {
         // do nothing
     } else {
         sin_rotation_mod = -boudbox.sin_rotation;
@@ -530,12 +529,12 @@ EdgeDistance AsSingleThreatAssessor::LateralEdgeDistCalc(const AsVseOut &vse_out
 
     bool proj_to_left  = false;
     bool proj_to_right = false;
-    if (((sin_rotation_mod < 0.0f) && onside) || ((sin_rotation_mod > 0.0f) && (!onside))) {
+    if (((sin_rotation_mod < 0.0F) && onside) || ((sin_rotation_mod > 0.0F) && (!onside))) {
         proj_to_left = true;
     } else {
         proj_to_left = false;
     }
-    if (((sin_rotation_mod > 0.0f) && onside) || ((sin_rotation_mod < 0.0f) && (!onside))) {
+    if (((sin_rotation_mod > 0.0F) && onside) || ((sin_rotation_mod < 0.0F) && (!onside))) {
         proj_to_right = true;
     } else {
         proj_to_right = false;
@@ -543,19 +542,19 @@ EdgeDistance AsSingleThreatAssessor::LateralEdgeDistCalc(const AsVseOut &vse_out
 
     // Calculate the rigth and left edge to edge distance
     float abs_proj_lgt    = fabsf(boudbox.length_side_lgt * boudbox.sin_rotation);
-    float abs_proj_lat    = fabsf(0.5f * boudbox.length_side_lat * boudbox.cos_rotation);
-    float dist_host_left  = 0.0f;
-    float dist_host_right = 0.0f;
+    float abs_proj_lat    = fabsf(0.5F * boudbox.length_side_lat * boudbox.cos_rotation);
+    float dist_host_left  = 0.0F;
+    float dist_host_right = 0.0F;
     if (true == proj_to_left) {
-        dist_host_right = transcoord.p_lat + abs_proj_lgt + abs_proj_lat + vse_out.host_width * 0.5f;
+        dist_host_right = transcoord.p_lat + abs_proj_lgt + abs_proj_lat + vse_out.host_width * 0.5F;
     } else {
-        dist_host_right = transcoord.p_lat + abs_proj_lat + vse_out.host_width * 0.5f;
+        dist_host_right = transcoord.p_lat + abs_proj_lat + vse_out.host_width * 0.5F;
     }
 
     if (true == proj_to_right) {
-        dist_host_left = transcoord.p_lat - abs_proj_lat - abs_proj_lgt - vse_out.host_width * 0.5f;
+        dist_host_left = transcoord.p_lat - abs_proj_lat - abs_proj_lgt - vse_out.host_width * 0.5F;
     } else {
-        dist_host_left = transcoord.p_lat - abs_proj_lat - vse_out.host_width * 0.5f;
+        dist_host_left = transcoord.p_lat - abs_proj_lat - vse_out.host_width * 0.5F;
     }
     // Lateral far and close edge including offset.
     float offs_lat_in_path_close_edge = offset_lat;
@@ -605,10 +604,10 @@ float AsSingleThreatAssessor::LateralTtcCalc(bool left_closest, float v_lat, flo
 
 bool AsSingleThreatAssessor::CheckIfSolutionExist(float dist, float v_rel, float a_rel) {
     // Calc the Rel Distance
-    float Rel_Distance = math::SafeDivide(v_rel * v_rel, 2.0f * a_rel);
+    float Rel_Distance = math::SafeDivide(v_rel * v_rel, 2.0F * a_rel);
     // Check the Postive ARel ,whether there has solution
     bool NoSoluPosARel = false;
-    if ((dist > Rel_Distance) && (a_rel > 0.0f)) {
+    if ((dist > Rel_Distance) && (a_rel > 0.0F)) {
         NoSoluPosARel = true;
     } else {
         NoSoluPosARel = false;
@@ -616,7 +615,7 @@ bool AsSingleThreatAssessor::CheckIfSolutionExist(float dist, float v_rel, float
 
     // Check the Postive ARel ,whether there has solution
     bool NoSoluNegARel = false;
-    if ((dist < Rel_Distance) && (a_rel < 0.0f)) {
+    if ((dist < Rel_Distance) && (a_rel < 0.0F)) {
         NoSoluNegARel = true;
     } else {
         NoSoluNegARel = false;
@@ -637,7 +636,7 @@ bool AsSingleThreatAssessor::CheckPredictionValidity(const active_safety::AsObst
                                                      float pred_time) {
     // Check the Prediciton Within Path Estimatior
     bool pred_ti_within_path_est = false;
-    if ((pred_time > 0.0f) && (pred_time < endtimeofpath)) {
+    if ((pred_time > 0.0F) && (pred_time < endtimeofpath)) {
         pred_ti_within_path_est = true;
     } else {
         pred_ti_within_path_est = false;
@@ -708,27 +707,27 @@ float AsSingleThreatAssessor::RequiredAccForInPathObject(float obj_aLgt, float o
                                                          AsObstacleMotionType mot_type) {
     // Check the obj is braking
     bool obj_braking = false;
-    if ((mot_type.stationary) || (fabsf(obj_vlgt) < 0.01f) || (obj_vlgt * obj_aLgt < 0.0f)) {
+    if ((mot_type.stationary) || (fabsf(obj_vlgt) < 0.01F) || (obj_vlgt * obj_aLgt < 0.0F)) {
         obj_braking = true;
     } else {
         obj_braking = false;
     }
 
-    float a_lgt_rqrd = 0.0f;
+    float a_lgt_rqrd = 0.0F;
     float vlgt_rel   = obj_vlgt - ego_vlgt;
-    float pos_dist   = 2.0f * fmaxf(0.0f, rel_plgt);
+    float pos_dist   = 2.0F * fmaxf(0.0F, rel_plgt);
 
     if (obj_braking) {
         // needed acceleration moving parallel object
         float algt_rel_req = vlgt_rel * vlgt_rel * math::SignF(vlgt_rel);
-        algt_rel_req       = math::Clamp(math::SafeDivide(algt_rel_req, pos_dist), -5.0f, 5.0f);
+        algt_rel_req       = math::Clamp(math::SafeDivide(algt_rel_req, pos_dist), -5.0F, 5.0F);
         float algt_req     = algt_rel_req + obj_aLgt;
 
         // check speed at impact for braking object
-        float spd_at_impact = math::Clamp(math::SafeDivide(-vlgt_rel, algt_rel_req), -20.0f, 20.0f);
+        float spd_at_impact = math::Clamp(math::SafeDivide(-vlgt_rel, algt_rel_req), -20.0F, 20.0F);
         spd_at_impact       = spd_at_impact * obj_aLgt;
         bool use_parallel   = false;
-        if ((obj_vlgt > 0.0f) && ((obj_vlgt + spd_at_impact) > 0.0f) && (spd_at_impact < ego_vlgt)) {
+        if ((obj_vlgt > 0.0F) && ((obj_vlgt + spd_at_impact) > 0.0F) && (spd_at_impact < ego_vlgt)) {
             use_parallel = true;
         } else {
             use_parallel = false;
@@ -738,19 +737,19 @@ float AsSingleThreatAssessor::RequiredAccForInPathObject(float obj_aLgt, float o
             a_lgt_rqrd = algt_req;
         } else {
             // available stopM_PIng distance
-            float stop_dist = rel_plgt + 0.5f * math::SafeDivide(obj_vlgt, -obj_aLgt) * obj_vlgt;
-            if (stop_dist > 0.0f) {
-                a_lgt_rqrd = math::SafeDivide(ego_vlgt * ego_vlgt, -2.0f * stop_dist);
+            float stop_dist = rel_plgt + 0.5F * math::SafeDivide(obj_vlgt, -obj_aLgt) * obj_vlgt;
+            if (stop_dist > 0.0F) {
+                a_lgt_rqrd = math::SafeDivide(ego_vlgt * ego_vlgt, -2.0F * stop_dist);
             } else {
-                a_lgt_rqrd = -20.0f;
+                a_lgt_rqrd = -20.0F;
             }
         }
     } else {
         // check the obj is oncoming
         if (mot_type.moving_oncoming) {
-            a_lgt_rqrd = 0.0f;
+            a_lgt_rqrd = 0.0F;
         } else {
-            float algt_rel_nobrak = math::Clamp(math::SafeDivide(vlgt_rel * vlgt_rel, pos_dist), -10000.0f, 10000.0f);
+            float algt_rel_nobrak = math::Clamp(math::SafeDivide(vlgt_rel * vlgt_rel, pos_dist), -10000.0F, 10000.0F);
             algt_rel_nobrak       = -algt_rel_nobrak * math::SignF(vlgt_rel);
             a_lgt_rqrd            = obj_aLgt - algt_rel_nobrak;
         }
@@ -769,11 +768,11 @@ PredictObjMotion AsSingleThreatAssessor::PredictObjectMotion(const active_safety
         ret.heading = atan2f(coll_eval.bounding_box.sin_rotation, coll_eval.bounding_box.cos_rotation);
 
         ret.p_lgt = obj.long_posn;
-        ret.v_lgt = 0.0f;
+        ret.v_lgt = 0.0F;
         ret.p_lat = obj.lat_posn;
-        ret.v_lat = 0.0f;
-        ret.a_lgt = 0.0f;
-        ret.a_lat = 0.0f;
+        ret.v_lat = 0.0F;
+        ret.a_lgt = 0.0F;
+        ret.a_lat = 0.0F;
 
     } else if ((false == coll_eval.motion_type.stationary) && (true == coll_eval.motion_type.curved_motion)) {
         // Circular Prediction
@@ -811,12 +810,12 @@ LateralAccForIntv AsSingleThreatAssessor::LatAccelerationEstimatorCalc(const act
                                                                        float offs_lat_short_pred, float ttc_lgt) const {
     LateralAccForIntv ret;
     // Calculate the object position at ttr time
-    float ttr_filter   = 0.0f;
-    float obj_lat_posn = 0.0f;
+    float ttr_filter   = 0.0F;
+    float obj_lat_posn = 0.0F;
     if (coll_eval.motion_type.obs_is_vehicle) {
         // min stop time calculation
         float stop_time = -math::SafeDivide(obj.speed, pred_motion.a);
-        if (stop_time > 0.0f) {
+        if (stop_time > 0.0F) {
             ttr_filter = fminf(stop_time, ttc_lgt);
         } else {
             ttr_filter = ttc_lgt;
@@ -824,30 +823,30 @@ LateralAccForIntv AsSingleThreatAssessor::LatAccelerationEstimatorCalc(const act
     } else {
         ttr_filter = ttc_lgt;
     }
-    float lat_posn_acc = 0.5f * pred_motion.a_lat * ttr_filter * ttr_filter;
+    float lat_posn_acc = 0.5F * pred_motion.a_lat * ttr_filter * ttr_filter;
     obj_lat_posn       = obj.lat_posn + obj.lat_vel * ttr_filter + lat_posn_acc;
     // Calculate the vse_out position at ttr time
-    float ego_ttr      = 0.0f;
-    float ego_lat_posn = 0.0f;
+    float ego_ttr      = 0.0F;
+    float ego_lat_posn = 0.0F;
     float ego_stop_ti  = -math::SafeDivide(vse_out.speed, vse_out.long_accel);
-    if (ego_stop_ti > 0.0f) {
+    if (ego_stop_ti > 0.0F) {
         ego_ttr = fminf(ego_stop_ti, ttc_lgt);
     } else {
         ego_ttr = ttc_lgt;
     }
     float ego_a_lat = vse_out.lat_accel;
-    ego_lat_posn    = 0.5f * ego_a_lat * ego_ttr * ego_ttr;
+    ego_lat_posn    = 0.5F * ego_a_lat * ego_ttr * ego_ttr;
 
     // Calcuate the relative position before projection
     ret.pos_lat_rel = obj_lat_posn - ego_lat_posn;
 
     // Projection adaption
-    float left_most_point = 0.0f;
-    float rigt_most_point = 0.0f;
+    float left_most_point = 0.0F;
+    float rigt_most_point = 0.0F;
     float proj_side_lgt   = fabsf(coll_eval.bounding_box.length_side_lgt * coll_eval.bounding_box.sin_rotation);
-    float proj_side_lat   = fabsf(0.5f * coll_eval.bounding_box.length_side_lat * coll_eval.bounding_box.cos_rotation);
+    float proj_side_lat   = fabsf(0.5F * coll_eval.bounding_box.length_side_lat * coll_eval.bounding_box.cos_rotation);
 
-    if (coll_eval.bounding_box.sin_rotation > 0.0f) {
+    if (coll_eval.bounding_box.sin_rotation > 0.0F) {
         left_most_point = ret.pos_lat_rel + proj_side_lgt + proj_side_lat;
         rigt_most_point = ret.pos_lat_rel - proj_side_lat;
     } else {
@@ -856,9 +855,9 @@ LateralAccForIntv AsSingleThreatAssessor::LatAccelerationEstimatorCalc(const act
     }
 
     ret.side_lat    = left_most_point - rigt_most_point;
-    ret.pos_lat_rel = 0.5f * (left_most_point + rigt_most_point);
+    ret.pos_lat_rel = 0.5F * (left_most_point + rigt_most_point);
     // Calculate the required lateral acceleration
-    float halfwidth = 0.5f * (ret.side_lat + vse_out.host_width);
+    float halfwidth = 0.5F * (ret.side_lat + vse_out.host_width);
     ret.a_lat_req   = CalcRequiredAccLat(ret.pos_lat_rel, ttc_lgt, halfwidth, offs_lat_short_pred);
     return ret;
 }
@@ -871,22 +870,22 @@ float AsSingleThreatAssessor::CalcRequiredAccLat(float rel_pos, float ttr, float
     float right_dist = rel_pos - width - offlat;
     right_dist       = fmaxf(right_dist, -ta_param.k_max_dist_movment_for_intv);
     // lateral acceleration calculation
-    float left_a_req = math::SafeDivide(2.0f * left_dist, ttr * ttr);
-    left_a_req       = fmaxf(left_a_req, 0.0f);
+    float left_a_req = math::SafeDivide(2.0F * left_dist, ttr * ttr);
+    left_a_req       = fmaxf(left_a_req, 0.0F);
 
-    float right_a_req = math::SafeDivide(2.0f * right_dist, ttr * ttr);
-    right_a_req       = fminf(right_a_req, 0.0f);
+    float right_a_req = math::SafeDivide(2.0F * right_dist, ttr * ttr);
+    right_a_req       = fminf(right_a_req, 0.0F);
 
     // lateral acceleration filter
-    float ret = 0.0f;
-    if (ttr > 0.0f) {
+    float ret = 0.0F;
+    if (ttr > 0.0F) {
         if (left_a_req < fabsf(right_a_req)) {
             ret = left_a_req;
         } else {
             ret = right_a_req;
         }
     } else {
-        ret = 0.0f;
+        ret = 0.0F;
     }
     return ret;
 }
@@ -938,7 +937,7 @@ PredictObjMotion AsSingleThreatAssessor::TransRotateCoordSys(const PredictObjMot
 float AsSingleThreatAssessor::RemoveNoise(float raw, float threshold) {
     float ret;
     if (fabs(raw) < threshold) {
-        ret = 0.0f;
+        ret = 0.0F;
     } else {
         ret = raw;
     }

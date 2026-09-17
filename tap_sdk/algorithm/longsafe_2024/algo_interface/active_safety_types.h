@@ -2,7 +2,8 @@
  * Copyright (C) 2024 by SenseTime Group Limited. All rights reserved.
  * Liuyong3 <liuyong3@senseauto.com>
  */
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_TYPES_H_
+#define TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_TYPES_H_
 #include <cstddef>
 #include <cstdint>
 
@@ -21,7 +22,10 @@ typedef struct {
   float accely;
   float heading;
   float ttc;
+  float width;
+  float length;
 } AsTargetInfo_T;
 
 } // namespace tap
 } // namespace senseAD
+#endif // TAP_SDK_ALGORITHM_LONGSAFE_2024_ALGO_INTERFACE_ACTIVE_SAFETY_TYPES_H_

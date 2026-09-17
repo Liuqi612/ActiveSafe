@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TAP_SDK_ALGORITHM_BSD_BSD_OBS_H_
+#define TAP_SDK_ALGORITHM_BSD_BSD_OBS_H_
 #include "algorithm/obstacle/obstacle.h"
 #include "math/geometry/geometry.h"
 namespace active_safety {
@@ -8,32 +9,33 @@ enum class ObsValidType { OBS_NONE, OBS_BSW, OBS_CVW, OBS_BSW_AND_CVW };
 enum class ObsSide { Left, Right };
 enum class FallbackState { FALLBACK_NONE = 0, FALLBACK_ACTIVE = 1, FALLBACK_PREVIOUS = 2 };
 
-struct BsdObsData {
+class BsdObsData {
   public:
-    BsdObsData() { obs = std::make_shared<AsObstacle>(); }
-    std::shared_ptr<AsObstacle> obs = nullptr;
+    BsdObsData() { m_obs = std::make_shared<AsObstacle>(); }
+    std::shared_ptr<AsObstacle> m_obs = nullptr;
 
-    ObsValidType  obs_vld_type;
-    ObsSide       side;
-    math::Polygon polygon;
-    math::Polygon bsw_polygon;
-    math::Polygon cvw_polygon;
+    ObsValidType  m_obs_vld_type;
+    ObsSide       m_side;
+    math::Polygon m_polygon;
+    math::Polygon m_bsw_polygon;
+    math::Polygon m_cvw_polygon;
 
-    FallbackState fallback_state;
+    FallbackState m_fallback_state;
 
-    int  bsw_in_zone_cnt          = 0;
-    int  cvw_in_zone_cnt          = 0;
-    bool f_stationary             = false;
-    bool f_bsw_in_zone            = false;
-    bool f_cvw_in_zone            = false;
-    bool f_is_prev_cvw_active_obj = false;
-    bool f_is_prev_bsw_active_obj = false;
-    bool f_bsw_in_ego_lane        = false;
-    bool f_cvw_in_ego_lane        = false;
+    int  m_bsw_in_zone_cnt          = 0;
+    int  m_cvw_in_zone_cnt          = 0;
+    bool m_stationary               = false;
+    bool m_bsw_in_zone              = false;
+    bool m_cvw_in_zone              = false;
+    bool m_is_prev_cvw_active_obj   = false;
+    bool m_is_prev_bsw_active_obj   = false;
+    bool m_bsw_in_ego_lane          = false;
+    bool m_cvw_in_ego_lane          = false;
 
-    float curvi_long_vel_rel_filt;
-    float curvi_lat_posn_filt;
-    float ttc;
+    float m_curvi_long_vel_rel_filt = 0.0f;
+    float m_curvi_lat_posn_filt = 0.0f;
+    float m_ttc = 25.0f;
 };
 } // namespace bsd
 } // namespace active_safety
+#endif // TAP_SDK_ALGORITHM_BSD_BSD_OBS_H_

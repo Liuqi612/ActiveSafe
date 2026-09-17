@@ -12,7 +12,7 @@ KalmanFilter::KalmanFilter(int state_dim, int measure_dim, int control_dim)
     : state_dim_(state_dim),
       measure_dim_(measure_dim),
       control_dim_(control_dim) {
-    if (state_dim <= 0 || measure_dim <= 0 || control_dim < 0) {
+    if ((state_dim <= 0)  ||  (measure_dim <= 0)  ||  (control_dim < 0)) {
         throw std::invalid_argument("Dimensions must be positive");
     }
 
@@ -57,7 +57,7 @@ void KalmanFilter::init(const Eigen::MatrixXd& F,
 }
 
 const Eigen::VectorXd& KalmanFilter::predict(const Eigen::VectorXd& control) {
-    if (control_dim_ > 0 && control.size() != control_dim_) {
+    if ((control_dim_ > 0)  &&  (control.size() != control_dim_)) {
         throw std::invalid_argument("Control vector dimension mismatch");
     }
 
@@ -94,21 +94,21 @@ const Eigen::VectorXd& KalmanFilter::update(
 }
 
 void KalmanFilter::setProcessNoiseCov(const Eigen::MatrixXd& Q) {
-    if (Q.rows() != state_dim_ || Q.cols() != state_dim_) {
+    if ((Q.rows() != state_dim_)  ||  (Q.cols() != state_dim_)) {
         throw std::invalid_argument("Q matrix dimension mismatch");
     }
     Q_ = Q;
 }
 
 void KalmanFilter::setMeasurementNoiseCov(const Eigen::MatrixXd& R) {
-    if (R.rows() != measure_dim_ || R.cols() != measure_dim_) {
+    if ((R.rows() != measure_dim_)  ||  (R.cols() != measure_dim_)) {
         throw std::invalid_argument("R matrix dimension mismatch");
     }
     R_ = R;
 }
 
 void KalmanFilter::setStateTransitionMatrix(const Eigen::MatrixXd& F) {
-    if (F.rows() != state_dim_ || F.cols() != state_dim_) {
+    if ((F.rows() != state_dim_)  ||  (F.cols() != state_dim_)) {
         throw std::invalid_argument("F matrix dimension mismatch");
     }
     F_ = F;
