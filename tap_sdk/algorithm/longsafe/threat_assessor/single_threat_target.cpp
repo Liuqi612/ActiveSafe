@@ -11,8 +11,7 @@ SingleThreatTarget::~SingleThreatTarget() = default;
 
 SingleThreatTargetCal SingleThreatTarget::single_tgt_cal_{};
 
-void SingleThreatTarget::SelectLongThreatTgt(const AsVseOut &vse_out, AsObstacleList &obs_list, const GlobalConfig &config,
-                                             bool clamp_inpath_pred_offsets) {
+void SingleThreatTarget::SelectLongThreatTgt(const AsVseOut &vse_out, AsObstacleList &obs_list, const GlobalConfig &config) {
     // 倒车轨迹预测：标定使能 且 底盘反馈实际处于倒车状态时才启用，
     // 避免前进工况下瞬时负速度噪声误入倒车分支。
     // 复合判据与 VSE 速度定号逻辑保持一致(车轮反转 或 R 挡)，覆盖“挂 R 挡但车轮未转”的过渡帧，
@@ -52,7 +51,7 @@ void SingleThreatTarget::SelectLongThreatTgt(const AsVseOut &vse_out, AsObstacle
         //               obs_data_[i].obs->long_vel, obs_data_[i].obs->lat_vel, obs_data_[i].obs->heading, obs_data_[i].obs->long_accel,
         //               obs_data_[i].obs->lat_accel);
         if (std::find(sort_index.begin(), sort_index.end(), i) != sort_index.end()) {
-            SafeMargin::CalculateSafeMargin(vse_out, obs_data_[i], clamp_inpath_pred_offsets);
+            SafeMargin::CalculateSafeMargin(vse_out, obs_data_[i]);
             CollisionEvaluator::ObjInPathEvaluator(vse_out, ego_path_, obs_data_[i]);
         } else {
             obs_data_[i].Reset();
@@ -238,10 +237,9 @@ void SingleThreatTarget::Preprocess(const AsVseOut &vse_out, const GlobalConfig 
         bool vld_type = (obs_data_[idx].obs->object_class == ObjectClass::CAR || obs_data_[idx].obs->object_class == ObjectClass::TRUCK ||
                          obs_data_[idx].obs->object_class == ObjectClass::BUS || obs_data_[idx].obs->object_class == ObjectClass::MOTORCYCLE ||
                          obs_data_[idx].obs->object_class == ObjectClass::ESCOOTER || obs_data_[idx].obs->object_class == ObjectClass::BICYCLE ||
-                         obs_data_[idx].obs->object_class == ObjectClass::PEDESTRIAN || obs_data_[idx].obs->object_class == ObjectClass::ANIMAL ||
-                        (obs_data_[idx].obs->object_class == ObjectClass::GOD && config.k_LgSf_EnCone)||
-                        (obs_data_[idx].obs->object_class == ObjectClass::GENOBJ && config.k_LgSf_EnBarrier) ||
-                        (obs_data_[idx].obs->object_class == ObjectClass::OCC && config.k_LgSf_EnOcc) );
+                         obs_data_[idx].obs->object_class == ObjectClass::PEDESTRIAN || obs_data_[idx].obs->object_class == ObjectClass::GOD ||
+                         obs_data_[idx].obs->object_class == ObjectClass::GENOBJ || obs_data_[idx].obs->object_class == ObjectClass::ANIMAL ||
+                         obs_data_[idx].obs->object_class == ObjectClass::OCC);
         if (vld_type == false) {
             continue;
         }

@@ -5,7 +5,7 @@
  *
  * Model version                  : 7.3246
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed Sep 16 13:07:45 2026
+ * C/C++ source code generated on : Tue Aug 18 17:02:34 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM 64-bit (LP64)
@@ -1010,6 +1010,22 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_Diag_InhibitCdnSts_
+#define DEFINED_TYPEDEF_FOR_Diag_InhibitCdnSts_
+
+typedef struct {
+  uint8_T inhibitFcw;
+  uint8_T belowLowSpeedLimit;
+  uint8_T vehicleNotRollingForward;
+  uint8_T fcwDisabledByFaultManager;
+  uint8_T SceniaroCheckNotOk;
+  uint8_T resv1;
+  uint8_T resv2;
+  uint8_T resv3;
+} Diag_InhibitCdnSts;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_Diag_StartConditions_
 #define DEFINED_TYPEDEF_FOR_Diag_StartConditions_
 
@@ -1029,22 +1045,6 @@ typedef struct {
   uint8_T warningState;
   uint8_T resv1;
 } Diag_StartConditions;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_Diag_InhibitCdnSts_
-#define DEFINED_TYPEDEF_FOR_Diag_InhibitCdnSts_
-
-typedef struct {
-  uint8_T inhibitFcw;
-  uint8_T belowLowSpeedLimit;
-  uint8_T vehicleNotRollingForward;
-  uint8_T fcwDisabledByFaultManager;
-  uint8_T SceniaroCheckNotOk;
-  uint8_T resv1;
-  uint8_T resv2;
-  uint8_T resv3;
-} Diag_InhibitCdnSts;
 
 #endif
 

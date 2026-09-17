@@ -43,7 +43,7 @@ void ElkStateMachine::Update(const AsVseOut &vse_out,
                              const GlobalConfig &config,
                              float elk_torsion_bar_trq)
 {
-    //AD_LINFO(ElkStateMachine::Update) << "New state condition judge...";
+    AD_LINFO(ElkStateMachine::Update) << "New state condition judge...";
     UpdateStateMachine(BuildCondition(vse_out, road_info, lane_boundary, lane_center, ta_info, config, elk_torsion_bar_trq));
 
     if (state_ != State::Left_Intervention) {
@@ -509,19 +509,19 @@ ElkStateMachine::Condition ElkStateMachine::BuildCondition(const AsVseOut &vse_o
         b_right_triged = elk_scenario_decider_.determineRightIntervention(road_info, lane_boundary, ta_info, config,
             veh_speed_mps, right_marker_valid_checker_.getStateOut(), right_edge_valid_checker_.getStateOut());
     }
-    // AD_LINFO(ElkStateMachine::BuildCondition) << "b_left_triged is: " << b_left_triged
-    //     << ", b_right_triged is: " << b_right_triged;
+    AD_LINFO(ElkStateMachine::BuildCondition) << "b_left_triged is: " << b_left_triged
+        << ", b_right_triged is: " << b_right_triged;
 
     // abort条件
     checkDriverSuppression(vse_out, lane_boundary, elk_torsion_bar_trq);
     checkEnvironmentSuppression(lane_boundary);
-    //AD_LINFO(ElkStateMachine::BuildCondition) << "evp_disable_mask_ is: " << evp_disable_mask_;
+    AD_LINFO(ElkStateMachine::BuildCondition) << "evp_disable_mask_ is: " << evp_disable_mask_;
 
     b_left_suppression = elk_scenario_decider_.determineLeftSuppression(evp_disable_mask_);
     b_right_suppression = elk_scenario_decider_.determineRightSuppression(evp_disable_mask_);
 
-    // AD_LINFO(ElkStateMachine::BuildCondition) << "b_left_suppression is: " << b_left_suppression
-    //     << ", b_right_suppression is: " << b_right_suppression;
+    AD_LINFO(ElkStateMachine::BuildCondition) << "b_left_suppression is: " << b_left_suppression
+        << ", b_right_suppression is: " << b_right_suppression;
 
     condition.enable_to_left_intervention = b_left_triged && (!b_right_triged) && (!b_left_suppression);
     condition.enable_to_right_intervention = b_right_triged && (!b_left_triged) && (!b_right_suppression);
@@ -681,7 +681,7 @@ void ElkStateMachine::UpdateStateMachine(const Condition &condition)
 
     }
 
-    //AD_LINFO(ElkStateMachine::UpdateStateMachine) << "current elk state is: " << (int)state_;
+    AD_LINFO(ElkStateMachine::UpdateStateMachine) << "current elk state is: " << (int)state_;
 }
 
 bool ElkStateMachine::checkStandby2Enable(float speed_kph, const LaneBoundaryParameters &lane_boundary)

@@ -86,8 +86,7 @@ class LgSafe2024Function {
     void Init();
     void Update(const active_safety::AsVseOut &vse_in, const active_safety::AsObstacleList &obs_list, const active_safety::LanesInfo &road_info,
                 const senseAD::tap::AsParamConfig_T &long_safe_param,const uint8_T aeb_fcw_exit_inhibit,const GlobalConfig &config);
-    void UpdateNewTsel(const active_safety::AsVseOut &vse_in, const active_safety::AsObstacleList &obs_list,
-                       const active_safety::longsafe::LongSafeObject lgsf_obj,
+    void UpdateNewTsel(const active_safety::AsVseOut &vse_in, const active_safety::longsafe::LongSafeObject lgsf_obj,
                        const senseAD::tap::AsParamConfig_T &long_safe_param,const uint8_T aeb_fcw_exit_inhibit,const GlobalConfig &config);
                        
     // Outputs

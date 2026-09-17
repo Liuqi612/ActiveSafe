@@ -1,0 +1,32 @@
+vehicle_geometry_params {
+  front_edge_to_center: 4.160
+  back_edge_to_center: 1.155
+  left_edge_to_center: 0.9925
+  right_edge_to_center: 0.9925
+  length: 5.315
+  width: 1.985
+  height: 1.820
+  min_turn_radius: 5.4
+  wheel_base: 3.20
+  wheel_rolling_radius: 0.371
+  left_mirror {
+    x: 2.416
+    y: 1.076
+    z: 1.121
+    length: 0.167
+    width: 0.1
+    height: 0.1
+  }
+  right_mirror {
+    x: 2.406
+    y: -1.076
+    z: 1.126
+    length: 0.167
+    width: 0.1
+    height: 0.1
+  }
+}
+vehicle_drive_params {
+   max_steer_angle: 8.7266
+   steer_ratio: 15.8
+}

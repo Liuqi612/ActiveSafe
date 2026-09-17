@@ -32,7 +32,7 @@
         "k_ignore_roadedge_check": 1,
         "k_LgSf_EnTestScene": 0,
         "k_LgSf_EnableCts": 0,
-        "k_LgSf_EnOcc": 1,
+        "k_LgSf_EnOcc": 0,
         "k_LgSf_EnAebDecelNoFilter": 0,
         "k_LgSf_AebVehSpdRednLim": 33.33,
         "k_AEB_FullBrkSpdThres": 23.8,
@@ -57,8 +57,6 @@
         "k_LKA_func_enable": 0,
         "k_ELK_func_enable": 0,
         "k_LKA_HandoffWarningEnable": 1,
-        "k_LKA_HODHandsOffConfirmTime": 0.6,
-        "k_LKA_HODHandsOnConfirmTime": 0.6,
         "k_LSS_IgnoreFaultInhibit": 0,
         "k_LDW_EnLine": 1,
         "k_LDW_EnEdge": 0,
@@ -79,7 +77,6 @@
         "k_LKA_Centered_OnDelayTime": 2.0,
         "k_AES_aebactive_enable": 1,
         "k_AES_esafeedback_factor": 0,
-        "k_AES_aesesa_ttcfactor": 0,
         "k_AES_feedbackopen": 1
     }
 }

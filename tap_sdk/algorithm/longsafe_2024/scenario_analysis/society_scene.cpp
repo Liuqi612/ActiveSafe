@@ -16,18 +16,13 @@ AsSocietyScene::~AsSocietyScene() = default;
 
 AsSocietySceneParam society_param = AsSocietySceneParam{};
 
-void AsSocietyScene::CheckSimulationMode(bool simulation_enabled) {
-    if (!simulation_enabled) {
-        simulation_check_cnt = 0;
-        simulation_check = false;
-        return;
-    }
-
-    // 预热计数达到阈值后停止递增，并解除仿真预热抑制。
-    if (simulation_check_cnt < society_param.k_simulation_max_steps) {
+void AsSocietyScene::CheckSimulationMode() {
+    if (!simulation_check) {
         simulation_check_cnt += 1;
+        if (simulation_check_cnt < society_param.k_simulation_max_steps) {
+            simulation_check = true;
+        }
     }
-    simulation_check = (simulation_check_cnt < society_param.k_simulation_max_steps);
 }
 void AsSocietyScene::ProcessSocietyScene(const active_safety::AsObstacleList &obj_list, const AsVseOut &vse_out, const AsParamConfig_T &longparam) {
 
@@ -39,7 +34,7 @@ void AsSocietyScene::ProcessSocietyScene(const active_safety::AsObstacleList &ob
 
     test_scene_enabled = longparam.k_LgSf_EnTestScene;
 
-    CheckSimulationMode(longparam.k_LgSf_EnSimulationMode != 0);
+    CheckSimulationMode();
 
     CheckTestSceneBaseEgoInfo(obj_list);
 }
@@ -66,7 +61,7 @@ void AsSocietyScene::CheckAroundCar(const active_safety::AsObstacle &obj) {
         backforward_moving_car += 1;
     }
     // 2. 直道路径内车辆（曲率<0.001，纵向-15~10m，横向<1.5m，非仿真模式）
-    if ((abs(ego_.rear_curvature) < 0.001) && (obj.speed > 3) && (-15.0 < obj.long_posn) && (!simulation_check) && (obj.long_posn < 10) && (abs(obj.lat_posn) < 1.5)) {
+    if ((abs(ego_.rear_curvature) < 0.001) && (-15.0 < obj.long_posn) && (!simulation_check) && (obj.long_posn < 10) && (abs(obj.lat_posn) < 1.5)) {
 
         ego_stright_inpath_car += 1;
     }
@@ -252,16 +247,7 @@ void AsSocietyScene::UpdateEgoTurnSceneState() {
 
     ego_at_turn_scene_ = (within_validtime_after_ego_start_ && ego_during_turn_constant_spd_) || test_scene_enabled;
 }
-void AsSocietyScene::ResetSurroundingEnvironmentCounters() {
-    backforward_moving_car = 0;
-    ego_stright_inpath_car = 0;
-    backforward_moving_truck = 0;
-    tap_moving_forward_car = 0;
-}
 void AsSocietyScene::CheckSurroundingEnvironment(const active_safety::AsObstacleList &obj_list) {
-    // These counters describe the current frame, rather than accumulated history.
-    ResetSurroundingEnvironmentCounters();
-
     for (const auto &obj_ptr : obj_list) { // 明确命名为obj_ptr，语义更清晰
         if (obj_ptr->object_class == active_safety::ObjectClass::CAR) {
             // 解引用shared_ptr，传递裸对象

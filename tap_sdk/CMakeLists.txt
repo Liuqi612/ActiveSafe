@@ -16,6 +16,12 @@ file(GLOB_RECURSE SOURCES_C ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 list(FILTER SOURCES_CXX EXCLUDE REGEX ".*/thirdparty/.*")
 list(FILTER SOURCES_C EXCLUDE REGEX ".*/thirdparty/.*")
 
+# Planning is a separately-portable library.  Keep its explicit source lists
+# out of the legacy repository-wide glob so it cannot be linked into tap_so
+# accidentally.
+list(FILTER SOURCES_CXX EXCLUDE REGEX ".*/algorithm/planning/.*")
+list(FILTER SOURCES_C EXCLUDE REGEX ".*/algorithm/planning/.*")
+
 # Remove longsafe_2024 subproject sources (avoid duplicate definitions)
 list(FILTER SOURCES_CXX EXCLUDE REGEX ".*/algorithm/longsafe_2024/.*")
 list(FILTER SOURCES_C EXCLUDE REGEX ".*/algorithm/longsafe_2024/.*")
@@ -106,3 +112,14 @@ target_link_libraries(
 install(TARGETS ${PROJECT_NAME_SO}
 LIBRARY DESTINATION "lib"
 )
+
+# The emergency Planning core and its normalized adapter are opt-in for the
+# module repository; node enables this target when building the integrated
+# emergency path.
+add_subdirectory(tap_adapter)
+option(BUILD_TAP_PLANNING_CORE
+       "Build the independently ported emergency Planning core" OFF)
+if(BUILD_TAP_PLANNING_CORE)
+    add_subdirectory(algorithm/planning)
+    add_subdirectory(tap_adapter/core)
+endif()

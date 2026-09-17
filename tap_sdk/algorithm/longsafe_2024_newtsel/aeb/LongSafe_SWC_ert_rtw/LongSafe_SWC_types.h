@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'LongSafe_SWC'.
  *
- * Model version                  : 7.3246
+ * Model version                  : 7.3245
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Sep  3 15:58:01 2026
+ * C/C++ source code generated on : Mon Jun 29 11:49:25 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM 64-bit (LP64)
@@ -1002,10 +1002,6 @@ typedef struct {
   uint8_T k_ignore_roadedge_check;
   uint8_T k_LgSf_EnTestScene;
   uint8_T k_LgSf_EnOcc;
-  uint8_T k_LgSf_EnAebDecelNoFilter;
-  real32_T k_LgSf_AebVehSpdRednLim;
-  real32_T k_AEB_FullBrkSpdThres;
-  real32_T k_AEB_HighReqDecel;
 } AsParamConfig_T;
 
 #endif
@@ -2087,8 +2083,7 @@ typedef enum {
   Normal,
   CrossingInhibitFlag,
   DrvDetectNoRisk,
-  DrvDetectRisk2Turn,
-  SpdJumpConf
+  DrvDetectRisk2Turn
 } ConfReason;
 
 #endif

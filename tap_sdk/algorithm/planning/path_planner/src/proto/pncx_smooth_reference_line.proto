@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package pnc_x.planning;
+
+
+message SmoothedReferenceLineResultProto {
+  message LaneIdVec {
+    repeated uint64 lane_id = 1;
+  }
+  repeated LaneIdVec lane_id_vec = 1;
+}

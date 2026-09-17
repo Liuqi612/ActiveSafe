@@ -1,0 +1,91 @@
+syntax = "proto2";
+
+package pnc_x.planning;
+
+
+import "pncx_lane_path.proto";
+import "pncx_lane_point.proto";
+import "pncx_perception.proto";
+import "pncx_prediction.proto";
+import "pncx_affine_transformation.proto";
+
+message OccludedUnitProto {
+  
+  
+  optional Vec2iProto unit_index = 1;
+  
+  
+  optional Vec2dProto unit_smooth_coord = 2;
+  
+  optional double occluded_timestamp = 3;
+  optional double length = 4;
+  optional double width = 5;
+  optional double heading = 6;
+};
+
+message OccludedZoneProto {
+  
+  optional int64 id = 1;
+  
+  enum ZoneType {
+    NONE = 0;
+    CROSSWALK = 1;
+    INTERSECTION = 2;
+    
+  };
+  optional ZoneType type = 2;
+  repeated OccludedUnitProto occluded_units = 3;
+};
+
+message TrafficWaitingQueueProto {
+  optional mapping.LanePathProto lane_path = 1;
+  repeated string object_id = 2;  
+};
+
+message ObjectAnnotationProto {
+  optional double stalled_vehicle_likelyhood = 1;  
+  optional double depart_soon_likelyhood = 2;      
+  
+  
+
+  
+  optional double vehicle_starting_likelyhood = 3;
+  optional string object_id = 4;
+
+  
+};
+
+message InferredObjectProto {
+  enum InferType {
+    OCCLUDED = 0;
+    CONSTRUCTION_ZONE = 1;
+  };
+
+  message InferSource {
+    message Crosswalk {
+      optional uint64 crosswalk_id = 1;
+    }
+    message InteractionLane {
+      optional mapping.LanePointProto interaction_point = 1;
+      optional double dist_to_interaction = 2;
+    }
+    oneof type {
+      Crosswalk crosswalk = 1;
+      InteractionLane interaction_lane = 2;
+    };
+  }
+
+  optional ObjectProto object_info = 1;
+  optional ObjectPredictionProto prediction = 2;
+  optional InferType infer_type = 3;
+  optional InferSource infer_source = 4;
+  optional double confidence = 5;
+};
+
+
+message SceneOutputProto {
+  repeated TrafficWaitingQueueProto traffic_waiting_queue = 1;
+  repeated ObjectAnnotationProto objects_annotation = 2;
+  repeated InferredObjectProto inferred_objects = 3;
+  repeated OccludedZoneProto occluded_zones = 4;
+}

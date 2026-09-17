@@ -19,9 +19,6 @@ class LkaElkHandoffWarning {
     void Update(uint8_t lka_mode,
                 uint8_t elk_mode,
                 float hands_torque,
-                uint8_t hod_hands_monitor,
-                float hod_hands_off_confirm_time_s,
-                float hod_hands_on_confirm_time_s,
                 bool mcu_lfp_actv_cdt,
                 bool enable,
                 bool shadow_mode,
@@ -48,11 +45,7 @@ class LkaElkHandoffWarning {
     static bool IsElapsed(uint64_t now_ns, uint64_t start_ns, uint64_t duration_ns);
 
     void Reset();
-    void UpdateHandsOff(float hands_torque,
-                        uint8_t hod_hands_monitor,
-                        float hod_hands_off_confirm_time_s,
-                        float hod_hands_on_confirm_time_s);
-    void UpdateTorqueHandsOff(float hands_torque);
+    void UpdateHandsOff(float hands_torque);
     void UpdateTracker(InterventionTracker &tracker, bool active, uint64_t now_ns);
     uint8_t CalculateAlarmLevel(InterventionTracker &tracker, bool active, bool output_enabled, uint64_t now_ns);
 
@@ -62,8 +55,6 @@ class LkaElkHandoffWarning {
     bool hands_off_confirmed_ = false;
     uint8_t low_torque_frame_count_ = 0U;
     uint8_t high_torque_frame_count_ = 0U;
-    uint32_t hod_hands_off_frame_count_ = 0U;
-    uint32_t hod_hands_on_frame_count_ = 0U;
     bool has_last_timestamp_ = false;
     uint64_t last_timestamp_ns_ = 0U;
 };

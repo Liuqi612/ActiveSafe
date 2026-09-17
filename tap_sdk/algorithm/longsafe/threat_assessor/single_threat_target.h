@@ -122,8 +122,7 @@ class SingleThreatTarget {
     SingleThreatTarget();
     ~SingleThreatTarget();
 
-    void SelectLongThreatTgt(const AsVseOut &vse_out, AsObstacleList &obs_list, const GlobalConfig &config,
-                             bool clamp_inpath_pred_offsets = false);
+    void SelectLongThreatTgt(const AsVseOut &vse_out, AsObstacleList &obs_list, const GlobalConfig &config);
     void LongThreatTarget(const AsVseOut &vse_out);
 
     //预筛选目标

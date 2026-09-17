@@ -1,8 +1,8 @@
 /****************************************************************************
  * Calibration file for AES_ESA production code.
  * DD uses version 5 of the bas file.
- * File Name: E:\user\AES_ESA_Module_0413_bak\AES_ESA_Module_0907\02_DataDictionary\AES\AES_ESA_cal.c
- * Created: 2026/9/14       10:59:36 
+ * File Name: E:\user\AES_ESA_Module_0413_bak\AES_ESA_Module_0820\02_DataDictionary\AES\AES_ESA_cal.c
+ * Created: 2026/8/20       14:27:16 
  * From Excel file: DataDictionary_AES_A02.xlsx
  * Calibration Values for project         
  * Calibrations for full application.
@@ -506,9 +506,9 @@ const AES_ESA_cal_T AES_ESA_Cal_DF_V = {
 
  /* k_AES_UseRealTimeEndPointY_str */   (boolean)   0 ,
 
- /* k_AES_UseRealTimeEndPointDY_str */   (boolean)   0 ,
+ /* k_AES_UseRealTimeEndPointDY_str */   (boolean)   1 ,
 
- /* k_AES_UseRealTimeEndPointDDY_str */   (boolean)   0 ,
+ /* k_AES_UseRealTimeEndPointDDY_str */   (boolean)   1 ,
 
  /* k_AES_PathPredC2Thrd_str */   (float32)  0.0015F,
 
@@ -712,7 +712,7 @@ const AES_ESA_cal_T AES_ESA_Cal_DF_V = {
 
  /* k_AES_t_AbortHandTorq_OnDly_str */   (float32)  0.25F,
 
- /* k_AES_t_AbortESCActive_OnDly_str */   (float32)  1.5F,
+ /* k_AES_t_AbortESCActive_OnDly_str */   (float32)  0.5F,
 
  /* k_AES_CompletedC0_Thr_str */   (float32)  0.2F,
 
@@ -742,11 +742,11 @@ const AES_ESA_cal_T AES_ESA_Cal_DF_V = {
 
  /* k_AES_EnterEgoSpeed_MaxThr_VRU_str */   (float32)  135.0F,
 
- /* k_AES_EnterEgoSpeed_MinThr_VRU_str */   (float32)  50.0F,
+ /* k_AES_EnterEgoSpeed_MinThr_VRU_str */   (float32)  40.0F,
 
  /* k_AES_ExitEgoSpeed_MaxThr_VRU_str */   (float32)  140.0F,
 
- /* k_AES_ExitEgoSpeed_MinThr_VRU_str */   (float32)  45.0F,
+ /* k_AES_ExitEgoSpeed_MinThr_VRU_str */   (float32)  35.0F,
 
  /* k_AES_FeedForward_Coef_Second_str[ 17 ][ 11 ]*/   {
                             { (float32)0.99F, (float32)0.99F, (float32)0.99F, (float32)0.99F, (float32)0.99F, (float32)0.99F, (float32)0.99F, (float32)0.99F, (float32)0.99F, (float32)0.99F, (float32)0.99F},
@@ -861,13 +861,13 @@ const AES_ESA_cal_T AES_ESA_Cal_DF_V = {
 
  /* k_AES_PlanAddDist_OnCome_str[ 11 ]*/   { (float32)-5.0F, (float32)-5.0F, (float32)-5.0F, (float32)-5.0F, (float32)-5.0F, (float32)-5.0F, (float32)-5.0F, (float32)-5.0F, (float32)-5.0F, (float32)-5.0F, (float32)-5.0F},
 
- /* k_AES_LastPntBrk_TTC_OC_str[ 16 ]*/   { (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F},
+ /* k_AES_LastPntBrk_TTC_OC_str[ 16 ]*/   { (float32)1.0F, (float32)1.0F, (float32)1.0F, (float32)1.0F, (float32)1.0F, (float32)1.0F, (float32)2.5F, (float32)2.5F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.5F, (float32)2.5F, (float32)2.5F, (float32)2.5F, (float32)2.5F},
 
- /* k_AES_LastPntBrk_TTC_OC_ESA_str[ 16 ]*/   { (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F, (float32)2.0F},
+ /* k_AES_LastPntBrk_TTC_OC_ESA_str[ 16 ]*/   { (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F, (float32)3.0F},
 
- /* k_AES_MaxBrakeDecelProtect_str[ 16 ]*/   { (float32)1.2F, (float32)1.2F, (float32)1.2F, (float32)1.2F, (float32)1.2F, (float32)1.2F, (float32)1.25F, (float32)1.25F, (float32)1.25F, (float32)1.4F, (float32)1.8F, (float32)1.8F, (float32)1.8F, (float32)1.8F, (float32)1.8F, (float32)1.8F},
+ /* k_AES_MaxBrakeDecelProtect_str[ 16 ]*/   { (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.4F, (float32)1.5F, (float32)1.8F, (float32)1.8F, (float32)1.8F, (float32)1.8F, (float32)1.8F, (float32)1.8F},
 
- /* k_AES_MaxBrakeDecelProtect_ESA_str[ 16 ]*/   { (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.7F, (float32)1.7F, (float32)1.7F, (float32)1.7F, (float32)2.2F, (float32)2.2F, (float32)2.2F, (float32)2.2F, (float32)2.2F, (float32)2.2F},
+ /* k_AES_MaxBrakeDecelProtect_ESA_str[ 16 ]*/   { (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)1.6F, (float32)2.2F, (float32)2.2F, (float32)2.2F, (float32)2.2F, (float32)2.2F, (float32)2.2F},
 
  /* k_AES_FCWObsSlowSpd_OnDly_str */   (float32)  0.5F,
 
@@ -908,8 +908,6 @@ const AES_ESA_cal_T AES_ESA_Cal_DF_V = {
  /* k_AES_CTL_heading_spd_str[ 10 ]*/   { (float32)40.0F, (float32)50.0F, (float32)60.0F, (float32)70.0F, (float32)80.0F, (float32)90.0F, (float32)100.0F, (float32)110.0F, (float32)120.0F, (float32)130.0F},
 
  /* k_AES_CTL_heading_error_factor_str[ 10 ]*/   { (float32)0.2F, (float32)0.2F, (float32)0.2F, (float32)0.2F, (float32)0.2F, (float32)0.2F, (float32)0.2F, (float32)0.2F, (float32)0.2F, (float32)0.2F},
-
- /* k_AES_FCWObstacleLatOverLap_AES_str */   (float32)  1.8F,
 
 };
 #define AES_ESA_STOP_SEC_CAL_UNSPECIFIED
@@ -2646,11 +2644,6 @@ const AES_ESA_cal_T AES_ESA_Cal_DF_V = {
 *|  :description = "AES_ESA_cal.k_AES_CTL_heading_error_factor";
 *|  :units = "";
 *|  :type = caltype.single_m10_100_CT;
-*|  }
-*|  .k_AES_FCWObstacleLatOverLap_AES_str {
-*|  :description = "";
-*|  :units = "";
-*|  :type = caltype.single_0_100_CT;
 *|  }
 *| }
 */

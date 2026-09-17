@@ -25,15 +25,10 @@
 
 namespace active_safety {
 
-enum class SubScene {
-    UNKNOWN = 0,
-    STRAIGHT_2_STATIONARY ,
-    STRAIGHT_2_LONG_MOVING,
-    STRAIGHT_2_CROSS,
-    STRAIGHT_2_ONCOMING,
-    STRAIGHT_2_CUTIN,
-    TURN_2_STATIONARY,
-    TURN_2_MOVING,
+struct LongSafeAebTargetSnapshot {
+    int32_t fusion_id = 0;
+    float ttc_s = 0.0F;
+    uint8_t status = 0U;
 };
 
 // 位操作工具函数
@@ -67,7 +62,9 @@ class ActiveSafetyWrapper {
     bool CheckHighSpeedFrontVehicleCutOut(const senseAD::tap::AsLongSafeObject& current_target, bool aeb_unavoid_collision_flag, bool aes_exist_steer_space);
 
     uint32_t GetFaultType() const;
-    SubScene sub_scene_ = SubScene::UNKNOWN;
+    // Planning consumes only this coherent LongSafe decision.  Geometry and
+    // future motion remain owned by the aligned Prediction input.
+    LongSafeAebTargetSnapshot GetLongSafeAebTargetSnapshot() const;
 
   private:
     bool last_aes_activated_ = false;
@@ -76,8 +73,6 @@ class ActiveSafetyWrapper {
     void MappingMebCmd(const MebMsgInfo &meb_info, float host_spd);
 
     void CalcShadowMode();
-    void CalcScene(const senseAD::tap::LgSf_Ltap_T &ltap_out,
-                   const longsafe::LongSafeObject &aeb_target);
     // Json解析单变量
     template <typename T> bool JsonParse(const json11::Json &config, std::string param, std::string key, T *value);
     // Json解析一维数组变量
@@ -121,7 +116,7 @@ class ActiveSafetyWrapper {
     VehicleStateEstimed vse_;
     AsVseOut vse_out_;
     // AEB/FCW
-    std::mutex threat_assor_mtx; //锁用于PP和Control的AEB/FCW目标选择结果之间的互斥.
+    mutable std::mutex threat_assor_mtx; //锁用于PP和Control的AEB/FCW目标选择结果之间的互斥.
     longsafe::SingleThreatTarget lgsf_threat_tgt_;
     longsafe::LgSfFunction lgsf_func_;
 

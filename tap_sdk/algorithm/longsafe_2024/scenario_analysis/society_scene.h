@@ -47,11 +47,10 @@ class AsSocietyScene {
     void CheckAroundCar(const active_safety::AsObstacle &obj);
     void CheckAroundTruck(const active_safety::AsObstacle &obj);
     void CheckSurroundingEnvironment(const active_safety::AsObstacleList &obj_list);
-    void ResetSurroundingEnvironmentCounters();
     void UpdateEgoVehicleState(const AsVseOut& vse_out);
     bool IsEgoInAutoDrivingState(const AsVseOut& vse_out);
 
-    void CheckSimulationMode(bool simulation_enabled);
+    void CheckSimulationMode();
     void ResetEgoSpeedConfirmCounters();
     void ResetEgoSpeedDelayCounters();
     void UpdateEgoStartValidTimeCounter(const bool is_ego_started);
@@ -105,7 +104,7 @@ class AsSocietyScene {
     int ego_not_80kph_delay_cnt = 0;
 
     uint32_t simulation_check_cnt = 0;
-    bool simulation_check = false; // 仅仿真模式预热期间为 true
+    bool simulation_check = false;
     bool is_auto_driving_ = false;
     bool test_scene_enabled = false;
 };

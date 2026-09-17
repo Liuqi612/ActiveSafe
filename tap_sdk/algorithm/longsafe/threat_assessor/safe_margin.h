@@ -13,10 +13,10 @@ class SafeMargin {
     SafeMargin();
     ~SafeMargin();
 
-    static void CalculateSafeMargin(const AsVseOut &vse_out, LgSfObsData &obs_data, bool clamp_inpath_pred_offsets = false);
+    static void CalculateSafeMargin(const AsVseOut &vse_out, LgSfObsData &obs_data);
 
   private:
-    static void CalcInPathOffset(const AsVseOut &vse_out, LgSfObsData &obs_data, bool clamp_inpath_pred_offsets);
+    static void CalcInPathOffset(const AsVseOut &vse_out, LgSfObsData &obs_data);
 
     static void CalcLatInPathOffsetForLtap(LgSfObsData &obs_data);
 

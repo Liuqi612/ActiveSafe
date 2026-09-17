@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+package pnc_x.planning;
+
+
+import "pncx_trajectory_validation.proto";
+import "pncx_initializer.proto";
+import "pncx_speed_finder.proto";
+import "pncx_scheduler.proto";
+import "pncx_turn_signal.proto";
+import "pncx_trajectory_point.proto";
+import "pncx_constraint.proto";
+import "pncx_optimizer.proto";
+import "pncx_planner_object.proto";
+import "pncx_planner_status.proto";
+
+
+message EstPlannerDebugProto {
+  optional TurnSignalReason turn_signal_reason_enum = 1;
+
+  optional FilteredTrajectories filtered = 3;
+  optional SpacetimePlannerObjectTrajectoriesProto
+      st_planner_object_trajectories = 4;
+
+  optional SchedulerOutputProto scheduler = 12;
+  optional ConstraintProto constraint = 6;
+  optional InitializerDebugProto initializer = 7;
+  optional TrajectoryOptimizerDebugProto trajectory_optimizer = 8;
+  repeated PathPoint st_path_points = 15;
+  repeated ApolloTrajectoryPointProto capnet_ref_traj = 14;
+  optional SpeedFinderDebugProto speed_finder = 9;
+  optional TrajectoryValidationResultProto traj_validation = 10;
+
+  optional PlannerStatusProto planner_status = 11;
+
+  reserved 2, 5, 13;
+}

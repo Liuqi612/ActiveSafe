@@ -1,0 +1,84 @@
+syntax = "proto2";
+
+package pnc_x.planning;
+
+message YellowLightConfig{
+    optional double yellow_comfortable_acc = 1;
+    optional double comfortable_distance = 2;
+}
+
+message RedLightConfig{
+    optional double red_light_speed_min = 1;
+}
+
+message GreenFlashLightConfig{
+    optional double green_flash_comfortable_max_acc = 1;
+    optional double green_flash_comfortable_min_acc = 2;
+}
+
+message DistanceConfig{
+    optional double ignore_stop_line_max = 1;
+    optional double ignore_stop_line_mid = 2;
+    optional double ignore_stop_line_min = 3;
+    optional double unknown_max_count = 4;
+    optional double unknown_min_count = 5;
+    optional double invalid_max_count = 6;
+    optional double invalid_min_count = 7;
+    optional double stop_line_max = 8;
+    optional double stop_max_s_threshold = 9;
+    optional double stop_min_s_threshold = 10;
+    optional double stop_line_bias = 11;
+    optional double cross_walk_bias = 12;
+    optional double lane_end_dis_traffic_light = 13;
+    optional double ego_dis_to_light_150m = 14;
+}
+
+message VehicleConfig{
+    optional double vehicle_rear_to_front = 1;
+    optional double stop_position_buffer = 2;
+}
+
+message Function_Config{
+    optional double decider_type = 1;
+}
+
+message Speed_Limit_Config{
+    optional double speed_limit_30 = 1;
+    optional double speed_limit_40 = 2;
+    optional double speed_limit_50 = 3;
+    optional double speed_limit_70 = 4;
+    optional double distance_speed_30 = 5;
+    optional double distance_speed_40 = 6;
+    optional double distance_speed_50 = 7;
+    optional double distance_min = 8;
+    optional double distance_max = 9; 
+    optional double speed_30 = 10;
+    optional double speed_70 = 11;
+    optional double speed_85 = 12;
+    optional double speed_dec_20_percent = 13; 
+    optional double speed_dec_30_percent = 14;
+}
+
+message HumanDrivingConfig{
+    optional double ttc_init_param = 1;
+    optional double ttc_in_red_max = 2;
+    optional double ttc_in_red_min = 3;
+    optional double stop_s_max = 4;
+    optional double stop_s_min = 5;
+    optional double ego_v_min = 6;
+}
+
+message TrafficLightConfig{
+    optional YellowLightConfig yellow_light_config = 1;
+    optional RedLightConfig red_light_config = 2;
+    optional GreenFlashLightConfig green_flash_light_config = 3;
+    optional DistanceConfig distance_config = 4;
+    optional VehicleConfig vehicle_config = 5;
+    optional Function_Config function_config = 6;
+    optional Speed_Limit_Config speed_limit_config = 7;
+    optional HumanDrivingConfig human_driving_config = 8;
+}
+
+message TrafficLightProto{
+    optional TrafficLightConfig traffic_light_manager_config = 1;
+}

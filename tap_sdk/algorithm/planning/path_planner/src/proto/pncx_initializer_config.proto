@@ -1,0 +1,251 @@
+syntax = "proto2";
+
+package pnc_x.planning;
+
+
+import "pncx_initializer.proto";
+
+message InitializerConfig {
+  enum SearchAlgorithm {
+    DP = 2;
+    InteractiveAStar = 3;
+    reserved 1;
+  }
+  optional SearchAlgorithm search_algorithm = 1;
+
+  message DpFeatureCostConfig {
+    message DpAccelerationFeature {
+      
+      optional double accel = 1;
+    }
+
+    message DpLaneBoundaryFeature {
+      
+      optional double ref_center = 1;
+      optional double inner_bound = 2;
+      optional double outer_bound = 3;
+    }
+    message DpCurvatureFeautre {
+      
+      optional double curvature = 1;
+    }
+    message DpLateralAcclerationFeature {
+      
+      optional double acc_hard = 1;
+      optional double acc_soft = 2;
+      optional double jerk = 3;
+    }
+
+    message DpStopConstraintFeature {
+      
+      optional double stop_constraint = 1;
+    }
+
+    message DpRefSpeedFeature {
+      
+      optional double exceeds_speed_limit = 1;
+      optional double exceeds_ref_speed = 2;
+      optional double below_ref_speed = 3;
+    }
+
+    message DpDynamicCollisionFeature {
+      
+      optional double collision_cost = 1;
+    }
+
+    message DpLeadingObjectFeature {
+      
+      optional double leading_object = 1;
+    }
+
+    message DpRefTrajectoryFeatureCost {
+      
+      optional double ref_traj = 1;
+    }
+
+    message DpFinalProgressFeature {
+      
+      optional double longitudinal = 1;
+      optional double lateral = 2;
+    }
+
+    optional DpAccelerationFeature dp_acceleration = 1;
+    optional DpLaneBoundaryFeature dp_lane_boundary = 2;
+    optional DpLateralAcclerationFeature dp_lateral_acceleration = 3;
+    optional DpStopConstraintFeature dp_stop_constraint = 4;
+    optional DpRefSpeedFeature dp_ref_speed = 5;
+    optional DpDynamicCollisionFeature dp_dynamic_collision = 6;
+    optional DpCurvatureFeautre dp_curvature = 7;
+    reserved 8, 9;
+    optional DpLeadingObjectFeature dp_leading_object = 10;
+    optional DpRefTrajectoryFeatureCost dp_ref_traj = 12;
+    optional DpFinalProgressFeature dp_final_progress = 11;
+  }
+
+  message RefLineFeatureCostConfig {
+    message RefLineStationaryObjectFeature {
+      
+      optional double distance = 1;
+    }
+
+    message RefLineProgressFeature {
+      
+      optional double longitudinal = 1;
+      optional double lateral = 2;
+    }
+
+    message RefLinePathBoundaryFeature {
+      
+      optional double center = 1;
+      optional double target_boundary = 2;
+      optional double boundary = 3;
+    }
+
+    message RefLineCurvatureFeature {
+      
+      optional double absolute = 1;
+    }
+    optional RefLineStationaryObjectFeature ref_line_stationary_object = 1;
+    optional RefLineProgressFeature ref_line_progress = 2;
+    optional RefLinePathBoundaryFeature ref_line_path_boundary = 3;
+    optional RefLineCurvatureFeature ref_line_curvature = 4;
+  }
+
+  message InitializerSamplePattern {
+    enum Scenario {
+      SCENARIO_NONE = 0;
+      SCENARIO_LANE_KEEPING = 1;  
+      SCENARIO_LANE_CHANGE = 2;   
+      SCENARIO_LANE_BORROW = 3;   
+    }
+    message SampleConfig {
+      repeated double range = 1;               
+      repeated double layer_gap = 2;           
+      repeated double lateral_resolution = 3;  
+      repeated int64 cross_layer_connection = 4;
+      repeated double unit_length_lateral_span = 5;
+    }
+
+    optional InitializerSamplePatternConfig config_name = 1;
+    optional Scenario scenario = 2;
+    optional SampleConfig config = 3;
+  }
+
+  message AStarSearchConfig {
+    
+    optional double goal_time_upper_bound = 1;
+    optional double goal_l = 2;
+    optional double min_dis = 3;
+    optional double goal_time = 4;
+    optional double heuristic_time = 5;
+    optional int64 max_search_iteration = 6;
+    optional double max_velocity = 7;
+    optional double max_time = 8;
+    optional double velocity_resolution = 9;
+    optional double time_resolution = 10;
+    optional int64 node_index = 11;
+    optional double h2g_ratio = 12;
+  }
+
+
+  message GCostWeight {
+    optional double omega_weight = 1;
+    optional double omega_rate_weight = 2;
+    optional double acc_weight = 3;
+    optional double jerk_weight = 4;
+    optional double ref_l_weight = 5;
+    optional double ref_heading_weight = 6;
+    optional double interaction_weight = 7;
+    optional double centripetal_acc_weight = 8;
+    optional double decel_weight = 9;
+    optional double jerk_manual_mode_weight = 10;
+    optional double manual_mode_decel_weight = 11;
+  }
+
+  message HCostWeight {
+    optional double goal_s_weight = 1;
+    optional double goal_l_weight = 2;
+    optional double safety_dis_weight = 3;
+    optional double safety_dis_manual_mode_weight = 4;
+    optional double ori_dis_weight = 5;
+    optional double diff_v_lon_weight = 6;
+  }
+
+  message GapSafetyCheckParam {
+    optional double gap_lead_ttc = 1;
+    optional double gap_lead_thw_max = 10;
+    optional double gap_lead_thw_min = 11;
+    optional double gap_lead_dis = 12;
+    optional double gap_tail_ttc_max = 13;
+    optional double gap_tail_ttc_min = 14;
+    optional double gap_tail_thw_max = 15;
+    optional double gap_tail_thw_min = 16;
+    optional double gap_tail_dis = 17;
+    optional double ori_lead_ttc = 18;
+    optional double ori_lead_thw_max = 19;
+    optional double ori_lead_thw_min = 20;
+    optional double ori_lead_dis = 21;
+    reserved 22;
+    
+    optional double tighten_low_speed_lead_dist = 23;
+    optional double tighten_low_speed_tail_dist = 24;
+    optional double ori_lead_cost_ttc = 25;
+    optional double ori_lead_cost_thw_ratio = 26;
+    optional double ori_lead_cost_dis = 27;
+    optional double ori_lead_cost_l_ratio = 28;
+
+    optional double manual_lc_gap_lead_thw_max = 29;
+    optional double manual_lc_gap_lead_thw_min = 30;
+    optional double manual_lc_gap_tail_thw_max = 31;
+    optional double manual_lc_gap_tail_thw_min = 32;
+    optional double manual_lc_ori_lead_thw_max = 33;
+    optional double manual_lc_ori_lead_thw_min = 34;
+    optional double manual_lc_v_upper = 35;
+    optional double radical_gap_tail_ttc_max = 36;
+    optional double radical_gap_tail_ttc_min = 37;
+    optional double radical_gap_tail_thw_max = 38;
+    optional double radical_gap_tail_thw_min = 39;
+  }
+
+  message InteractiveParam {
+    optional double tighten_low_speed_behind_ratio = 1;
+    reserved 2;
+    
+    optional double tighten_large_object_acc = 3;
+    optional double tighten_large_object_dist_min = 4;
+    optional double tighten_large_object_dist_max = 5;
+  }
+
+  message InteractiveAStarSearchConfig {
+    optional double goal_time_upper_bound = 1;
+    optional double goal_l = 2;
+    optional double min_dis = 3;
+    optional double goal_time = 4;
+    optional double heuristic_time = 5;
+    optional int32 max_search_iteration = 6;
+    optional double max_velocity = 7;
+    optional double max_time = 8;
+    optional double velocity_resolution = 9;
+    optional double time_resolution = 10;
+    optional int64 node_index = 11;
+    optional int32 sample_num = 12;
+    optional double h2g_ratio = 13;
+    optional GCostWeight g_cost_weight = 14;
+    optional HCostWeight h_cost_weight = 15;
+    optional double time_resolution_divide = 16;
+    optional double coarse_time_step = 17;
+    optional double precise_time_step = 18;
+    optional GapSafetyCheckParam gap_safety_check_param = 19;
+    optional InteractiveParam interactive_param = 20;
+  }
+
+
+  optional DpFeatureCostConfig dp_cost_config = 3;
+  repeated InitializerSamplePattern sample_patterns = 4;
+  optional RefLineFeatureCostConfig ref_line_cost_config = 5;
+  optional DpFeatureCostConfig dp_post_cost_config = 10;
+  optional AStarSearchConfig astar_search_config = 11;
+  optional InteractiveAStarSearchConfig interactive_astar_search_config = 12;
+
+  reserved 2, 8;
+}

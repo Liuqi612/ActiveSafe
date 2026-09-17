@@ -1,0 +1,82 @@
+syntax = "proto2";
+
+package pnc_x;
+
+import "pncx_affine_transformation.proto";
+
+message TrajectoryPointProto {
+
+  optional Vec2dProto pos = 1;
+  optional double s = 2;
+  optional double theta = 3;
+  optional double kappa = 4;
+
+  optional double t = 7;
+  optional double v = 8;
+  optional double a = 9;
+  optional double j = 10;
+
+  optional double psi = 11;
+  optional double chi = 12;
+
+  optional double steer_angle = 15;
+
+  reserved 5, 6, 13, 14;
+}
+
+message PathPoint {
+
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+
+  optional double theta = 4;
+
+  optional double kappa = 5;
+
+  optional double s = 6;
+
+  optional double lambda = 7;
+
+  optional double steer_angle = 8;
+
+  optional double ref_s = 9;
+
+  reserved 13;
+}
+
+message ApolloTrajectoryPointProto {
+
+  optional PathPoint path_point = 1;
+
+  optional double v = 2;
+
+  optional double a = 3;
+
+  optional double j = 7;
+
+  optional double relative_time = 4;
+
+  optional double yaw_rate = 8;
+
+  optional bool is_extend = 9;
+
+  reserved 5, 6;
+}
+
+message SecondOrderTrajectoryPointProto {
+  optional Vec2dProto pos = 1;
+  optional double s = 2;
+  optional double theta = 3;
+  optional double kappa = 4;
+  optional double t = 5;
+  optional double v = 6;
+  optional double a = 7;
+  optional double steer_angle = 8;
+}
+
+message PoseTrajectoryPointProto {
+  optional Vec2dProto pos = 1;
+  optional double theta = 2;
+  optional double t = 3;
+}

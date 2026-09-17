@@ -35,8 +35,6 @@ struct GlobalConfig {
     bool k_LKA_func_enable = false; // LKA功能是否打开
     bool k_ELK_func_enable = false; // ELK功能是否打开
     bool k_LKA_HandoffWarningEnable = false; // LKA/ELK脱手报警功能开关
-    float k_LKA_HODHandsOffConfirmTime = 0.6F; // HOD脱手确认时间，单位：s
-    float k_LKA_HODHandsOnConfirmTime = 0.6F; // HOD握手确认时间，单位：s
     bool k_LSS_IgnoreFaultInhibit = false; // LSS是否忽略上游功能故障抑制位
     bool k_LDW_EnLine = false; // LDW是否对车道线报警
     bool k_LDW_EnEdge = false; // LDW是否对路沿报警
@@ -63,13 +61,9 @@ struct GlobalConfig {
     bool k_Lgsf_ForOldRsclBag = false;//是否适配旧版RSCL Bag
     bool k_AES_aebactive_enable = false; // aes仲裁是否参考aeb_active
     float k_AES_esafeedback_factor = 0.0F; // 反馈控制系数
-    float k_AES_aesesa_ttcfactor = 0.0F; // ttc标定量
     bool k_AES_feedbackopen = 1; // 是否打开反馈
-    bool k_LgSf_EnCone = false; // 是否处理Cone
-    bool k_LgSf_EnBarrier = false; // 是否处理水马
-    bool k_LgSf_EnOcc = false; // 是否处理Occ
     uint32_t major_version = 0;
     uint32_t midle_version = 0;
-    uint32_t minor_version = 164;
+    uint32_t minor_version = 151;
 };
 } // namespace active_safety

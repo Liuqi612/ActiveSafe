@@ -34,7 +34,6 @@ void LgSafe2024Function::Init() {
     LongSafe_SWC_initialize(rtm_, (::AsVseOut *)&simulink_u_vse_, (::AsCoreOut_T *)&simulink_u_core_out_,
                             (::AsParamConfig_T *)&simulink_u_param_config_, (::LgSafe_T *)&simulink_y_lg_safe_,
                             (::AsCmdLgSafe_T *)&simulink_y_cmd_lg_safe_, (::AsDisplayLgSafe_T *)&simulink_y_display_lg_safe_);
-    ltap_output_ = simulink_y_lg_safe_.LgSf_Ltap;
 }
 
 void LgSafe2024Function::AbortAebCmd() {
@@ -84,16 +83,13 @@ void LgSafe2024Function::Update(const active_safety::AsVseOut &vse_in, const act
     OverrideLgsfTargetFromCoreOut();
     MapFromSimulinkOutput(simulink_y_lg_safe_, simulink_y_cmd_lg_safe_, simulink_y_display_lg_safe_, vse_out, long_safe_param);
 }
-void LgSafe2024Function::UpdateNewTsel(const active_safety::AsVseOut &vse_in, const active_safety::AsObstacleList &obs_list,
-                                       const active_safety::longsafe::LongSafeObject lgsf_obj,
+void LgSafe2024Function::UpdateNewTsel(const active_safety::AsVseOut &vse_in, const active_safety::longsafe::LongSafeObject lgsf_obj,
                                        const senseAD::tap::AsParamConfig_T &long_safe_param,const uint8_T aeb_fcw_exit_inhibit,const GlobalConfig &config) {
     senseAD::tap::AsVseOut vse_out;
 
     MapVseInput(vse_in, vse_out,config);
-    society_scene_.ProcessSocietyScene(obs_list, vse_out, long_safe_param);
     MapNewTselRes2SelectOut(select_output_.longsafe_aeb, lgsf_obj);
     MapNewTselRes2SelectOut(select_output_.longsafe_fcw, lgsf_obj);
-    select_output_.longsafe_scenario.resv1 = society_scene_.GetDisableJustStartValid();
     MapToSimulinkInput(vse_out, select_output_, long_safe_param);
     simulink_u_core_out_.longsafe.longsafe_aeb.side_closest = static_cast<uint8_T>(aeb_fcw_exit_inhibit);
     LongSafe_SWC_step(rtm_, (::AsVseOut *)&simulink_u_vse_, (::AsCoreOut_T *)&simulink_u_core_out_, (::AsParamConfig_T *)&simulink_u_param_config_,

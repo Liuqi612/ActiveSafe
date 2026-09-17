@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+package pnc_x;
+
+import "pncx_affine_transformation.proto";
+
+enum ObjectRoadStatus {
+  ORS_NONE = 0;
+  ORS_OFF_ROAD = 1;
+  ORS_ON_ROAD = 2;
+}
+enum ObjectIntersectionStatus {
+  OIS_NONE = 0;
+  OIS_OUT_INTERSECTION = 1;
+  OIS_IN_INTERSECTION = 2;
+}
+
+message PredictedTrajectoryPointProto {
+  
+  optional Vec2dProto pos = 1;
+  optional double s = 2;      
+  optional double theta = 3;  
+  optional double kappa = 4;  
+
+  
+  optional double t = 5;  
+  optional double v = 6;  
+  optional double a = 7;  
+}

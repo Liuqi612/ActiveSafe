@@ -46,7 +46,7 @@ struct LkaCal {
     std::array<float, 7> k_LKA_ovrd_tq_thd_per_spd_x{40.0F, 60.0F, 84.0F, 108.0F, 132.0F, 156.0F, 180.0F}; // 手力矩接管阈值查表的仪表车速轴，单位：km/h
     std::array<float, 7> k_LKA_ovrd_tq_thd_per_spd_z{1.0F, 1.5F, 1.56F, 1.66F, 1.72F, 1.76F, 1.80F}; // 各车速点对应的驾驶员手力矩接管阈值，单位：Nm
     float k_LKA_DriHandsOvr_OnDlyTime = 0.02F; // 手力矩历史条件成立后进入接管抑制的延时，单位：s
-    float k_LKA_DriHandsOvr_OffDlyTime = 0.1F; // 手力矩历史条件解除后保持接管抑制的延时，单位：s
+    float k_LKA_DriHandsOvr_OffDlyTime = 1.0F; // 手力矩历史条件解除后保持接管抑制的延时，单位：s
     uint8_t k_LKA_DriHandsOvr_HistoryWindow = 10U; // 手力矩接管判定的历史统计窗口，单位：帧
     uint8_t k_LKA_DriHandsOvr_HistorySuppressCount = 6U; // 历史窗口内达到手力矩阈值即可判定接管的最少帧数，单位：帧
 
@@ -57,7 +57,7 @@ struct LkaCal {
     float k_driver_intent_accel_pedal_threshold_pct = 30.0F; // 油门踏板分数达到1.0时对应的开度，单位：%
     float k_driver_intent_brake_pressure_threshold_bar = 12.0F; // 制动压力分数达到1.0时对应的压力，单位：bar
     float k_driver_intent_brake_pedal_threshold_pct = 20.0F; // 制动踏板分数达到1.0时对应的开度，单位：%
-    float k_driver_intent_off_delay_s = 0.1F; // 综合驾驶意图条件解除后保持抑制的延时，单位：s
+    float k_driver_intent_off_delay_s = 1.0F; // 综合驾驶意图条件解除后保持抑制的延时，单位：s
 
     float k_eps_available_inhibit_off_delay_s = 0.5F;
 

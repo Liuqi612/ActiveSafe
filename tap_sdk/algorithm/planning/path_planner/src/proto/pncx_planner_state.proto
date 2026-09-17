@@ -1,0 +1,191 @@
+syntax = "proto2";
+
+package pnc_x.planning;
+
+
+import "pncx_timestamp.proto";
+import "pncx_lite_common.proto";
+import "pncx_lane_path.proto";
+import "pncx_lane_point.proto";
+import "pncx_affine_transformation.proto";
+import "pncx_constraint.proto";
+import "pncx_traffic_light_info.proto";
+import "pncx_lane_change.proto";
+import "pncx_selector_state.proto";
+import "pncx_autonomy_state.proto";
+
+import "pncx_trajectory.proto";
+import "pncx_route.proto";
+import "pncx_initializer.proto";
+import "pncx_planner_object.proto";
+import "pncx_smooth_reference_line.proto";
+import "pncx_speed_finder.proto";
+import "pncx_optimizer.proto";
+
+
+
+message InputSeqNum {
+  optional uint64 pose = 1;
+  optional uint64 autonomy_state = 4;
+  optional uint64 traffic_light_states = 5;
+  optional uint64 driver_action = 6;
+  optional uint64 rerouting_request = 7;
+  optional uint64 remote_assist_to_car = 8;
+  optional uint64 recorded_route = 9;
+  optional uint64 chassis = 10;
+  optional uint64 prediction = 11;
+  optional uint64 localization_transform = 12;
+
+  
+  optional uint64 real_objects = 13;
+  optional uint64 virtual_objects = 14;
+  optional uint64 av_objects = 15;
+
+  optional uint64 routing_result = 16;
+  optional uint64 prev_planner_debug = 17;
+
+  optional uint64 route_mgr_output = 18;
+  optional uint64 sensor_fovs = 19;
+  optional uint64 run_event_states = 20;
+
+  reserved 2, 3;
+}
+
+message TimeSeqNum {
+  optional uint64 ts_micros = 1;
+  optional uint64 seq_num = 2;
+}
+
+message TollHoldingState {
+  
+  
+  optional bool cleared = 2;
+}
+
+message PosePoint {
+  optional Vec2dProto pos = 1;
+  optional double theta = 2;
+}
+
+message ObjectsTransform {
+  optional TimeSeqNum objects = 1;
+  optional TimeSeqNum localization_transform = 2;
+}
+
+message PredictionSeq {
+  optional TimeSeqNum pose = 1;
+  optional TimeSeqNum localization_transform = 2;
+  optional TimeSeqNum traffic_light_states = 3;
+  optional TimeSeqNum real_objects = 4;
+  optional TimeSeqNum virtual_objects = 5;
+  optional TimeSeqNum objects_prediction = 6;  
+}
+
+message PredictionStateProto {
+  repeated TimeSeqNum av = 4;
+  repeated ObjectsTransform objects_transforms = 8;
+  optional Timestamp prediction_init_time = 6;
+  optional PredictionSeq prediction_seq = 7;
+
+  
+
+  reserved 1, 2, 3, 5;
+}
+
+message PlannerStateProto {
+  optional LiteHeader header = 1;
+
+  
+  
+  
+
+  
+  optional TrajectoryProto previous_trajectory = 3;
+
+  message ObjectIdList {
+    repeated string id = 1;
+  }
+
+  
+
+  
+
+  optional TrafficLightHistoryManagerProto tl_history_mgr = 15;
+
+  
+
+  optional LaneChangeStateProto lane_change_state = 17;
+
+  
+  
+
+  
+  
+
+  optional AutonomyStateProto previous_autonomy_state = 23;
+
+  
+
+  optional int32 version = 28;
+
+  
+  optional InitializerStateProto initializer_state = 30;
+
+  
+
+  optional mapping.LanePathProto prev_lane_path_before_lc = 48;
+  optional SpacetimePlannerObjectTrajectoriesProto
+      st_planner_object_trajectories = 37;
+  optional DeciderStateProto decider_state = 38;
+
+  
+
+  
+
+  
+
+  
+
+  
+  optional mapping.LanePathProto prev_target_lane_path = 44;
+  optional double prev_length_along_route = 45;
+  optional double prev_max_reach_length = 57;
+  optional RouteSectionSequenceProto prev_route_sections = 46;
+  optional mapping.LanePointProto station_anchor = 51;
+
+  
+  optional bool prev_smooth_state = 47;
+  optional SmoothedReferenceLineResultProto smooth_result_map = 54;
+
+  optional mapping.LanePathProto preferred_lane_path = 49;
+
+  
+  map<string, YellowLightObservationProto> yellow_light_observations = 50;
+
+  
+
+  optional SelectorStateProto selector_state = 59;
+
+  
+
+  optional TrajectoryEndInfoProto previous_trajectory_end_info = 56;
+
+  
+  
+
+  
+  
+
+  
+  
+  
+
+  
+  
+
+  
+  optional TrajectoryOptimizerStateProto selected_trajectory_optimizer_state =
+      67;
+  reserved 4 to 10, 11, 12, 18, 20, 21, 24, 25, 26, 32 to 36, 42, 52, 58, 64,
+      66;
+}

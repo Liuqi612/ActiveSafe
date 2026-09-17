@@ -7,17 +7,17 @@ SafeMargin::SafeMargin() {
 SafeMargin::~SafeMargin() = default;
 SafeMarginCal SafeMargin::safemargin_cal_{};
 
-void SafeMargin::CalculateSafeMargin(const AsVseOut &vse_out, LgSfObsData &obs_data, bool clamp_inpath_pred_offsets) {
+void SafeMargin::CalculateSafeMargin(const AsVseOut &vse_out, LgSfObsData &obs_data) {
     CalcLongPredTimeOffset(obs_data, vse_out.vcs_long_vel);
     CalcShortPredTimeOffset(obs_data, vse_out.vcs_long_vel, vse_out.config.k_dist_to_rear_axle, vse_out.aeb_active, vse_out.straight_driving);
     CalcLateralManoeuverOffset(obs_data, vse_out.vcs_long_vel);
     CalcLateralIntersectionOffset(obs_data, vse_out.vcs_long_vel);
     CalcLatInPathOffsetForLtap(obs_data);
-    CalcInPathOffset(vse_out, obs_data, clamp_inpath_pred_offsets);
+    CalcInPathOffset(vse_out, obs_data);
     CalcBoundingBox(obs_data);
 }
 
-void SafeMargin::CalcInPathOffset(const AsVseOut &vse_out, LgSfObsData &obs_data, bool clamp_inpath_pred_offsets) {
+void SafeMargin::CalcInPathOffset(const AsVseOut &vse_out, LgSfObsData &obs_data) {
     switch (obs_data.obs->object_class) {
         case ObjectClass::CAR:
             CalcCarInpathPredOffset(vse_out, obs_data);
@@ -85,11 +85,6 @@ void SafeMargin::CalcInPathOffset(const AsVseOut &vse_out, LgSfObsData &obs_data
         if (obs_data.offs_lat_inpath_current < 0.0F) {
             obs_data.offs_lat_inpath_current *= 0.85F;
         }
-    }
-
-    if (clamp_inpath_pred_offsets) {
-        obs_data.offs_lat_inpath_pred_edge = fmaxf(obs_data.offs_lat_inpath_pred_edge, 0.0F);
-        obs_data.offs_obs_lat_pred = fmaxf(obs_data.offs_obs_lat_pred, 0.0F);
     }
 }
 
@@ -159,8 +154,6 @@ void SafeMargin::CalcBikeInpathPredOffset(const AsVseOut &vse_out, LgSfObsData &
     }
 
     obs_data.offs_lgt_inpath_pred_edge = 0.0F;
-    obs_data.offs_lat_inpath_pred_edge = 0.0F;
-    obs_data.offs_obs_lat_pred = 0.0F;
     if (obs_data.aeb_atv_target) {
         obs_data.offs_obs_lat_pred = 0.3;
         obs_data.offs_lat_inpath_pred_edge = fmax(safemargin_cal_.k_inpath_lat_pred_max, obs_data.offs_lat_inpath_pred_edge);
@@ -259,8 +252,6 @@ void SafeMargin::CalcMotorBikeInpathPredOffset(const AsVseOut &vse_out, LgSfObsD
     }
 
     obs_data.offs_lgt_inpath_pred_edge = 0.0F;
-    obs_data.offs_lat_inpath_pred_edge = 0.0F;
-    obs_data.offs_obs_lat_pred = 0.0F;
     if (obs_data.aeb_atv_target) {
         obs_data.offs_obs_lat_pred = 0.3;
         obs_data.offs_lat_inpath_pred_edge = fmax(safemargin_cal_.k_inpath_lat_pred_max, obs_data.offs_lat_inpath_pred_edge);

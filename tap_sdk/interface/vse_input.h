@@ -25,7 +25,6 @@ typedef struct {
     float   accel_ped_pos;                // WI_AccelPedPos:%,[0,100]
     float   brk_pedal_pos;                // WI_BrkPedalPos:%,[0,100]
     float   torsion_bar_trq;              // WI_TorsionBarTrq
-    uint8_t hod_hands_monitor;            // Unused_uint8_14: 1=Hands Off, 2=Hands Touch, 3=Hands Shake
     uint8_t long_ctrl_active;             // WI_LgCtrlBrakeAct:0:Not Active,1:Active
     uint8_t auto_brake_active;            // WI_AutoBrakeAct:0:Not Active,1:Active
     uint8_t brk_pedal_prsd;               // WI_BrkPedalPrsd:0:Not Press,1:Press

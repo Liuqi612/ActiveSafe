@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+package pnc_x;
+
+import "pncx_lite_common.proto";
+import "pncx_affine_transformation.proto";
+
+message PoseProto {
+  optional LiteHeader header = 1;
+
+  optional Vec3dProto pos_smooth = 2;
+
+  optional double yaw = 15;
+  optional double pitch = 16;
+  optional double roll = 17;
+
+  optional Vec3dProto vel_body = 5;
+  optional Vec3dProto ar_body = 6;
+  optional Vec3dProto accel_body = 7;
+
+  optional Vec3dProto vel_smooth = 8;
+  optional Vec3dProto ar_smooth = 9;
+  optional Vec3dProto accel_smooth = 10;
+
+  optional double timestamp = 14;
+
+  optional double speed = 20;
+
+  reserved 3, 19;
+}

@@ -209,6 +209,11 @@ void ActiveSafetyWrapper::ActuatorArbitrate(){
 void ActiveSafetyWrapper::RunTselCtrl(const FusionInfo &fusioninfo, const LanesInfo &road_info, const PlanningInfo &long_ctrl_info,
                                       const MebMsgInfo &meb_info, uint64_t control_time_ns) {
 
+    // Selection output is read by the Planning timer on another thread.  Hold
+    // the same mutex across the control update so ID/TTC/status are observed
+    // as one decision rather than from different control ticks.
+    std::lock_guard<std::mutex> threat_lock(threat_assor_mtx);
+
     // diag
     DiagArbitrate();
 
@@ -294,9 +299,7 @@ void ActiveSafetyWrapper::RunTselCtrl(const FusionInfo &fusioninfo, const LanesI
         obs_list_[i]->UpdateObstacle(fusioninfo.trk[i], vse_out_, obs_time_comp, ego_delta_last_cycle);
     }
 
-    const bool clamp_inpath_pred_offsets =
-        lgsf_2024_.GetLtapOut().AEBFunc.Sceniaro.reserved2 != 0U;
-    lgsf_threat_tgt_.SelectLongThreatTgt(vse_out_, obs_list_, global_config_, clamp_inpath_pred_offsets);
+    lgsf_threat_tgt_.SelectLongThreatTgt(vse_out_, obs_list_, global_config_);
     lgsf_func_.Update(vse_out_, lgsf_threat_tgt_.aeb_target, global_config_, lgsf_threat_tgt_.ego_path_);
 
     //是否切换新版目标筛选控制结果进行输出
@@ -304,8 +307,7 @@ void ActiveSafetyWrapper::RunTselCtrl(const FusionInfo &fusioninfo, const LanesI
 
     if(use_new_tar_select_out){
 
-        lgsf_2024_.UpdateNewTsel(vse_out_, obs_list_, lgsf_threat_tgt_.aeb_target, lgsf_2024_param_,
-                                 diag_inhibit_result_.aeb_inhibit, global_config_);
+        lgsf_2024_.UpdateNewTsel(vse_out_,lgsf_threat_tgt_.aeb_target,lgsf_2024_param_,diag_inhibit_result_.aeb_inhibit,global_config_);
     }else{
 
         lgsf_2024_.Update(vse_out_, obs_list_, road_info, lgsf_2024_param_, diag_inhibit_result_.aeb_inhibit,global_config_);
@@ -331,7 +333,6 @@ void ActiveSafetyWrapper::RunTselCtrl(const FusionInfo &fusioninfo, const LanesI
     ::Reserved_Input reserved_input{};
     reserved_input.last_aes_active = last_aes_activated_;
     reserved_input.aes_float_reserv1 = global_config_.k_AES_esafeedback_factor;
-    reserved_input.aes_float_reserv2 = global_config_.k_AES_aesesa_ttcfactor;
     reserved_input.aes_uint32_reserv1 = global_config_.k_AES_feedbackopen;
 
     const auto& ltap_out = lgsf_2024_.GetLtapOut();
@@ -359,9 +360,6 @@ void ActiveSafetyWrapper::RunTselCtrl(const FusionInfo &fusioninfo, const LanesI
 
     // 输出功能状态
     CalcShadowMode();
-
-    // Scene/SubScene
-    CalcScene(lgsf_2024_.GetLtapOut(),lgsf_threat_tgt_.aeb_target);
 
     // 输出总时间
     time_info_.cur_time = vse_out_.veh_time_stamp;
@@ -396,6 +394,13 @@ uint32_t ActiveSafetyWrapper::GetFaultType() const {
         res = fault_type_;
     }
     return res;
+}
+
+LongSafeAebTargetSnapshot ActiveSafetyWrapper::GetLongSafeAebTargetSnapshot()
+    const {
+    std::lock_guard<std::mutex> lock(threat_assor_mtx);
+    const auto &target = lgsf_2024_.GetSelectOut().longsafe_aeb;
+    return {target.fus_trkId, target.ttc, target.status};
 }
 
 void ActiveSafetyWrapper::RunPathPlanning(uint64_t time) {
@@ -483,47 +488,6 @@ void ActiveSafetyWrapper::CalcShadowMode() {
     }
 }
 
-void ActiveSafetyWrapper::CalcScene(const senseAD::tap::LgSf_Ltap_T &ltap_out,const longsafe::LongSafeObject &aeb_target) {
-    
-
-    //EgoMotionType::  2:straight  3:mid_radius   4:samll_radius
-    if(ltap_out.AEBFunc.Sceniaro.EgoMotionType == 2 && aeb_target.fus_trkID > 0 ){
-
-        if(aeb_target.inpath_current && aeb_target.stationary){
-
-            sub_scene_ = SubScene::STRAIGHT_2_STATIONARY;
-  
-        }else if(((abs(aeb_target.heading) > 0.4) &&(abs(aeb_target.heading) < 2.0 )) 
-               || (abs(aeb_target.lat_vel) > 1)){
-
-            sub_scene_ = SubScene::STRAIGHT_2_CROSS;
-        }else if(abs(aeb_target.heading) > 2.0 && !aeb_target.stationary){
-
-            sub_scene_ = SubScene::STRAIGHT_2_ONCOMING;
-        }else{
-
-            sub_scene_ = SubScene::STRAIGHT_2_LONG_MOVING;
-        }
-    }else if((ltap_out.AEBFunc.Sceniaro.EgoMotionType == 3 || 
-              ltap_out.AEBFunc.Sceniaro.EgoMotionType == 4)&& 
-              aeb_target.fus_trkID > 0 ){
-
-        if(aeb_target.stationary){
-
-            sub_scene_ = SubScene::TURN_2_STATIONARY;
-  
-        }else{
-            sub_scene_ = SubScene::TURN_2_MOVING;
-
-        }
-
-    }else{
-            sub_scene_ = SubScene::UNKNOWN;
-
-    }
-
-}
-
 void ActiveSafetyWrapper::MappingMebCmd(const MebMsgInfo &meb_info, float host_spd) {
     (void)memset(&meb_cmd_, 0, sizeof(meb_cmd_));
     trust_meb_complete = meb_info.uic_cmd.trust_meb_complete;
@@ -571,12 +535,6 @@ bool ActiveSafetyWrapper::LoadJsonParam(const json11::Json &config) {
     if (!JsonParse<decltype(global_config_.k_Lgsf_EnReverseTrajPred)>(config, "longsafe_config", "k_Lgsf_EnReverseTrajPred", &global_config_.k_Lgsf_EnReverseTrajPred))
         return false;
     if (!JsonParse<decltype(global_config_.k_Lgsf_ForOldRsclBag)>(config, "longsafe_config", "k_Lgsf_ForOldRsclBag", &global_config_.k_Lgsf_ForOldRsclBag))
-        return false;
-    if (!JsonParse<decltype(global_config_.k_LgSf_EnCone)>(config, "longsafe_param", "k_LgSf_EnCone", &global_config_.k_LgSf_EnCone))
-        return false;
-    if (!JsonParse<decltype(global_config_.k_LgSf_EnBarrier)>(config, "longsafe_param", "k_LgSf_EnBarrier", &global_config_.k_LgSf_EnBarrier))
-        return false;
-    if (!JsonParse<decltype(global_config_.k_LgSf_EnOcc)>(config, "longsafe_param", "k_LgSf_EnOcc", &global_config_.k_LgSf_EnOcc))
         return false;
     // parse 2024 param.
     if (!JsonParse<decltype(lgsf_2024_param_.k_LgSf_UseShadowMode)>(config, "longsafe_config", "k_use_shadowmode",
@@ -683,12 +641,6 @@ bool ActiveSafetyWrapper::LoadJsonParam(const json11::Json &config) {
     if (!JsonParse<decltype(global_config_.k_LKA_HandoffWarningEnable)>(config, "latsafe_config", "k_LKA_HandoffWarningEnable",
                                                                         &global_config_.k_LKA_HandoffWarningEnable))
         return false;
-    if (!JsonParse<decltype(global_config_.k_LKA_HODHandsOffConfirmTime)>(config, "latsafe_config", "k_LKA_HODHandsOffConfirmTime",
-                                                                         &global_config_.k_LKA_HODHandsOffConfirmTime))
-        return false;
-    if (!JsonParse<decltype(global_config_.k_LKA_HODHandsOnConfirmTime)>(config, "latsafe_config", "k_LKA_HODHandsOnConfirmTime",
-                                                                        &global_config_.k_LKA_HODHandsOnConfirmTime))
-        return false;
     if (!JsonParse<decltype(global_config_.k_LDW_EnLine)>(config, "latsafe_config", "k_LDW_EnLine",
                                                                        &global_config_.k_LDW_EnLine))
         return false;
@@ -753,9 +705,6 @@ bool ActiveSafetyWrapper::LoadJsonParam(const json11::Json &config) {
         return false;
     if (!JsonParse<decltype(global_config_.k_AES_feedbackopen)>(config, "latsafe_config", "k_AES_feedbackopen",
                                                                        &global_config_.k_AES_feedbackopen))
-        return false;
-    if (!JsonParse<decltype(global_config_.k_AES_aesesa_ttcfactor)>(config, "latsafe_config", "k_AES_aesesa_ttcfactor",
-                                                                       &global_config_.k_AES_aesesa_ttcfactor))
         return false;
     return true;
 }

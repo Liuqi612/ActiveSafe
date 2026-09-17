@@ -1,0 +1,930 @@
+# Default params are applicable to passenger cars in China urban environments.
+enable_pnp_route_selector: true
+motion_constraint_params {
+    default_speed_limit: 93.2         # 74.6mph, ~120kph | 80.8mph, ~130kph | 93.2mph, ~150kph
+  default_reverse_speed_limit: 0.0  # dont't allow reverse by default
+  max_deceleration: -5.0
+  max_acceleration: 2.0
+  max_decel_jerk: -5.0
+  max_accel_jerk: 5.0
+  max_psi: 0.06
+  max_lateral_accel: 2.7
+  max_lateral_jerk: 2.3
+  max_chi: 0.1
+}
+
+lc_decision_params {
+  min_lane_change_length: 6.0
+  lane_change_style: 3  # 1 正常  2 激进   3  保守
+}
+
+emergency_stop_params {
+  max_deceleration: -5.0
+  min_detect_distance: 1.0
+  max_detect_distance: 3.0
+  vel_threshold: 0.0
+  speed_to_detection_distance_coeff: 0.5
+}
+
+reference_path_params {
+  bezier_params {
+    min_look_ahead_dist: 10.0
+    look_ahead_time: 6.0
+    look_ahead_offset: 30.0
+  }
+}
+
+decision_constraint_config {
+  enable_traffic_light: true
+  enable_crosswalk: true
+  enable_leading_object: true
+  enable_no_block: true
+  enable_end_of_path_boundary: true
+  enable_speed_bump: true
+  enable_cautious_brake: true
+  enable_lc_end_of_current_lane: true
+  enable_parking_brake_release: true
+  enable_pedestrians: true
+  enable_toll: true
+  enable_standstill: true
+  enable_beyond_length_along_route: true
+  enable_prepare_lc: true
+  enable_solid_line_within_boundary: true
+  enable_inferred_object: true
+  enable_yield_to_vru: true
+  enable_lc_for_vru: true
+  tl_threshold: 160.0
+  normal_offset: 1.0
+  tl_standoff: 0.7
+  tl_standoff_adapt_v: 40.0
+  tl_standoff_ttc_plf: {
+    x: 5.0
+    x: 7.0
+    y: 10.0
+    y: 0.7
+  }
+  v2_speed_limit_length: 18.0
+  v2_speed_limit_min_dist: 0.0
+}
+
+hard_code_lane_speed_kph {
+  x: 30.0
+  x: 60.0
+  x: 95.0
+  x: 110.0
+  x: 150
+  y: 1.0
+  y: 1.0
+  y: 1.0
+  y: 2.0
+  y: 2.0
+}
+
+
+speed_finder_params {}
+
+initializer_params {
+  search_algorithm: InteractiveAStar  # currently only DP
+
+  dp_cost_config {
+    dp_acceleration { accel: 4.0 }
+    dp_lane_boundary { ref_center: 3.0 inner_bound: 1.0 outer_bound: 3.0 }
+    dp_curvature { curvature: 10.0 }
+    dp_lateral_acceleration { acc_hard: 30.0 acc_soft: 2.0 jerk: 0.5 }
+    dp_stop_constraint { stop_constraint: 10000.0 }
+    dp_ref_speed {
+      exceeds_speed_limit: 10.0
+      exceeds_ref_speed: 1.0
+      below_ref_speed: 0.5
+    }
+    dp_dynamic_collision { collision_cost: 10000.0 }
+    dp_leading_object { leading_object: 10000.0 }
+    dp_ref_traj { ref_traj: 100.0 }
+    dp_final_progress { longitudinal: 25.0 lateral: 30.0 }
+  }
+  dp_post_cost_config {
+    dp_acceleration { accel: 7.90948914e+02 }
+    dp_lane_boundary {
+      ref_center: 1.21748305e-24
+      inner_bound: 1.07036286e-24
+      outer_bound: 1.07036286e-24
+    }
+    dp_curvature { curvature: 3.20120911e+02 }
+    dp_lateral_acceleration {
+      acc_hard: 6.73399808e-11
+      acc_soft: 4.28679581e+01
+      jerk: 9.67409020e-25
+    }
+    dp_stop_constraint { stop_constraint: 100.0 }
+    dp_ref_speed {
+      exceeds_speed_limit: 4.70233900e-28
+      exceeds_ref_speed: 1.16502214e-26
+      below_ref_speed: 4.95628510e+01
+    }
+    dp_dynamic_collision { collision_cost: 10000.0 }
+    dp_leading_object { leading_object: 40.0 }
+    dp_ref_traj { ref_traj: 100.0 }
+    dp_final_progress { longitudinal: 2.08547516e+02 lateral: 1.19241917e-24 }
+  }
+  ref_line_cost_config {
+    ref_line_stationary_object { distance: 50.0 }
+    ref_line_progress { longitudinal: 10.0 lateral: 200.0 }
+    ref_line_path_boundary { center: 1.0 target_boundary: 10.0 boundary: 1.0 }
+    ref_line_curvature { absolute: 5.0 }
+  }
+  sample_patterns {
+    config_name: ISC_HIGH_SPEED
+    scenario: SCENARIO_LANE_KEEPING
+    config {
+      range: 1.0
+      range: 50.1
+      range: 80.1
+      range: 10000.0
+      layer_gap: 20.0
+      layer_gap: 40.0
+      layer_gap: 40.0
+      layer_gap: 50.0
+      lateral_resolution: 0.5
+      lateral_resolution: 0.5
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      unit_length_lateral_span: 1.0
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.1
+    }
+  }
+  sample_patterns {
+    config_name: ISC_MEDIUM_SPEED
+    scenario: SCENARIO_LANE_KEEPING
+    config {
+      range: 1.0
+      range: 10.1
+      range: 20.1
+      range: 60.1
+      range: 10000.0
+      layer_gap: 10.0
+      layer_gap: 20.0
+      layer_gap: 20.0
+      layer_gap: 40.0
+      layer_gap: 40.0
+      lateral_resolution: 0.5
+      lateral_resolution: 0.5
+      lateral_resolution: 0.5
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      cross_layer_connection: 2
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      unit_length_lateral_span: 1.0
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.1
+      unit_length_lateral_span: 0.1
+    }
+  }
+  sample_patterns {
+    config_name: ISC_LOW_SPEED
+    scenario: SCENARIO_LANE_KEEPING
+    config {
+      range: 1.0
+      range: 20.1
+      range: 40.1
+      range: 60.1
+      range: 10000.0
+      layer_gap: 5.0
+      layer_gap: 10.0
+      layer_gap: 20.0
+      layer_gap: 40.0
+      layer_gap: 50.0
+      lateral_resolution: 0.5
+      lateral_resolution: 0.5
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      cross_layer_connection: 2
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      unit_length_lateral_span: 1.0
+      unit_length_lateral_span: 0.5
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.1
+      unit_length_lateral_span: 0.1
+    }
+  }
+  sample_patterns {
+    config_name: ISC_CREEP_SPEED
+    scenario: SCENARIO_LANE_KEEPING
+    config {
+      range: 1.0
+      range: 20.1
+      range: 40.1
+      range: 60.1
+      range: 10000.0
+      layer_gap: 5.0
+      layer_gap: 10.0
+      layer_gap: 20.0
+      layer_gap: 40.0
+      layer_gap: 40.0
+      lateral_resolution: 0.5
+      lateral_resolution: 0.5
+      lateral_resolution: 0.5
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      cross_layer_connection: 2
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      unit_length_lateral_span: 1.0
+      unit_length_lateral_span: 0.5
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.1
+      unit_length_lateral_span: 0.1
+    }
+  }
+  sample_patterns {
+    config_name: ISC_HIGH_SPEED
+    scenario: SCENARIO_LANE_CHANGE
+    config {
+      range: 1.0
+      range: 40.1
+      range: 60.1
+      range: 10000.0
+      layer_gap: 20.0
+      layer_gap: 20.0
+      layer_gap: 40.0
+      layer_gap: 40.0
+      lateral_resolution: 0.5
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      cross_layer_connection: 2
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      unit_length_lateral_span: 1.0
+      unit_length_lateral_span: 0.05
+      unit_length_lateral_span: 0.05
+      unit_length_lateral_span: 0.05
+    }
+  }
+  sample_patterns {
+    config_name: ISC_MEDIUM_SPEED
+    scenario: SCENARIO_LANE_CHANGE
+    config {
+      range: 1.0
+      range: 40.1
+      range: 60.1
+      range: 10000.0
+      layer_gap: 20.0
+      layer_gap: 20.0
+      layer_gap: 40.0
+      layer_gap: 40.0
+      lateral_resolution: 0.5
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      cross_layer_connection: 2
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      unit_length_lateral_span: 1.0
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.05
+      unit_length_lateral_span: 0.05
+    }
+  }
+  sample_patterns {
+    config_name: ISC_LOW_SPEED
+    scenario: SCENARIO_LANE_CHANGE
+    config {
+      range: 1.0
+      range: 20.1
+      range: 60.1
+      range: 10000.0
+      layer_gap: 10.0
+      layer_gap: 10.0
+      layer_gap: 20.0
+      layer_gap: 40.0
+      lateral_resolution: 0.5
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      cross_layer_connection: 2
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      unit_length_lateral_span: 1.0
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.05
+      unit_length_lateral_span: 0.05
+    }
+  }
+  sample_patterns {
+    config_name: ISC_CREEP_SPEED
+    scenario: SCENARIO_LANE_CHANGE
+    config {
+      range: 1.0
+      range: 20.1
+      range: 60.1
+      range: 10000.0
+      layer_gap: 5.0
+      layer_gap: 10.0
+      layer_gap: 20.0
+      layer_gap: 40.0
+      lateral_resolution: 0.5
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      lateral_resolution: 1.0
+      cross_layer_connection: 2
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      cross_layer_connection: 1
+      unit_length_lateral_span: 1.0
+      unit_length_lateral_span: 0.5
+      unit_length_lateral_span: 0.25
+      unit_length_lateral_span: 0.05
+    }
+  }
+  astar_search_config {
+    goal_time_upper_bound: 6.0
+    goal_l: 0.3
+    min_dis: 5.0
+    goal_time: 4.0
+    heuristic_time: 6.0
+    max_search_iteration: 200
+    max_velocity: 35.0
+    max_time: 15.0
+    velocity_resolution: 3.0
+    time_resolution: 2.5
+    node_index: 2
+    h2g_ratio: 1.0
+  }
+  interactive_astar_search_config {
+    goal_time_upper_bound: 6.0
+    goal_l: 1.0
+    min_dis: 40.0
+    goal_time: 6.0
+    heuristic_time: 6.0
+    max_search_iteration: 150
+    max_velocity: 35.0
+    max_time: 15.0
+    velocity_resolution: 0.5
+    time_resolution: 0.5
+    node_index: 2
+    sample_num: 6
+    h2g_ratio: 30.0
+    g_cost_weight {
+      omega_weight: 0.5
+      omega_rate_weight: 0.0
+      acc_weight: 10.0
+      manual_mode_decel_weight: 70.0
+      decel_weight: 60.0
+      jerk_weight: 0.1
+      ref_l_weight: 1.0
+      ref_heading_weight: 1.0
+      interaction_weight: 10.0
+      centripetal_acc_weight: 0.5
+      jerk_manual_mode_weight: 0.2
+    }
+    h_cost_weight {
+      goal_s_weight: 1.0
+      goal_l_weight: 3.0
+      ori_dis_weight: 2.0
+      safety_dis_weight: 10.0
+      safety_dis_manual_mode_weight: 10.0
+      diff_v_lon_weight: 12.0
+    }
+    time_resolution_divide: 4.0
+    coarse_time_step: 1.0
+    precise_time_step: 0.5
+    gap_safety_check_param {
+      gap_lead_ttc: 2.0
+      gap_lead_thw_max: 0.2
+      gap_lead_thw_min: 0.1
+      manual_lc_gap_lead_thw_max: 0.8
+      manual_lc_gap_lead_thw_min: 0.22
+      gap_lead_dis: 2.5
+      gap_tail_ttc_max: 1.5
+      gap_tail_ttc_min: 0.4
+      radical_gap_tail_ttc_max: 1.2
+      radical_gap_tail_ttc_min: 0.4
+      gap_tail_thw_max: 0.2
+      gap_tail_thw_min: 0.1
+      radical_gap_tail_thw_max: 0.15
+      radical_gap_tail_thw_min: 0.1
+      manual_lc_gap_tail_thw_max: 0.8
+      manual_lc_gap_tail_thw_min: 0.35
+      gap_tail_dis: 2.0
+      ori_lead_ttc: 2.0
+      ori_lead_thw_max: 0.5
+      ori_lead_thw_min: 0.3
+      manual_lc_ori_lead_thw_max: 0.8
+      manual_lc_ori_lead_thw_min: 0.4
+      ori_lead_dis: 2.0
+      ori_lead_cost_ttc: 1.0
+      ori_lead_cost_thw_ratio: 0.7
+      ori_lead_cost_dis: 1.0
+      ori_lead_cost_l_ratio: 0.2
+      tighten_low_speed_lead_dist: 1.2
+      tighten_low_speed_tail_dist: 1.8
+      manual_lc_v_upper: 0.1
+    }
+    interactive_param {
+      tighten_low_speed_behind_ratio: 0.5
+      tighten_large_object_dist_min: 2.0
+      tighten_large_object_dist_max: 8.0
+      tighten_large_object_acc: -0.5
+    }
+  }
+}
+
+trajectory_optimizer_params {}
+
+selector_params {
+  cost_weights {
+    progress { progress: 5.0 follow_slow: 10.0 large_slow_working_obj: 6.0 junction_object: 50.0 avoid_merge_area:10.0 }
+    max_jerk { max_lon_jerk: 1.0 max_lat_jerk: 1.0 max_lon_deacc: 6.0 }
+    lane_change {
+      lane_path_diff: 1.5
+      pose_to_target: 2.5
+      prev_lat_diff: 1.5
+      lc_in_curvy_road: 5.0
+      lc_in_intersection: 1.0
+      lc_in_redlight: 12.0
+      lc_opposite_direction: 15.0
+      lc_safety_effect: 10.0
+      lk_after_turn_signal: 2.0
+      junction_smoothness: 10.0
+    }
+    cross_solid_boundary {
+      solid_white: 20.0
+      solid_yellow: 20.0
+      solid_double_yellow: 40.0
+      curb: 100.0
+    }
+    route_look_ahead {
+      length_along_route: 20.0
+      reach_destination: 15.0
+      preview_beyond_horizon: 6.0
+      discourage_right_most_lane: 8.0
+      behind_stalled_object: 30.0
+      merge_lane: 15.0
+      encourage_right_most_lane: 6.0
+      off_ramp_split_route: 10.0
+      avoidance_lane: 1000.0
+    }
+    lcc_route_look_ahead {
+      lcc_merge_lane: 15.0
+    }
+    boundary_expansion { boundary_expansion: 3.0 }
+    lcc_post_select { 
+      behind_stalled_object: 2.0
+      slow_working_obj: 1.5
+      second_best_select: 1.0
+    }
+  }
+  cost_config {
+    enable_progress_cost: true
+    enable_max_jerk_cost: true
+    enable_lane_change_cost: true
+    enable_solid_boundary_cost: false
+    # Temporarily disable due to noise in prediction.
+    enable_route_look_ahead_cost: true
+    enable_boundary_expansion_cost: true
+  }
+  selector_model_config {
+    enable_selector_model: false
+    selector_score_cost: 1.0
+    selector_score_only: false
+  }
+}
+
+freespace_params_for_parking {
+  path_finder_params {}
+  local_smoother_params {}
+  speed_finder_params {
+    follow_standstill_distance_for_static_obj: 0.3
+    follow_standstill_distance_for_curb: 0.3
+    extra_follow_standstill_distance_for_large_vehicle_plf {
+      x: 4.0
+      x: 6.0
+      y: 0.1
+      y: 0.0
+    }
+    enable_full_stop: false
+    speed_optimizer_params {
+      ref_speed_bias: 1.0
+      ref_speed_time_gain {
+        x: 2.0
+        x: 4.0
+        x: 6.0
+        x: 8.0
+        y: 1.3
+        y: 0.9
+        y: 0.5
+        y: 0.1
+      }
+      ref_speed_static_limit_bias: 0.1
+    }
+    st_graph_params { impassable_boundaries_search_radius_buffer: 0.2 }
+  }
+  motion_constraint_params {
+    default_speed_limit: 3.1           # ~5kph
+    default_reverse_speed_limit: 2.23  # ~3.6kph
+  }
+}
+
+freespace_params_for_driving {
+  path_finder_params {
+    hybrid_a_star_params {
+      max_iters: 5000
+      use_sampling_rs: true
+      sampling_rs_max_iters: 100
+      enable_reverse_driving: true
+      goal_xy_tolerance: 0.5
+      goal_theta_tolerance: 0.15
+      xy_resolution: 0.6
+      theta_resolution: 0.065449847  # M_PI/48
+      search_step: 0.65
+      kappa_slack_ratio: 0.85
+      a_star_resolution: 0.45
+    }
+  }
+  local_smoother_params {
+    end_pose_deviation_cost_weight: 500.0
+    end_theta_deviation_cost_weight: 4000.0
+    ref_path_deviation_cost_weight: 0.01
+    curvature_rate_cost_weight: 1.0
+    curvature_cost_weight: 5.0
+    intrinsic_jerk_cost_weight: 1.0
+    curb_soft_cost_weight: 4.0
+    curb_soft_buffer: 0.8
+  }
+  speed_finder_params {
+    follow_standstill_distance_for_static_obj: 2.0
+    follow_standstill_distance_for_curb: 0.3
+    extra_follow_standstill_distance_for_large_vehicle_plf {
+      x: 4.0
+      x: 6.0
+      y: 0.2
+      y: 0.0
+    }
+    enable_full_stop: false
+    speed_optimizer_params {
+      ref_speed_bias: 1.0
+      ref_speed_static_limit_bias: 0.5
+    }
+    st_graph_params {
+      consider_mirrors_by_default: true
+      impassable_boundaries_search_radius_buffer: 0.2
+      consider_large_vehicle_blind_spot: false
+    }
+  }
+  motion_constraint_params {
+    default_speed_limit: 6.2           # ~10kph
+    default_reverse_speed_limit: 4.46  # ~7.2kph
+  }
+}
+
+fallback_planner_params {
+  speed_finder_params { enable_interactive_speed_decision: false }
+}
+
+vehicle_models_params {
+  trajectory_optimizer_vehicle_model_params {
+    consider_mirrors_by_default: true
+    use_less_circles: false
+  }
+
+  freespace_vehicle_octagon_model_params {
+    front_corner_side_length: 0.3
+    rear_corner_side_length: 0.25
+    consider_mirror: false
+    mirror_offset_x: 2.102
+    mirror_offset_y: 0.935
+    mirror_radius: 0.125
+    mirror_height: 0.925
+  }
+
+  freespace_local_smoother_vehicle_model_params {
+    circles {
+      dist_to_rac: 0.0
+      angle_to_axis: 0.0
+      radius: 1.055
+      name: "Rear axis center"
+    }
+    circles {
+      dist_to_rac: 1.4175
+      angle_to_axis: 0.0
+      radius: 1.055
+      name: "Middle axis center"
+    }
+    circles {
+      dist_to_rac: 2.835
+      angle_to_axis: 0.0
+      radius: 1.055
+      name: "Front axis center"
+    }
+    circles {
+      dist_to_rac: 3.6585
+      angle_to_axis: 0.20728564
+      radius: 0.3
+      name: "Front left corner"
+    }
+    circles {
+      dist_to_rac: 3.6585
+      angle_to_axis: -0.20728564
+      radius: 0.3
+      name: "Front right corner"
+    }
+    consider_mirrors_by_default: true
+    use_less_circles: false
+  }
+}
+
+planner_functions_params { enable_three_point_turn: false }
+
+acc_params {
+  motion_constraint_params {
+    default_speed_limit: 93.2         # 74.6mph, ~120kph
+    default_reverse_speed_limit: 0.0  # dont't allow reverse by default
+    max_deceleration: -5.0
+    max_acceleration: 2.5
+    max_decel_jerk: -5.0
+    max_accel_jerk: 5.0
+    max_psi: 0.06
+    max_lateral_accel: 2.7
+    max_lateral_jerk: 2.3
+    max_chi: 0.1
+  }
+  speed_finder_params {
+    speed_optimizer_params {
+      knot_num: 41
+      output_time_resolution: 0.1
+      speed_buffer: 0.1
+      s_kernel_weight: 0.00001
+      speed_kernel_weight: 0.5
+      accel_kernel_weight: 9.0
+      jerk_kernel_weight: 5.0
+      regularization: 0.0
+      s_follow_weak_weight: 0.8
+      s_follow_strong_weight: 6.0
+      s_lead_weak_weight: 1.0
+      s_lead_strong_weight: 5.0
+      s_stop_weight: 10.0
+      accel_weight_gain_plf {
+        x: 3.0
+        x: 6.0
+        x: 10.0
+        x: 15.0
+        x: 20.0
+        y: 1.0
+        y: 2.0
+        y: 2.5
+        y: 3.0
+        y: 3.5
+      }
+      piecewise_time_range: 0.0
+      piecewise_time_range: 3.0
+      piecewise_time_range: 7.0
+      piecewise_time_range: 10.0
+      time_gain_for_moving_object: 1.0
+      time_gain_for_moving_object: 0.5
+      time_gain_for_moving_object: 2.0
+      time_gain_for_static_object: 1.0
+      time_gain_for_static_object: 1.0
+      time_gain_for_static_object: 5.0
+      accel_lower_slack_weight: 50.0
+      accel_lower_bound_plf { x: 10.0 x: 30.0 y: -5.0 y: -3.0 }
+      ref_speed_bias: 3.0
+      ref_speed_time_gain {
+        x: 2.0
+        x: 4.0
+        x: 6.0
+        x: 8.0
+        y: 4.0
+        y: 2.0
+        y: 1.5
+        y: 1.5
+      }
+      ref_speed_static_limit_bias: 1.0
+      enable_comfort_brake_speed: true
+      enable_const_speed_ref_v: false
+      soft_jerk_lower_weight_plf {
+        x: 5.0
+        x: 10.0
+        x: 20.0
+        y: 0.01
+        y: 3.0
+        y: 6.0
+      }
+      soft_jerk_upper_weight_plf { x: 2.0 x: 10.0 y: 0.1 y: 3.0 }
+      prediction_impact_factor: 0.9
+      enable_lead_decision: true
+      speed_limit_strong_weight: 15.0
+      speed_limit_medium_weight: 10.0
+      speed_limit_weak_weight: 5.0
+    }
+
+    speed_limit_params {
+      enable_lane_limit: true
+      enable_curvature_limit: true
+      max_curvature_consider_radius: 5.0
+      speed_limit_for_large_curvature: 3.0
+      curvature_bias: 3.7
+      curvature_gain: 0.078
+      vehicle_buffer: 0.2
+      enable_new_curvature_speed_limit: true
+      curvature_power: 0.6
+      curvature_numerator: 0.9
+      curvature_bias1: 0.015
+      curvature_bias2: 0.1
+      max_steer_rate: 5.06  # 290 deg/s
+      min_steer_rate_speed_limit: 1.0
+      min_steer_rate_forward_consider_radius: 5.0
+      min_steer_rate_backward_consider_radius: 1.0
+      hard_curb_clearance_rel_speed_plf {
+        x: 0.15
+        x: 0.3
+        x: 0.5
+        x: 0.7
+        y: 2.0
+        y: 5.0
+        y: 10.0
+        y: 30.0
+      }
+    }
+    follow_standstill_distance: 3.5
+    follow_standstill_distance_for_static_obj: 6.0
+    follow_standstill_distance_for_curb: 1.0
+    follow_safety_distance: 2.5
+    lead_standstill_distance: 4.0
+    follow_time_headway: 1.7
+    large_vehicle_follow_time_headway: 2.0
+    lead_time_headway: 1.0
+    gap_expand_follow_standstill: 8.0
+    follow_distance_rel_speed_plf {
+      x: 0.0
+      x: 2.0
+      x: 3.0
+      x: 4.0
+      y: 1.0
+      y: 0.3
+      y: 0.1
+      y: 0.02
+    }
+    probability_gain_plf {
+      x: 0.0
+      x: 0.3
+      x: 0.6
+      x: 1.0
+      y: 0.0
+      y: 0.1
+      y: 0.3
+      y: 1.0
+    }
+
+    close_object_params { enable_stationary_close_object_slowdown: true }
+
+    st_boundary_pre_decider_params {
+      enable_lane_change_lead_decision: false
+      enable_parallel_cut_in_pre_brake: true
+    }
+
+    ignore_decider_params {
+      ignore_late_parallel_cut_in_vehicle: false
+      ignore_reverse_driving: false
+    }
+
+    pre_brake_decider_params { 
+      ignore_late_cut_in_ped: false
+      far_uncertain_distance_thre: 100
+      far_uncertain_conf_lv_thre: 2
+      far_uncertain_pre_brake_plf { x: 4.0 x: 5.0 x: 6.0 y: -0.6 y: -0.3 y: 0.0}
+    }
+
+    enable_interactive_speed_decision: true
+
+    emrgency_stop_params { 
+      emergency_remain_dis_max: 6.0
+      dec2stop_acc_thld: -2.0
+      acc_actual_diff_thld: 0.3
+      av_speed_thld: 5.0
+      remain_dis_debounce: 0.3
+      obj_max_speed: 3.0
+    }
+
+    enable_full_stop: true
+    full_stop_traj_length_threshold: 1.5
+    full_stop_traj_time_threshold: 1.5
+    full_stop_speed_threshold: 0.1
+    st_graph_params {
+      consider_mirrors_by_default: true
+      impassable_boundaries_search_radius_buffer: 0.8
+      consider_large_vehicle_blind_spot: false
+    }
+    enable_front_vehicle_alert: true
+    tor_max_predict_time: 1.5
+    tor_const_safe_distance: 1.5
+    timegap_for_tor_plf {
+      x: -50.0
+      x: -20.0
+      x: 2.0
+      x: 50.0
+      y: 0.5
+      y: 0.5
+      y: 0.2
+      y: 0.2
+    }
+  }
+}
+
+alcc_params {
+  speed_finder_params {
+    close_object_params { enable_stationary_close_object_slowdown: false }
+  }
+  trajectory_optimizer_params {}
+}
+
+spacetime_planner_object_trajectories_params {
+  spacetime_planner_object_trajectories_config {
+    enable_all_finder: false
+    enable_stationary_finder: true
+    enable_front_side_moving_finder: true
+    enable_dangerous_side_moving_finder: false
+    enable_front_moving_finder: false
+    enable_cutin_vehicle_filter: true
+    enable_crossing_filter: true
+    enable_reverse_vehicle_filter: true
+    enable_beyond_stop_line_filter: false
+  }
+}
+
+check_lcc_abnormal_params {
+  max_not_match_count: 50
+  after_frames_to_check: 5
+  every_frames_to_check: 5
+  max_times_to_check: 5
+  check_time: 0.0
+  check_time: 0.3
+  check_time: 0.6
+  check_time: 1.0
+  check_time: 1.5
+  check_time: 2.0
+  check_time: 3.0
+  lateral_offset_threshold: 1.5
+  delta_theta_threshold: 0.392699
+}
+
+check_lcc_abnormal_params_for_degrade {
+  max_not_match_count: 50
+  after_frames_to_check: 5
+  every_frames_to_check: 5
+  max_times_to_check: 5
+  check_time: 1.0
+  check_time: 2.0
+  check_time: 3.0
+  lateral_offset_threshold: 4.0
+  delta_theta_threshold: 0.61
+}
+
+reference_line_compensation_params {
+  offset_cut_off_threshold: 0.6
+  offset_start_count_threshold: 0.10
+  offset_trigger_count_max: 35
+  offset_trigger_count_min: 10
+  offset_limit: 0.3  # 0.17deg at 100m
+  offset_limit_lc: 0.5  # 0.3deg at 100m
+  offset_limited_s: 100.0
+  max_delta_offset_lk: 0.05
+  max_delta_offset_lc: 0.0
+  enable_lc_compensation: true
+  enable_same_direction_forbidden: true
+  lc_compensation_ratio: 2.0
+  max_count: 50
+  max_lc_delay_count: 20
+  least_lc_compensation_offset_plf {
+    x: 0.0
+    x: 23.61  # 85kph
+    x: 27.78  # 100kph
+    x: 30.56  # 110kph
+    x: 33.33  # 120kph
+    x: 41.67  # 150kph
+    y: 0.0
+    y: 0.0
+    y: 0.05
+    y: 0.06
+    y: 0.07
+    y: 0.08
+  }
+}

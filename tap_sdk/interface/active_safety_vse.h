@@ -43,7 +43,6 @@ struct AsVseOut {
     float    gas_pedal_pos_rate;     // 加速踏板位置变化率
     float    brake_pedal_pos_rate;   // 制动踏板位置变化率
     float    brake_pressure_rate;    // 主缸压力变化率
-    uint8_t  hod_hands_monitor;      // 电容方向盘HOD: 1=脱手, 2=触摸, 3=握住
     uint8_t  hazard_lamp_st;         // 危险报警灯状态信号
     uint8_t  front_fog_lamp_st;      // 前雾灯状态
     uint8_t  back_fog_lamp_st;       // 后雾灯状态

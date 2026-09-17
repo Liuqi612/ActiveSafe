@@ -12,11 +12,6 @@ constexpr uint8_t kHandsOffConfirmFrames = 30U;
 constexpr uint8_t kHandsOnConfirmFrames = 30U;
 constexpr float kHandsOffTorqueThreshold = 0.35F;
 constexpr float kHandsOnTorqueThreshold = 0.45F;
-constexpr float kControlCycleTimeSeconds = 0.02F;
-constexpr float kTimeComparisonToleranceSeconds = 1.0e-6F;
-constexpr uint8_t kHodHandsOff = 1U;
-constexpr uint8_t kHodHandsTouch = 2U;
-constexpr uint8_t kHodHandsShake = 3U;
 constexpr uint64_t kNsPerSecond = 1000000000ULL;
 constexpr uint64_t kInterventionResetNs = 180ULL * kNsPerSecond;
 constexpr uint64_t kWarningStepNs = 10ULL * kNsPerSecond;
@@ -54,13 +49,11 @@ void LkaElkHandoffWarning::Reset() {
     hands_off_confirmed_ = false;
     low_torque_frame_count_ = 0U;
     high_torque_frame_count_ = 0U;
-    hod_hands_off_frame_count_ = 0U;
-    hod_hands_on_frame_count_ = 0U;
     has_last_timestamp_ = false;
     last_timestamp_ns_ = 0U;
 }
 
-void LkaElkHandoffWarning::UpdateTorqueHandsOff(float hands_torque) {
+void LkaElkHandoffWarning::UpdateHandsOff(float hands_torque) {
     const float abs_torque = std::fabs(hands_torque);
     if (abs_torque <= kHandsOffTorqueThreshold) {
         low_torque_frame_count_ = SaturatingFrameIncrement(low_torque_frame_count_, kHandsOffConfirmFrames);
@@ -78,47 +71,6 @@ void LkaElkHandoffWarning::UpdateTorqueHandsOff(float hands_torque) {
         // 滞回区既不确认脱手也不取消脱手，但会中断两侧的连续帧计数。
         low_torque_frame_count_ = 0U;
         high_torque_frame_count_ = 0U;
-    }
-}
-
-void LkaElkHandoffWarning::UpdateHandsOff(float hands_torque,
-                                          uint8_t hod_hands_monitor,
-                                          float hod_hands_off_confirm_time_s,
-                                          float hod_hands_on_confirm_time_s) {
-    const bool hod_hands_off = hod_hands_monitor == kHodHandsOff;
-    const bool hod_hands_on = hod_hands_monitor == kHodHandsTouch || hod_hands_monitor == kHodHandsShake;
-    if (!hod_hands_off && !hod_hands_on) {
-        // HOD无效或不在线时立即回退扭矩；切源会清除HOD未完成计时。
-        hod_hands_off_frame_count_ = 0U;
-        hod_hands_on_frame_count_ = 0U;
-        UpdateTorqueHandsOff(hands_torque);
-        return;
-    }
-
-    // HOD有效时优先使用电容方向盘；切源会清除扭矩未完成计时。
-    low_torque_frame_count_ = 0U;
-    high_torque_frame_count_ = 0U;
-    if (hod_hands_off) {
-        hod_hands_off_frame_count_ = hod_hands_off_frame_count_ == UINT32_MAX
-                                         ? UINT32_MAX
-                                         : hod_hands_off_frame_count_ + 1U;
-        hod_hands_on_frame_count_ = 0U;
-        const float confirm_time_s = std::fmax(hod_hands_off_confirm_time_s, 0.0F);
-        const float elapsed_time_s = static_cast<float>(hod_hands_off_frame_count_) * kControlCycleTimeSeconds;
-        if (elapsed_time_s + kTimeComparisonToleranceSeconds >= confirm_time_s) {
-            hands_off_confirmed_ = true;
-        }
-    } else {
-        // Hands Touch与Hands Shake都表示Hands On，二者切换不中断连续计时。
-        hod_hands_on_frame_count_ = hod_hands_on_frame_count_ == UINT32_MAX
-                                        ? UINT32_MAX
-                                        : hod_hands_on_frame_count_ + 1U;
-        hod_hands_off_frame_count_ = 0U;
-        const float confirm_time_s = std::fmax(hod_hands_on_confirm_time_s, 0.0F);
-        const float elapsed_time_s = static_cast<float>(hod_hands_on_frame_count_) * kControlCycleTimeSeconds;
-        if (elapsed_time_s + kTimeComparisonToleranceSeconds >= confirm_time_s) {
-            hands_off_confirmed_ = false;
-        }
     }
 }
 
@@ -180,9 +132,6 @@ uint8_t LkaElkHandoffWarning::CalculateAlarmLevel(InterventionTracker &tracker,
 void LkaElkHandoffWarning::Update(uint8_t lka_mode,
                                   uint8_t elk_mode,
                                   float hands_torque,
-                                  uint8_t hod_hands_monitor,
-                                  float hod_hands_off_confirm_time_s,
-                                  float hod_hands_on_confirm_time_s,
                                   bool mcu_lfp_actv_cdt,
                                   bool enable,
                                   bool shadow_mode,
@@ -204,10 +153,7 @@ void LkaElkHandoffWarning::Update(uint8_t lka_mode,
     has_last_timestamp_ = true;
     last_timestamp_ns_ = now_ns;
 
-    UpdateHandsOff(hands_torque,
-                   hod_hands_monitor,
-                   hod_hands_off_confirm_time_s,
-                   hod_hands_on_confirm_time_s);
+    UpdateHandsOff(hands_torque);
     UpdateTracker(lka_tracker_, lka_active, now_ns);
     UpdateTracker(elk_tracker_, elk_active, now_ns);
 

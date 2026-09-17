@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package pnc_x;
+
+message LiteHeader {
+
+  optional int64 timestamp = 1;
+
+  optional string domain = 2;
+
+  optional uint64 seq_number = 3;
+
+  optional int32 module_id = 4;
+
+  optional string channel = 5;
+
+  optional bool is_shm_msg = 6;
+
+  optional int32 tag_number = 7;
+
+  optional int64 log_timestamp = 8;
+
+  optional string full_node_name = 9;
+
+  optional uint64 channel_seq_number = 10;
+
+  optional string source_node_name = 11;
+
+  optional bool cs_mode = 12;
+
+  extensions 10000 to max;
+}

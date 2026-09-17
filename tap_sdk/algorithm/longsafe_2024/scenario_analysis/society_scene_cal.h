@@ -59,7 +59,7 @@ struct AsSocietySceneParam {
     float k_disable_testscene_accel_pose_thd = 90;
 
     float k_constant_spd_allow_max_curv = 0.01;
-    uint32_t k_simulation_max_steps = 40 * 50; // 仿真预热调用次数阈值，按 50 Hz 约为 40 秒；0 表示跳过预热
+    uint32_t k_simulation_max_steps = 40 * 50;
     int k_MaxConfirmCount = 600;         // 车速确认计数上限
     int k_DecStep = 50;  // 计数递减步长
 };

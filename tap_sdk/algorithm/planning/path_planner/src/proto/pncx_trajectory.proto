@@ -1,0 +1,40 @@
+syntax = "proto2";
+
+package pnc_x.planning;
+import "pncx_lite_common.proto";
+import "pncx_lane_path.proto";
+
+import "pncx_trajectory_validation.proto";
+
+import "pncx_turn_signal.proto";
+import "pncx_lane_change.proto";
+
+import "pncx_trajectory_point.proto";
+
+message TrajectoryProto {
+  optional LiteHeader header = 1;
+
+  
+  optional double trajectory_start_timestamp = 23;
+
+  optional uint64 planner_state_seq_num = 26;
+
+  
+  repeated ApolloTrajectoryPointProto trajectory_point = 3;
+
+  optional mapping.LanePathProto target_lane_path_from_current = 6;
+
+  optional TurnSignal turn_signal = 8;
+
+  
+  repeated ApolloTrajectoryPointProto past_points = 9;
+
+  optional LaneChangeStage lane_change_stage = 17;
+  optional bool lane_change_left = 18;
+
+  optional planning.TrajectoryValidationResultProto traj_validation_result = 19;
+
+  
+
+  reserved 2, 5, 7, 10 to 16, 21, 24, 25;
+}

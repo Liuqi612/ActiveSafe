@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+package pnc_x.planning;
+
+message CrosswalkStateProto {
+  optional uint64 crosswalk_id = 1;
+
+  optional double stop_time = 2;
+
+  enum StopState {
+
+    APPROACHING = 1;
+
+    STOPPED = 2;
+
+    PASSED = 3;
+  }
+
+  optional StopState stop_state = 3;
+
+  repeated string must_yield_objects = 4;
+}

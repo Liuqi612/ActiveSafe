@@ -3,8 +3,8 @@
 /****************************************************************************
  * Calibration file for AES_ESA production code.
  * DD uses version 5 of the bas file.
- * File Name: E:\user\AES_ESA_Module_0413_bak\AES_ESA_Module_0907\02_DataDictionary\AES\AES_ESA_cal.h
- * Created: 2026/9/14       10:59:36 
+ * File Name: E:\user\AES_ESA_Module_0413_bak\AES_ESA_Module_0820\02_DataDictionary\AES\AES_ESA_cal.h
+ * Created: 2026/8/20       14:27:16 
  * From Excel file: DataDictionary_AES_A02.xlsx
  * Calibration Values for project         
  * Calibrations for full application.
@@ -18,7 +18,7 @@
 */
 
 
-#define AES_ESA_CAL_SIZE  10816 
+#define AES_ESA_CAL_SIZE  10812 
 
 typedef struct {
    uint16 k_AES_LaneWdth_filt_tau_str;
@@ -367,7 +367,6 @@ typedef struct {
    uint8 k_AES_NoLaneLine_Flag_str;
    float32 k_AES_CTL_heading_spd_str[ 10 ];
    float32 k_AES_CTL_heading_error_factor_str[ 10 ];
-   float32 k_AES_FCWObstacleLatOverLap_AES_str;
 } AES_ESA_cal_T;
 
 #define AES_ESA_START_SEC_CAL_UNSPECIFIED
@@ -726,6 +725,5 @@ extern const AES_ESA_cal_T AES_ESA_Cal_DF_V;
 #define k_AES_NoLaneLine_Flag    (AES_ESA_Cal_DF_V.k_AES_NoLaneLine_Flag_str)
 #define k_AES_CTL_heading_spd    (AES_ESA_Cal_DF_V.k_AES_CTL_heading_spd_str)
 #define k_AES_CTL_heading_error_factor    (AES_ESA_Cal_DF_V.k_AES_CTL_heading_error_factor_str)
-#define k_AES_FCWObstacleLatOverLap_AES    (AES_ESA_Cal_DF_V.k_AES_FCWObstacleLatOverLap_AES_str)
 
 #endif  /* _CAL_H */

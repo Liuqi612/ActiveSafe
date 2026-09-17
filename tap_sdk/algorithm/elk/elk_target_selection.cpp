@@ -58,15 +58,15 @@ void ElkTargetSelection::Update(const AsVseOut &vse_out, const LanesInfo &road_i
     std::memset(&oncom_out_, 0, sizeof(oncom_out_));
     std::memset(&overtake_out_, 0, sizeof(overtake_out_));
 
-    // AD_LINFO(ElkTargetSelection::Update) << "New road_info in elk tsel:";
-    // AD_LINFO(ElkTargetSelection::Update) << "left c0 is:" << road_info.HostLeftLaneMarker.LinePolyC0
-    //      << ", right c0 is:" << road_info.HostRightLaneMarker.LinePolyC0;
-    // AD_LINFO(ElkTargetSelection::Update) << "left edge info: c0 is:" << road_info.LeftRoadEdge.LinePolyC0
-    //      << ", start range is:" << road_info.LeftRoadEdge.LineViewRangeStart
-    //      << ", end range is:" << road_info.LeftRoadEdge.LineViewRangeEnd;
-    // AD_LINFO(ElkTargetSelection::Update) << "right edge info: c0 is:" << road_info.RightRoadEdge.LinePolyC0
-    //      << ", start range is:" << road_info.RightRoadEdge.LineViewRangeStart
-    //      << ", end range is:" << road_info.RightRoadEdge.LineViewRangeEnd;
+    AD_LINFO(ElkTargetSelection::Update) << "New road_info in elk tsel:";
+    AD_LINFO(ElkTargetSelection::Update) << "left c0 is:" << road_info.HostLeftLaneMarker.LinePolyC0
+         << ", right c0 is:" << road_info.HostRightLaneMarker.LinePolyC0;
+    AD_LINFO(ElkTargetSelection::Update) << "left edge info: c0 is:" << road_info.LeftRoadEdge.LinePolyC0
+         << ", start range is:" << road_info.LeftRoadEdge.LineViewRangeStart
+         << ", end range is:" << road_info.LeftRoadEdge.LineViewRangeEnd;
+    AD_LINFO(ElkTargetSelection::Update) << "right edge info: c0 is:" << road_info.RightRoadEdge.LinePolyC0
+         << ", start range is:" << road_info.RightRoadEdge.LineViewRangeStart
+         << ", end range is:" << road_info.RightRoadEdge.LineViewRangeEnd;
 
     // Initialize obs_data from obs_list (following as_elk: fus_trks->trk is passed to oncomTrkPropertiesUpdate)
     for (size_t i = 0; i < kMaxNormalObject; ++i) {
@@ -143,36 +143,36 @@ void ElkTargetSelection::Update(const AsVseOut &vse_out, const LanesInfo &road_i
         memory.prev_object_class = obs_data_[i].obs->object_class;
     }
 
-    // AD_LINFO(ElkTargetSelection::Update) << "New frame in elk tsel:";
-    // for (size_t i = 0; i < kMaxNormalObject; ++i) {
-    //     if (obs_list[i]->fus_trkID > 0) {
+    AD_LINFO(ElkTargetSelection::Update) << "New frame in elk tsel:";
+    for (size_t i = 0; i < kMaxNormalObject; ++i) {
+        if (obs_list[i]->fus_trkID > 0) {
 
-    //         AD_LINFO(ElkTargetSelection::Update) << "obj slot num is:" << i
-    //             << ", fusion id is:" << obs_list[i]->fus_trkID
-    //             << ", long pos is:" << obs_list[i]->long_posn
-    //             << ", dist is:" << obs_data_[i].dist
-    //             << ", f_beyond_border is:" << obs_data_[i].f_beyond_border
-    //             << ", lane is:" << (int)obs_data_[i].lane
-    //             << ", dist mode is:" << (int)obs_data_[i].dist_mode
-    //             << ", f_front_zone_interest is:" << obs_data_[i].persistent.f_front_zone_interest
-    //             << ", f_rear_zone_interest is:" <<  obs_data_[i].persistent.f_rear_zone_interest
-    //             << ", f_zone_interest is:" << obs_data_[i].persistent.f_zone_interest;
+            AD_LINFO(ElkTargetSelection::Update) << "obj slot num is:" << i
+                << ", fusion id is:" << obs_list[i]->fus_trkID
+                << ", long pos is:" << obs_list[i]->long_posn
+                << ", dist is:" << obs_data_[i].dist
+                << ", f_beyond_border is:" << obs_data_[i].f_beyond_border
+                << ", lane is:" << (int)obs_data_[i].lane
+                << ", dist mode is:" << (int)obs_data_[i].dist_mode
+                << ", f_front_zone_interest is:" << obs_data_[i].persistent.f_front_zone_interest
+                << ", f_rear_zone_interest is:" <<  obs_data_[i].persistent.f_rear_zone_interest
+                << ", f_zone_interest is:" << obs_data_[i].persistent.f_zone_interest;
 
-    //     }
-    // }
-    // AD_LINFO(ElkTargetSelection::Update) << "New resout in elk tsel:";
-    // if (overtake_out_.overtake_target_rear_left.track_id > 0) {
-    //     AD_LINFO(ElkTargetSelection::Update) << "obj rear left ot is : " << (int)overtake_out_.overtake_target_rear_left.track_id;
-    // }
-    // if (overtake_out_.overtake_target_rear_right.track_id > 0) {
-    //     AD_LINFO(ElkTargetSelection::Update) << "obj rear right ot is : " << (int)overtake_out_.overtake_target_rear_right.track_id;
-    // }
-    // if (oncom_out_.oncom_target_1.track_id > 0) {
-    //     AD_LINFO(ElkTargetSelection::Update) << "obj front left oc is : " << (int)oncom_out_.oncom_target_1.track_id;
-    // }
-    // if (oncom_out_.oncom_target_2.track_id > 0) {
-    //     AD_LINFO(ElkTargetSelection::Update) << "obj front right oc is : " << (int)oncom_out_.oncom_target_2.track_id;
-    // }
+        }
+    }
+    AD_LINFO(ElkTargetSelection::Update) << "New resout in elk tsel:";
+    if (overtake_out_.overtake_target_rear_left.track_id > 0) {
+        AD_LINFO(ElkTargetSelection::Update) << "obj rear left ot is : " << (int)overtake_out_.overtake_target_rear_left.track_id;
+    }
+    if (overtake_out_.overtake_target_rear_right.track_id > 0) {
+        AD_LINFO(ElkTargetSelection::Update) << "obj rear right ot is : " << (int)overtake_out_.overtake_target_rear_right.track_id;
+    }
+    if (oncom_out_.oncom_target_1.track_id > 0) {
+        AD_LINFO(ElkTargetSelection::Update) << "obj front left oc is : " << (int)oncom_out_.oncom_target_1.track_id;
+    }
+    if (oncom_out_.oncom_target_2.track_id > 0) {
+        AD_LINFO(ElkTargetSelection::Update) << "obj front right oc is : " << (int)oncom_out_.oncom_target_2.track_id;
+    }
     
     // Fill Outputs
     FillOncomOutput();
@@ -229,10 +229,10 @@ void ElkTargetSelection::UpdateTrkOncomConfidence(size_t obs_idx) {
     bool f_object_class_change = (obs->object_class != memory.prev_object_class);
     bool f_visionID_change = (obs->vis_trkID != memory.prev_visTrkID);
 
-    // if (obs->fus_trkID == 55407) {
-    //     AD_LINFO(ElkTargetSelection::UpdateTrkOncomConfidence) << "long_vel is: " << obs->long_vel
-    //         << ", f_available_motion is: " << f_available_motion;
-    // }
+    if (obs->fus_trkID == 55407) {
+        AD_LINFO(ElkTargetSelection::UpdateTrkOncomConfidence) << "long_vel is: " << obs->long_vel
+            << ", f_available_motion is: " << f_available_motion;
+    }
 
     if (!f_available_heading) {
         memory.cnt_not_availble_heading_age = std::min((uint8_t)255, (uint8_t)(memory.cnt_not_availble_heading_age + 1));
@@ -312,11 +312,11 @@ void ElkTargetSelection::UpdateTrkOvertakeConfidence(size_t obs_idx) {
     bool f_available_motion = (obs->long_vel > elk_cal_.k_ot_min_speed); // 剔除静止目标
     bool f_available_heading = (obs->heading < elk_cal_.k_ot_trk_heading && obs->heading > -elk_cal_.k_ot_trk_heading);
 
-    // if (obs->fus_trkID == 50655) {
-    //     AD_LINFO(ElkTargetSelection::UpdateTrkOvertakeConfidence) << "f_available_class is: " << f_available_class
-    //         << ", f_available_heading is: " << f_available_heading
-    //         << ", f_available_motion is: " << f_available_motion;
-    // }
+    if (obs->fus_trkID == 50655) {
+        AD_LINFO(ElkTargetSelection::UpdateTrkOvertakeConfidence) << "f_available_class is: " << f_available_class
+            << ", f_available_heading is: " << f_available_heading
+            << ", f_available_motion is: " << f_available_motion;
+    }
 
     if (f_available_class && f_high_conf && f_available_motion && f_available_heading) {
         memory.overtake_confidence = Confidence::HIGH;
@@ -1047,7 +1047,7 @@ uint8_t ElkTargetSelection::UpdateOvertakeTargetPool(const std::array<uint8_t, 3
                                     (obs_data_[obs_idx].persistent.f_rear_zone_interest == rearFlag);
 
                 if (!b_vld_long_zone  ||  (obs_data_[obs_idx].collision_prob == CollisionProbability::NONE)  ||  (obs_data_[obs_idx].lane != laneEnum)) {
-                    //AD_LINFO(ElkTargetSelection::UpdateOvertakeTargetPool) << "remove slot id " << id_pool[i] << " from overtak id_pool";
+                    AD_LINFO(ElkTargetSelection::UpdateOvertakeTargetPool) << "remove slot id " << id_pool[i] << " from overtak id_pool";
                     id_pool[i] = 0;
                 }
             }

@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package pnc_x.vis;
+
+
+message ColorRGBAProto {
+  
+  
+  optional fixed32 rgba = 5;
+  reserved 1 to 4;
+}

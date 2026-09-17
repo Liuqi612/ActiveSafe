@@ -38,7 +38,6 @@ void LongSafeObject::Reset() {
     index     = -1;
     fus_trkID = 0;
     vis_trkID = 0;
-    type      = ObjectClass::UNDETERMINED;
 
     age        = 0.0F;
     lat_posn   = 20.0F;

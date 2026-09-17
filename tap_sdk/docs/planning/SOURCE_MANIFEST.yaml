@@ -1,0 +1,716 @@
+schema_version: 1
+owner: tap_sdk/algorithm/planning
+baseline:
+  repository: planning/sdk
+  commit: 421e4ab2cb030877ce9ebeabe4179b69ff62615d
+  source_root: planning/sdk/planning/src/path_planner
+  target_root: tap/tap_sdk/algorithm/planning/path_planner
+  hash_algorithm: sha256
+  source_selection: "The production closure is the explicit list in algorithm/planning/CMakeLists.txt."
+
+# The copied closure is intentionally represented by roots plus the explicit
+# CMake list.  This keeps this file reviewable while preventing an accidental
+# recursive source expansion from becoming a production dependency.
+closure:
+  source_globs:
+    - planning/sdk/planning/src/path_planner/src/{async,base,common,container,decision,initializer,maps,math,object,optimization,plan,prediction,router,scheduler,speed,util}/**
+    - planning/sdk/planning/src/path_planner/proto/*.proto
+  target_globs:
+    - tap/tap_sdk/algorithm/planning/path_planner/src/**
+  source_exclusions:
+    - planning/sdk/planning/src/path_planner/dlp_input_traj_selector.*
+    - planning/sdk/planning/src/path_planner/motion_planner.*
+  verification:
+    - cmake_explicit_source_list
+    - thor_x86_debug_target_tap_planning_core
+
+entries:
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/include/planning_snapshot.h
+    target_path: tap/tap_sdk/tap_adapter/include/planning_snapshot.h
+    source_hash: authored_in_this_port
+    target_hash: 9228acf822db85bbdebdb88ed3c32b1558d9346e026b1bc2a1a29a03cd47213d
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Define the RSCL-independent emergency Planning snapshot metadata and timestamp policy boundary."
+    verification: [tap_planning_snapshot_test, thor_x86_debug_target_tap_planning_adapter]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/src/planning_snapshot.cc
+    target_path: tap/tap_sdk/tap_adapter/src/planning_snapshot.cc
+    source_hash: authored_in_this_port
+    target_hash: 5ce738199e94f00ddb8a6b4d5444b1e641dea0f874089913a71acd953eb9a318
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Reject future, stale, invalid, missing, and out-of-order samples before message-specific conversion."
+    verification: [tap_planning_snapshot_test, thor_x86_debug_target_tap_planning_adapter]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/tests/planning_snapshot_test.cc
+    target_path: tap/tap_sdk/tap_adapter/tests/planning_snapshot_test.cc
+    source_hash: authored_in_this_port
+    target_hash: 2f11fbef8d604b97afad349182d9e302604fc496ff9aca058280752ce0576166
+    modification_class: [comments, formatting]
+    reason: "Exercise mandatory-input, optional-input, fallback, monotonicity, future, and stale-sample policy."
+    verification: [tap_planning_snapshot_test]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/CMakeLists.txt
+    target_path: tap/tap_sdk/tap_adapter/CMakeLists.txt
+    source_hash: authored_in_this_port
+    target_hash: e0d969f14f1b304270dbd5f8a5b4480b869c1ad3126fea23d24582ab69e85c30
+    modification_class: [comments]
+    reason: "Build and install the adapter boundary separately from the Planning algorithm target."
+    verification: [thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_core_adapter.h
+    target_path: tap/tap_sdk/tap_adapter/core/planning_core_adapter.h
+    source_hash: authored_in_this_port
+    target_hash: 49397d05f3b1461e8dde5cb6be61af8aa63ae534f61a42d4f88a9dc38a08099d
+    modification_class: [comments, behavior_change]
+    reason: "Define the RSCL-independent normalized ego/road-corridor contract and Planning native geometry output."
+    verification: [tap_planning_core_adapter_test, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_core_adapter.cc
+    target_path: tap/tap_sdk/tap_adapter/core/planning_core_adapter.cc
+    source_hash: authored_in_this_port
+    target_hash: 07e74b2ad2533199e6a34983afb63613ff35c9f8424839154e43595956597730
+    modification_class: [comments, behavior_change]
+    reason: "Strictly validate normalized geometry, construct ApolloTrajectoryPointProto/DrivePassage, invoke the upstream PathSlBoundary builder, and reject ego outside the corridor."
+    verification: [tap_planning_core_adapter_test, tap_planning_validation_smoke, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_core_adapter_test.cc
+    target_path: tap/tap_sdk/tap_adapter/core/planning_core_adapter_test.cc
+    source_hash: authored_in_this_port
+    target_hash: cc0bc08141e6e7ab11b3eb233d5db25a86b8b3b962322b220478528b4a6bb887
+    modification_class: [test_fixture, comments]
+    reason: "Cover straight/curved corridors, lane transitions, boundary generation, malformed units/geometry, and ego projection failure."
+    verification: [tap_planning_core_adapter_test_repeat_10]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/CMakeLists.txt
+    target_path: tap/tap_sdk/tap_adapter/core/CMakeLists.txt
+    source_hash: authored_in_this_port
+    target_hash: b24fee5df8cf5e3288ef43b5cf3d0fe4163e2365614fdd041ca10d6b29ff6ba2
+    modification_class: [comments]
+    reason: "Keep normalized-to-core conversion in a separately linked and installed target created after tap_planning_core."
+    verification: [tap_planning_core_adapter_test, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_object_adapter.h
+    target_path: tap/tap_sdk/tap_adapter/core/planning_object_adapter.h
+    source_hash: authored_in_this_port
+    target_hash: 2d9ff50a0d11ca8b9cb6369aa5c5de4b59c63b13f36582dc31f97c9409192cad
+    modification_class: [comments, behavior_change]
+    reason: "Define the normalized object and predicted-trajectory contract without platform message-reader types."
+    verification: [tap_planning_object_adapter_test, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_object_adapter.cc
+    target_path: tap/tap_sdk/tap_adapter/core/planning_object_adapter.cc
+    source_hash: authored_in_this_port
+    target_hash: ba2ab978a7aa6243c43a86df8b290101f1cc6cbfad3d54db9c4400b1ef144500
+    modification_class: [comments, behavior_change]
+    reason: "Strictly validate normalized object/trajectory payloads and construct the upstream SpacetimeTrajectoryManager."
+    verification: [tap_planning_object_adapter_test, tap_planning_validation_smoke, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_object_adapter_test.cc
+    target_path: tap/tap_sdk/tap_adapter/core/planning_object_adapter_test.cc
+    source_hash: authored_in_this_port
+    target_hash: 5439427df069b190330a3e4d789590ab3637ec29db05c631bb0e2d2945722aba
+    modification_class: [test_fixture, comments]
+    reason: "Cover moving/static object conversion and invalid contour, trajectory, probability, timestamp, unit, and duplicate-ID failures."
+    verification: [tap_planning_object_adapter_test_repeat_10]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_normalized_types.h
+    target_path: tap/tap_sdk/tap_adapter/core/planning_normalized_types.h
+    source_hash: authored_in_this_port
+    target_hash: 5067f53f13317ee68e14f92a7434fbfb598cbb4dbd73e30bf38710df9ef72072
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Define the lightweight DTO boundary without Boost, Protobuf, Cap'n Proto, or Planning implementation headers."
+    verification: [rscl_tap_component_so, tap_planning_rscl_converter_test_repeat_10]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter.h
+    target_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter.h
+    source_hash: authored_in_this_port
+    target_hash: 9420d373797a315505c0604b7337e8f95d73542193cf8d895a375cdc40ceb0e0
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Expose the Normal Initializer -> Interactive A* -> DDP -> ValidateTrajectory facade and optional matched emergency-target ID while hiding Planning and Boost types from Node translation units."
+    verification: [tap_planning_runtime_adapter_test, rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter.cc
+    target_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter.cc
+    source_hash: authored_in_this_port
+    target_hash: 665ead456a171de3afcbbbb8abd161d24e4dc3ddecdad5277b0e672a91309e15
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Load Normal parameters, materialize every Prediction branch, gate the explicit LongSafe request, run Interactive A* plus DDP, validate both stage outputs against actual Prediction timestamps and a configurable safety margin, and retain warm-start state without DLP logic."
+    verification: [tap_planning_runtime_adapter_test_repeat_10, rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_runtime_types.h
+    target_path: tap/tap_sdk/tap_adapter/core/planning_runtime_types.h
+    source_hash: authored_in_this_port
+    target_hash: 5c75edab8b797331d55aa38eae1681628ddb4884727253b76c0592438f78abf7
+    modification_class: [comments, behavior_change]
+    reason: "Keep TTC/safety-margin configuration, matched emergency-target and Prediction-branch metadata, A* coarse output, and validated DDP output independent of RSCL, protobuf, Boost, and Planning implementation types."
+    verification: [tap_planning_runtime_adapter_test, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter_test.cc
+    target_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter_test.cc
+    source_hash: authored_in_this_port
+    target_hash: 607fe1296021e9b034ca66344f848749c8f11dd568d35418d8269054d55ece19
+    modification_class: [test_fixture, comments, behavior_change]
+    reason: "Exercise the empty-scene and matched moving-obstacle Normal closed loop, TTC rejection, and retention of every Prediction branch through Interactive A*, DDP, and ValidateTrajectory."
+    verification: [tap_planning_runtime_adapter_test_repeat_10, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/tap_adapter/core/CMakeLists.txt
+    target_path: tap/tap_sdk/tap_adapter/core/CMakeLists.txt
+    source_hash: authored_in_this_port
+    target_hash: b24fee5df8cf5e3288ef43b5cf3d0fe4163e2365614fdd041ca10d6b29ff6ba2
+    modification_class: [comments, behavior_change]
+    reason: "Build and register the runtime facade test as a separate adapter target after the explicit emergency Planning core."
+    verification: [cmake_explicit_source_list, thor_x86_release_make_tgz]
+  - source_repository: planning/node
+    source_commit: 4698e49856d2a8842f022604de403f8f0c0c046e
+    source_path: planning/node/adapter/rscl_pilot_planning/resource/config/**
+    target_path: tap/tap_sdk/algorithm/planning/resource/config/**
+    source_hash: per_file_sha256_required
+    target_hash: generated_from_current_source
+    modification_class: [test_fixture, behavior_change]
+    reason: "Install the reviewed Normal Planner, Interactive A*, DDP, and vehicle parameter bundle used by the runtime facade."
+    verification: [protobuf_text_parse, tap_planning_runtime_adapter_test, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/wrapper/active_safety_wrapper.h
+    target_path: tap/tap_sdk/wrapper/active_safety_wrapper.h
+    source_hash: restored_from_tap_history
+    target_hash: 763674949ee7f9f564ef5d7cd4b4407859e74554c023ce4e79082699e77ed61f
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Expose one atomically read LongSafe AEB Fusion-ID/TTC/status decision snapshot to Node, initialize shared state explicitly, and keep the removed legacy TAP Planning API absent."
+    verification: [tap_longsafe_target_bridge_test_repeat_10, rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/wrapper/active_safety_wrapper.cpp
+    target_path: tap/tap_sdk/wrapper/active_safety_wrapper.cpp
+    source_hash: restored_from_tap_history
+    target_hash: 190498958e6d4e8bc2f3839500ab3ecfd6718f50168718befd41e0d67e0b2a5e
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Restore the TAP LongSafe 2024 VSE/Fusion obstacle update and calibration path needed to produce one coherent fus_trkId/TTC/status snapshot, with bounded timestamp compensation and no DLP or legacy TAP Planning logic."
+    verification: [tap_longsafe_target_bridge_test_repeat_10, rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/include/planning_payload_history.h
+    target_path: tap/node/adapter/rscl_node_tap/include/planning_payload_history.h
+    source_hash: authored_in_this_port
+    target_hash: 3929e4e293753afbaa6cf68864809857269a39a98c1fb4cc9438ac45746db1a6
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Keep source-timestamp-bound payload history with exact and bounded at-or-before selection."
+    verification: [tap_planning_payload_history_test_repeat_10]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/include/planning_rscl_converter.h
+    target_path: tap/node/adapter/rscl_node_tap/include/planning_rscl_converter.h
+    source_hash: authored_in_this_port
+    target_hash: fdd4ce09757e26007db2e99edb4f111937b6f4afc99be001672fbbb821f7eedb
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Define owned decoded RSCL payloads plus exact positive LongSafe-to-Prediction fusion-ID matching using only the lightweight normalized DTO contract."
+    verification: [tap_planning_rscl_converter_test_repeat_10, rscl_tap_component_so]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/src/planning_rscl_converter.cc
+    target_path: tap/node/adapter/rscl_node_tap/src/planning_rscl_converter.cc
+    source_hash: authored_in_this_port
+    target_hash: 1a9b373d5449ec5d7008e8f177b24ac3a977b8dc73a9ccb7f01c33d505853c48
+    modification_class: [comments, behavior_change, remove_dlp, formatting]
+    reason: "Decode Odom/SceneNaviMap/Prediction, align coordinate frames, build a routing-unambiguous corridor, derive prediction kinematics, exclude negative DLP object IDs, and match a positive LongSafe fusion ID without copying target state."
+    verification: [tap_planning_rscl_converter_test_repeat_10, rscl_tap_component_so]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/tests/planning_rscl_converter_test.cc
+    target_path: tap/node/adapter/rscl_node_tap/tests/planning_rscl_converter_test.cc
+    source_hash: authored_in_this_port
+    target_hash: a3fae23d22ee6c59d56ef32fa1a9e054e3c69c2a500b1b323c4a0406b45bdfae
+    modification_class: [test_fixture, comments, formatting]
+    reason: "Exercise real Cap'n Proto readers, frame conversion, lane-link routing, prediction kinematics, exact LongSafe Fusion-ID match/miss, TTC/status lifecycle rejection and expiry, negative-ID exclusion, and malformed payload rejection."
+    verification: [tap_planning_rscl_converter_test_repeat_10]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/include/planning_target_bridge.h
+    target_path: tap/node/adapter/rscl_node_tap/include/planning_target_bridge.h
+    source_hash: authored_in_this_port
+    target_hash: b8d26f0b467980846e15b4e7eb9a385b1e284bb2b9839ff5fb28dcd41e4d0f47
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Cache the LongSafe Fusion ID/TTC/status/source-time decision, reject invalid lifecycle, invalid TTC, stale/future/misaligned snapshots, and leave all target geometry and future motion ownership to Prediction."
+    verification: [tap_planning_rscl_converter_test_repeat_10, rscl_tap_component_so]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/include/planning_trajectory_converter.h
+    target_path: tap/node/adapter/rscl_node_tap/include/planning_trajectory_converter.h
+    source_hash: authored_in_this_port
+    target_hash: 70b8cf9d284dbdb4d475cd12b3d543cfe722eed4a29411c1ed5ef282d6616ced
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Define the Node-owned RSCL output boundary for validated emergency Planning trajectories without exposing RSCL types to the Planning core."
+    verification: [tap_planning_trajectory_converter_test_repeat_10, rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/src/node_tap_component.cc
+    target_path: tap/node/adapter/rscl_node_tap/src/node_tap_component.cc
+    source_hash: authored_in_this_port
+    target_hash: fc224709d25a21755aa76d1de899fd360657aae7c0fa11c5765c952854c57df7
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Use the RSCL mock-clock domain for replay snapshot keys, enforce LongSafe ID-to-Prediction mapping before TTC gating, preserve every matched Prediction branch, and log branch count after successful A*/DDP planning."
+    verification: [tap_planning_rscl_converter_test, thor_x86_rscl_tap_component_so, host_tap_sdk_sil_test_replay]
+  - source_repository: tap_sdk_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/README.md
+    target_path: tap/tap_sdk_sil/README.md
+    source_hash: authored_in_this_port
+    target_hash: 904665c13003e2c77727364ec0919a2f1275b9807e0db6cc53e494224de5b7ca
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Document the host-side Qt build, authoritative yellow Planning trajectory, solid-red LongSafe target overlay, complete four-channel replay artifact, and the invalid split-package failure mode."
+    verification: [host_qmake_as_sil, host_tap_sdk_sil_test_replay_run7_81_trajectories, host_tap_sdk_sil_longsafe_fusion_match, host_tap_sdk_sil_birdview_render]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/main.cpp
+    target_path: tap/tap_sdk_sil/main.cpp
+    source_hash: authored_in_this_port
+    target_hash: 7c5ac377ec8e62ea8f4dd8e19772c86258b5295272ee42585a3802917f2117fa
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Exercise published trajectory/Fusion/LongSafe rendering, report target IDs and same-longitudinal lateral clearance, and save a real matched-frame snapshot without duplicating Planning or LongSafe algorithms in SIL."
+    verification: [host_qmake_as_sil, host_tap_sdk_sil_test_replay_run7_81_trajectories, host_tap_sdk_sil_longsafe_fusion_match_5_of_5, host_tap_sdk_sil_target_geometry]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/mainwindow.cpp
+    target_path: tap/tap_sdk_sil/mainwindow.cpp
+    source_hash: authored_in_this_port
+    target_hash: a407696f3ceb2fe303bcc1e3bdccf6aeb7affe1cb75476d0d59ab175bc286a53
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Skip the impossible 30-second camera preload wait when no sensor bag exists, expose bag load/playability diagnostics, correct play/pause state, advance past unaligned legacy debug frames, replay published Planning output at its recorded cadence, and play raw Fusion frames directly when legacy replay timestamps are unusable."
+    verification: [host_qmake_as_sil, host_tap_sdk_sil_gui_autoload, host_tap_sdk_sil_gui_playback_input_0_to_10]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/mainwindow.h
+    target_path: tap/tap_sdk_sil/mainwindow.h
+    source_hash: authored_in_this_port
+    target_hash: host_gui_replay_control_contract
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Expose the GUI bag-load and playback state entry points required by positional startup and the playback regression check."
+    verification: [host_qmake_as_sil, host_tap_sdk_sil_gui_playback_advance]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/mainwindow.ui
+    target_path: tap/tap_sdk_sil/mainwindow.ui
+    source_hash: authored_in_this_port
+    target_hash: play_action_icon_state_fixed
+    modification_class: [behavior_change]
+    reason: "Show the play icon while playback is stopped so the toolbar reflects the action that clicking it will perform."
+    verification: [host_qmake_as_sil, host_tap_sdk_sil_gui_playback_advance]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/src/planning_trajectory_converter.cc
+    target_path: tap/node/adapter/rscl_node_tap/src/planning_trajectory_converter.cc
+    source_hash: authored_in_this_port
+    target_hash: f3ec647c263836436f608292171d1c109b575102bff1c4b5ee2e9a34dc80ef75
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Convert Planning-local output to vehicle x-forward/y-left Trajectory points, populate timing/kinematics/enums, and reject empty, non-finite, decreasing, future-source, or overflowed output."
+    verification: [tap_planning_trajectory_converter_test_repeat_10, rscl_tap_component_so, package_symbol_audit]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/tests/planning_trajectory_converter_test.cc
+    target_path: tap/node/adapter/rscl_node_tap/tests/planning_trajectory_converter_test.cc
+    source_hash: authored_in_this_port
+    target_hash: 0920c67b6f1997ec8b4309bbfeebbbd13ccfdf0d55ed0c1e8b85600daf0c183b
+    modification_class: [test_fixture, comments, formatting]
+    reason: "Cover local-to-vehicle geometry, direction, timing, kinematics, message enums, malformed values, future source time, and nanosecond overflow."
+    verification: [tap_planning_trajectory_converter_test_repeat_10]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/tests/longsafe_target_bridge_test.cc
+    target_path: tap/node/adapter/rscl_node_tap/tests/longsafe_target_bridge_test.cc
+    source_hash: authored_in_this_port
+    target_hash: 9ec01de191b03183e09d7c060fe2b8d74140c4ffc0ee8a9110408f7c36d8767f
+    modification_class: [test_fixture, comments, formatting]
+    reason: "Load production calibration, verify empty-scene no-selection, then run a straight-driving stationary-car scene through VSE/Fusion/LongSafe 2024 and require the real nonzero fus_trkId 7."
+    verification: [tap_longsafe_target_bridge_test_repeat_10]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/tests/planning_payload_history_test.cc
+    target_path: tap/node/adapter/rscl_node_tap/tests/planning_payload_history_test.cc
+    source_hash: authored_in_this_port
+    target_hash: 1f2c97900fd25930a030cb69242db2b4c8d2fbcdd154b7e8d0adbe7631f19792
+    modification_class: [test_fixture, comments, formatting]
+    reason: "Cover exact/at-or-before selection, replacement, out-of-order insertion, eviction, and bounded localization age."
+    verification: [tap_planning_payload_history_test_repeat_10]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/include/node_tap_component.h
+    target_path: tap/node/adapter/rscl_node_tap/include/node_tap_component.h
+    source_hash: authored_in_this_port
+    target_hash: 4cfb84bd478312f0c83cd51bbddb6909adac85f6a1fcd17efad5092c539417ad
+    modification_class: [comments, behavior_change]
+    reason: "Own timestamped Normal input histories, LongSafe decision bridge, TTC and safety-margin configuration, runtime state, and the standard trajectory publisher without adding planning algorithms to Node."
+    verification: [rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/src/node_tap_component.cc
+    target_path: tap/node/adapter/rscl_node_tap/src/node_tap_component.cc
+    source_hash: authored_in_this_port
+    target_hash: 86c836627e11fb39def78e0c475cb70664b31a42154d10dbe857eef3ed6e648d
+    modification_class: [comments, behavior_change, remove_dlp]
+    reason: "Align Normal inputs, require every valid LongSafe decision to match Prediction, return without planning until TTC <= threshold, invoke adapter-owned Interactive A* and DDP with every Prediction branch preserved, then publish only the validated emergency trajectory."
+    verification: [tap_planning_rscl_converter_test_repeat_10, tap_planning_trajectory_converter_test_repeat_10, rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/include/long_ctrl.hpp
+    target_path: tap/node/adapter/rscl_node_tap/include/long_ctrl.hpp
+    source_hash: authored_in_this_port
+    target_hash: 53b895ad380d5907a0e50d8b2c6eea8f1033798006b0e3f3751975ed28b31bf9
+    modification_class: [comments, behavior_change]
+    reason: "Use trajectory header publish time for deterministic Node/LongSafe/SIL alignment, retaining receive-time fallback only for legacy zero-header messages."
+    verification: [rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/adapter/rscl_node_tap/CMakeLists.txt
+    target_path: tap/node/adapter/rscl_node_tap/CMakeLists.txt
+    source_hash: authored_in_this_port
+    target_hash: 523ea1cf9d338bb6a30aaf4238d978b87e2266b3feed48b0ab38b2b28cfad499
+    modification_class: [comments, behavior_change, remove_dlp]
+    reason: "Build RSCL input/output converters explicitly, link the adapter/core boundary, register ten Planning/LongSafe tests, and keep the PHM resource variable TAP-specific."
+    verification: [root_ctest_discovers_ten_tests, rscl_tap_component_so, thor_x86_release_make_tgz]
+  - source_repository: tap_node
+    source_commit: working-tree
+    source_path: tap/node/CMakeLists.txt
+    target_path: tap/node/CMakeLists.txt
+    source_hash: authored_in_this_port
+    target_hash: de75942ebf7387b5482f91f6ffe78c15b3b6070f829ddd2f7c7d8f435a3ae5a8
+    modification_class: [comments, behavior_change]
+    reason: "Enable CTest before child directories so all Planning tests are visible from the official build root."
+    verification: [root_ctest_discovers_ten_tests, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/CMakeLists.txt
+    target_path: tap/tap_sdk/CMakeLists.txt
+    source_hash: authored_in_this_port
+    target_hash: a67886d7ffec01d63753eb040a7fa74d0706c45a93fa0a0dd442808b473c6a80
+    modification_class: [comments, behavior_change]
+    reason: "Exclude Planning from the legacy recursive source glob and add the explicit adapter/core subdirectories behind the Planning build option."
+    verification: [cmake_explicit_source_list, thor_x86_release_make_tgz]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/algorithm/planning/CMakeLists.txt
+    target_path: tap/tap_sdk/algorithm/planning/CMakeLists.txt
+    source_hash: authored_in_this_port
+    target_hash: 7273b3549fbf73c662ca9ad02ef2f49d9b91ea22739cd55102397253eda48bf6
+    modification_class: [comments, behavior_change, remove_dlp]
+    reason: "Define the explicit Normal source closure, select architecture-compatible Abseil and Boost.Filesystem dependencies, and install the versioned x86 Boost shared library needed by the Node component."
+    verification: [cmake_explicit_source_list, ten_tests_repeat_10, thor_x86_release_make_tgz, package_contents_audit]
+  - source_repository: tap_sdk
+    source_commit: working-tree
+    source_path: tap/tap_sdk/docs/planning/NODE_INPUT_CONTRACT.md
+    target_path: tap/tap_sdk/docs/planning/NODE_INPUT_CONTRACT.md
+    source_hash: authored_in_this_port
+    target_hash: 47d78628ff34306bf4e12b9c7a80141dfa5baea88f7a6d32dad1f0be3c2de3b0
+    modification_class: [comments]
+    reason: "Record Normal inputs, timestamp alignment, strict LongSafe ID-to-Prediction mapping before TTC gating, all-branch A*/DDP collision handling, vehicle-frame publication, SIL replay matching, and missing-data actions."
+    verification: [contract_review, ten_tests_repeat_10, sil_planning_trajectory_test, sil_full_link]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/dataspace/planning_trajectory.h
+    target_path: tap/tap_sdk_sil/dataspace/planning_trajectory.h
+    source_hash: authored_in_this_port
+    target_hash: 2e327a8f9519911d53d63d1052a1fbff4dddfe04262275e321c22340af42f8d8
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Define the lightweight full-trajectory and vehicle-width-corridor DTOs used only by SIL replay and visualization."
+    verification: [sil_planning_trajectory_test, sil_full_link]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/dataspace/planning_trajectory.cpp
+    target_path: tap/tap_sdk_sil/dataspace/planning_trajectory.cpp
+    source_hash: authored_in_this_port
+    target_hash: 26e79efdff19d1c4d71eac4b4fde9f82e3a94bdf3891a500c25e4823d094ca53
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Strictly decode vehicle-frame Trajectory messages, select bounded prior longitudinal acceleration, and derive centerline offsets for the vehicle-width corridor."
+    verification: [sil_planning_trajectory_test, sil_full_link]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/dataspace/data_types.h
+    target_path: tap/tap_sdk_sil/dataspace/data_types.h
+    source_hash: authored_in_this_port
+    target_hash: 392ac805cf73426fcc2fb8b0dde9ef16673bf8ee9f610d750913ec703cceddbc
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Add timestamp-keyed Planning trajectory storage and publish-time-keyed LongSafe target selection records for synchronized result visualization."
+    verification: [sil_full_link, host_tap_sdk_sil_longsafe_fusion_match]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/dataspace/data_parse.h
+    target_path: tap/tap_sdk_sil/dataspace/data_parse.h
+    source_hash: authored_in_this_port
+    target_hash: 1abb4ac680edd0a73660aab3a3422732479514657267515d5ac8884e3ca1a8d4
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Expose complete trajectory parsing, synchronized Planning/Fusion/LongSafe state, and an exact-timestamp standalone Fusion visualization timeline without embedding Planning or Active Safety algorithms in SIL."
+    verification: [sil_full_link, host_tap_sdk_sil_test_replay_run7_81_trajectories, host_tap_sdk_sil_longsafe_fusion_match]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/dataspace/data_parse.cpp
+    target_path: tap/tap_sdk_sil/dataspace/data_parse.cpp
+    source_hash: authored_in_this_port
+    target_hash: a8b10ae222a2a9e3e68b3d0f804ca3a847a48617f5c933dbf437fee7529016a9
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Store complete decoded trajectories and LongSafe selection outputs, align them to the Planning publish clock with bounded Fusion lookup, and fall back to exact raw Fusion frames when an input bag has no usable Planning/debug timeline."
+    verification: [sil_planning_trajectory_test, sil_full_link, host_tap_sdk_sil_test_replay_run7_81_trajectories, host_tap_sdk_sil_longsafe_fusion_match]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/graphic/birdview/bird_view.cpp
+    target_path: tap/tap_sdk_sil/graphic/birdview/bird_view.cpp
+    source_hash: authored_in_this_port
+    target_hash: 9cafe5d2dd3fe5c658c3216e25a162ec2c668046c246311eac352af6792df6e8
+    modification_class: [comments, behavior_change, formatting]
+    reason: "Draw the published Planning centerline as a labelled yellow path with a translucent 1.925 m corridor, and highlight the synchronized LongSafe-selected Fusion target with an opaque red box instead of relying on an unavailable legacy Active Safety obstacle list."
+    verification: [sil_corridor_geometry_test, sil_full_link, host_tap_sdk_sil_target_geometry, host_tap_sdk_sil_birdview_render]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/graphic/birdview/bird_view.h
+    target_path: tap/tap_sdk_sil/graphic/birdview/bird_view.h
+    source_hash: authored_in_this_port
+    target_hash: ac745c009a17ffeb913eee50cef2269ce6a9b9b6c770eb4a70feb88b3dc984ee
+    modification_class: [behavior_change, formatting]
+    reason: "Expose read-only BirdView checks for visible Fusion geometry and a LongSafe target ID hit."
+    verification: [sil_full_link, host_tap_sdk_sil_longsafe_fusion_match]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/sil_api.h
+    target_path: tap/tap_sdk_sil/sil_api.h
+    source_hash: authored_in_this_port
+    target_hash: cbb69988376653195f2f75f96644d860b1b8bfd25d46a4cae63fe50b351e2900
+    modification_class: [behavior_change]
+    reason: "Expose the read-only LongSafe target visibility diagnostic through the existing SIL C boundary."
+    verification: [sil_full_link, host_tap_sdk_sil_longsafe_fusion_match]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/sil_view_api.cpp
+    target_path: tap/tap_sdk_sil/sil_view_api.cpp
+    source_hash: authored_in_this_port
+    target_hash: 8fcfd6dd00dae0a9dadb6ea42d0062c5db9ad72576e1628af0f62f6d4287fe1c
+    modification_class: [behavior_change, formatting]
+    reason: "Forward the BirdView LongSafe target visibility diagnostic without adding selection logic."
+    verification: [sil_full_link, host_tap_sdk_sil_longsafe_fusion_match]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/view_manager.h
+    target_path: tap/tap_sdk_sil/view_manager.h
+    source_hash: authored_in_this_port
+    target_hash: 4f290cf57a281747e155c90ad28ca10f6761f4bf6476dd86dee6950e40da7dfc
+    modification_class: [behavior_change, formatting]
+    reason: "Expose the read-only LongSafe target visibility diagnostic to the replay regression driver."
+    verification: [sil_full_link, host_tap_sdk_sil_longsafe_fusion_match]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/view_manager.cpp
+    target_path: tap/tap_sdk_sil/view_manager.cpp
+    source_hash: authored_in_this_port
+    target_hash: c22e886515c887468c9e77255b4a566189f0e7dd84743aa85a409fe35de48aa1
+    modification_class: [behavior_change, formatting]
+    reason: "Forward the read-only LongSafe target visibility diagnostic to headless validation."
+    verification: [sil_full_link, host_tap_sdk_sil_longsafe_fusion_match]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/as_sil.pro
+    target_path: tap/tap_sdk_sil/as_sil.pro
+    source_hash: authored_in_this_port
+    target_hash: 990ccbbed26f9e0a9c1fefd6b05399e205eb19d4dc7a659648f6778606a9634c
+    modification_class: [behavior_change]
+    reason: "Compile the trajectory parser/visualization path and default legacy LongSafe sources to OFF."
+    verification: [sil_full_link, sil_offscreen_startup]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/tests/planning_trajectory_test.cpp
+    target_path: tap/tap_sdk_sil/tests/planning_trajectory_test.cpp
+    source_hash: authored_in_this_port
+    target_hash: 27c18c1f5b4a090e6d7fe97debfc96e848db7805df6a967802b8e5e6c6b68723
+    modification_class: [test_fixture, comments, formatting]
+    reason: "Cover full Cap'n Proto decoding, vehicle frame/timestamp rejection, acceleration selection, corridor geometry, and NaN rejection."
+    verification: [sil_planning_trajectory_test]
+  - source_repository: tap_sil
+    source_commit: working-tree
+    source_path: tap/tap_sdk_sil/tests/planning_trajectory_test.pro
+    target_path: tap/tap_sdk_sil/tests/planning_trajectory_test.pro
+    source_hash: authored_in_this_port
+    target_hash: fcab6b08d3f0324fd43fa936218a33f21f2ab95625b0565194225f4811d70d90
+    modification_class: [test_fixture]
+    reason: "Build the standalone SIL trajectory test against the repository Cap'n Proto schema/runtime."
+    verification: [sil_planning_trajectory_test]
+  - source_path: planning/sdk/.clang-format
+    target_path: tap/tap_sdk/.clang-format
+    source_hash: 80d4c9a6add330273d6b9c3eec23bc77caf801374587f53978ae51313bc1726b
+    target_hash: 80d4c9a6add330273d6b9c3eec23bc77caf801374587f53978ae51313bc1726b
+    modification_class: [formatting]
+    reason: "Use the fixed upstream Planning style for hand-written TAP port files."
+    verification: [clang_format_10_smoke_source]
+  - source_repository: planning/node
+    source_commit: 4698e49856d2a8842f022604de403f8f0c0c046e
+    source_path: planning/node/adapter/rscl_pilot_planning/resource/config/planner_default_params.pb.txt
+    target_path: tap/tap_sdk/algorithm/planning/tests/data/planner_default_params.pb.txt
+    source_hash: 09e499194ca2ea0f070c6f07eb99cea810569f5e6ec3237ac620ca6b545c7a6e
+    target_hash: ced51212aa50db176353efbd373d3a4032caa17e660b95b2f04217f49cf32fca
+    modification_class: [test_fixture, formatting]
+    reason: "Normal Initializer runtime defaults used only by DP and Interactive A* smoke tests; CRLF was normalized to LF."
+    verification: [protobuf_text_parse, dp_initializer_smoke, interactive_astar_smoke]
+  - source_repository: planning/node
+    source_commit: 4698e49856d2a8842f022604de403f8f0c0c046e
+    source_path: planning/node/adapter/rscl_pilot_planning/resource/config/trajectory_optimizer_default_params.pb.txt
+    target_path: tap/tap_sdk/algorithm/planning/tests/data/trajectory_optimizer_default_params.pb.txt
+    source_hash: 3745ba18de6abd90c4c1df6f24206d129adb533650a3b12628118eb7945ed32a
+    target_hash: f6478d559a8fc71fe2b6266337d210ba4814a89f498d726bdd9b0e0d40bce9b5
+    modification_class: [test_fixture, formatting]
+    reason: "Normal DDP runtime defaults used only by the isolated closed-loop smoke; CRLF was normalized to LF."
+    verification: [protobuf_text_parse, normal_closed_loop_smoke]
+  - source_path: planning/sdk/planning/src/path_planner/src/optimization/ddp/trajectory_optimizer.cc
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/optimization/ddp/trajectory_optimizer.cc
+    source_hash: 86ad1819738ac195ebfcbdfae1d2584946870e69831cd5acd530addbdcd795d5
+    target_hash: 9780ec4f66960c24bd18f6158492ea52d99acb28c5003768d23d68a60992b2a8
+    modification_class: [remove_dlp, comments]
+    verification: [normal_ddp_compile, dlp_reference_audit]
+  - source_path: planning/sdk/planning/src/path_planner/src/initializer/geometry/geometry_form_builder.cc
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/initializer/geometry/geometry_form_builder.cc
+    source_hash: 7908c443e44e4ee4c0ecc6600c5cf49197943319cd79eb2b517739d6be31c4a1
+    target_hash: 142f329dc5827f3f733cbc5f78a031134fc46697f1e1fef9798265a7cf1e088d
+    modification_class: [behavior_change, comments]
+    reason: "Fix upstream DP crash: initialize the curvature PLF used by geometry edge construction from the already sampled station curvature table."
+    verification: [dp_initializer_smoke, interactive_astar_ddp_validation, thor_x86_debug_target_tap_planning_core]
+  - source_path: planning/sdk/planning/src/path_planner/src/optimization/ddp/trajectory_optimizer_input.h
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/optimization/ddp/trajectory_optimizer_input.h
+    source_hash: 79b39d81c742a3de2192a1e38654ff7bb656fa969039fc918c19bbc2fb3b4bac
+    target_hash: 0a42642d7d4869eabd5e72ea17c391c8157d8344e6f881043439a271faeac78d
+    modification_class: [remove_dlp]
+    verification: [normal_ddp_compile, dlp_reference_audit]
+  - source_path: planning/sdk/planning/src/path_planner/src/optimization/ddp/trajectory_optimizer_output.h
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/optimization/ddp/trajectory_optimizer_output.h
+    source_hash: b03781c97d3cc46dafd8af06bcca748db693cc85188c641f1db5ba38750368f2
+    target_hash: ff36f95b23be068dcc4f6e5d803b8484211417bf003ba1b637ca8cb92c854cf3
+    modification_class: [remove_unused_includes]
+    reason: "Normalize the include to the TAP Planning include root; no DLP payload is added to the Normal output."
+    verification: [normal_ddp_compile]
+  - source_path: planning/sdk/planning/src/path_planner/src/util/thread_pool.h
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/util/thread_pool.h
+    source_hash: c20f32bb87bc9e846924345b66a97a2084ccd7c9adfebe3d6791e0c83e2fa348
+    target_hash: cdc598827fb62a6bf32ac2fc696585246cc9590fbbc923b925a0de364e765f4d
+    modification_class: [behavior_change]
+    reason: "Boost 1.88 compatibility: io_service::work -> io_context executor_work_guard."
+    verification: [thor_x86_debug_target_tap_planning_core]
+  - source_path: planning/sdk/planning/src/path_planner/src/util/thread_pool.cpp
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/util/thread_pool.cpp
+    source_hash: 1cdbd3a5f838fe66d54863ce0578493ff4b3c360e2ba3e54ffb5edd2899f7b01
+    target_hash: 2bb3f7fbd501c52da17e2a033ecf054ddbafe545063026a31e8568b98a69312e
+    modification_class: [behavior_change]
+    reason: "Boost 1.88 compatibility: use boost::asio::post with the equivalent work guard."
+    verification: [thor_x86_debug_target_tap_planning_core]
+  - source_path: planning/sdk/planning/src/path_planner/src/proto/*.proto
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/proto/*.proto
+    source_hash: per_file_sha256_required
+    target_hash: generated_from_current_source
+    modification_class: [comments]
+    verification: [protobuf_generation, thor_x86_debug_target_tap_planning_core]
+  - source_path: planning/sdk/planning/src/path_planner/src/initializer/search_motion.cc
+    target_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter.cc
+    source_hash: authored_runtime_stage_boundary
+    target_hash: 665ead456a171de3afcbbbb8abd161d24e4dc3ddecdad5277b0e672a91309e15
+    modification_class: [behavior_change, comments]
+    reason: "LongSafe TTC/ID requests now gate emergency Planning; Interactive A* and DDP outputs are independently checked against every matched Prediction branch using the branch timestamps and configured safety margin before publication."
+    verification: [thor_x86_make_tgz, runtime_emergency_gate_test, runtime_target_collision_rejection]
+  - source_path: tap/tap_sdk/interface/active_safety_coreout.h
+    target_path: tap/node/adapter/rscl_node_tap/include/planning_target_bridge.h
+    source_hash: authored_longsafe_selection_contract
+    target_hash: 11f30201b0a053f7008ec1ffa924f24eab58d031078eccea530b4d3b8810683c
+    modification_class: [behavior_change, comments]
+    reason: "Bridge LongSafe Fusion ID, TTC, lifecycle status, and source time as one coherent risk snapshot; Prediction remains the authoritative geometry/motion source and a missing match blocks the selected-target planning frame."
+    verification: [longsafe_target_bridge_test, thor_x86_make_tgz]
+  - source_path: planning/sdk/planning/src/path_planner/src/initializer/motion_searcher.cc
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/initializer/motion_searcher.cc
+    source_hash: upstream_commit_421e4ab2
+    target_hash: generated_after_porting
+    modification_class: [behavior_change, comments]
+    reason: "Compile the Interactive A* production variant separately from the DP reference variant and bound its active initializer horizon to three seconds."
+    verification: [thor_x86_make_tgz, tap_planning_validation_smoke, tap_planning_dp_smoke]
+  - source_path: planning/sdk/planning/src/path_planner/src/initializer/search_motion.cc
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/initializer/search_motion.cc
+    source_hash: upstream_commit_421e4ab2
+    target_hash: generated_after_porting
+    modification_class: [behavior_change, comments]
+    reason: "Remove DP runtime cases from the production emergency initializer while retaining them in the separately linked DP reference target."
+    verification: [thor_x86_make_tgz, tap_planning_validation_smoke, tap_planning_dp_smoke]
+  - source_path: authored_target_split
+    target_path: tap/tap_sdk/algorithm/planning/CMakeLists.txt
+    source_hash: authored
+    target_hash: generated_after_porting
+    modification_class: [behavior_change, remove_dlp, comments]
+    reason: "Production tap_planning_core links only the emergency Interactive A* initializer; tap_planning_dp_reference is independently buildable and smoke-tested but is not linked by Node or Adapter."
+    verification: [thor_x86_make_tgz, tap_planning_validation_smoke, tap_planning_dp_smoke]
+  - source_path: authored_runtime_collision_policy
+    target_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter.cc
+    source_hash: authored
+    target_hash: generated_after_porting
+    modification_class: [behavior_change, comments]
+    reason: "Validate every Prediction branch at its actual timestamp using interpolated object boxes; apply a distinct LongSafe margin and require the selected ID to be present."
+    verification: [tap_planning_runtime_adapter_test, thor_x86_make_tgz]
+  - source_path: authored_emergency_profile
+    target_path: tap/tap_sdk/tap_adapter/core/planning_runtime_adapter.cc
+    source_hash: authored
+    target_hash: generated_after_porting
+    modification_class: [behavior_change, comments]
+    reason: "Use a three-second emergency A* goal/time profile and disable optimizer warm-start reuse for emergency requests; the DDP sampling profile remains the reviewed upstream profile pending dedicated short-horizon optimizer validation."
+    verification: [tap_planning_validation_smoke, tap_planning_runtime_adapter_test, thor_x86_make_tgz]
+  - source_path: planning/sdk/planning/src/path_planner/src/plan/planner_flags.h
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/plan/planner_flags.h
+    source_hash: 6791a8de3caf7d3d3df24bad9716acbe0d04c5f1d896c1166b833eb752bc1bf6
+    target_hash: 115a5ddc0268a72b75755193bdc452fb14f5f4a13499143e8cc7e15fe8855959
+    modification_class: [remove_dlp]
+    reason: "Remove unused ML/end-to-end Planner flag declarations from the TAP Normal closure; no rule-based stage consumes them."
+    verification: [dlp_reference_audit, thor_x86_make_tgz]
+  - source_path: planning/sdk/planning/src/path_planner/src/plan/planner_flags.cc
+    target_path: tap/tap_sdk/algorithm/planning/path_planner/src/plan/planner_flags.cc
+    source_hash: 6e96fa7b79bcd7af4f830878139a346b16ba3f54742b0bfef6b03e3e01e44249
+    target_hash: 03307c4537ef2e16a932cfd7aaffd8735a498808b1e62ad8bc3e889654fc697b
+    modification_class: [remove_dlp]
+    reason: "Remove unused ML/end-to-end Planner flag definitions from the TAP Normal closure; no model runtime is built or linked."
+    verification: [dlp_reference_audit, thor_x86_make_tgz]
+
+verification:
+  production_targets: [tap_planning_adapter, tap_planning_core, tap_planning_core_adapter]
+  official_package:
+    command: "tap/node make tgz (thor_x86)"
+    artifact: "tap/node/build/senseauto-tap-0.260826.1241+-Linux.tar.gz"
+    sha256: c20e9d207658a536b0881cd7cae253ad1cb177bfc46f2fda90313721c4d04b23
+    result: "thor_x86 make tgz passed; package contains the Release core, real LongSafe 2024 target bridge, strict LongSafe ID-to-Prediction branch mapping, snapshot/runtime adapters, vehicle-frame trajectory publisher, public headers, Normal config resources, versioned x86 Boost.Filesystem shared dependency, and test-only Cap'n Proto kj/lib RPATH handling"
+  normal_closed_loop:
+    command: "ctest --test-dir build --output-on-failure --repeat until-fail:10"
+    result: "All 10 tests passed 10 consecutive times (100 executions); coverage includes DP, Interactive A*, DDP, ValidateTrajectory, real LongSafe nonzero selection, target lifecycle, TTC gating, single- and multi-branch Prediction matching, snapshot/history policy, and vehicle-frame trajectory conversion"
+  snapshot_adapter:
+    result: "10/10 repeated Release CTest passes with assertions enabled: mandatory/future/stale/invalid/out-of-order/history-selection and explicit-fallback cases"
+  core_adapter:
+    result: "10/10 repeated Release CTest passes with assertions enabled: ego conversion, straight/curved corridor, lane transition, strict validation, upstream PathSlBoundary construction, and ego projection"
+  object_adapter:
+    result: "10/10 repeated Release CTest passes with assertions enabled: moving/static SpacetimeTrajectoryManager conversion and strict object/trajectory failure cases"
+  node_integration:
+    result: "thor_x86 Release make tgz passed; Node caches the LongSafe fusion ID, rejects stale/misaligned targets, matches it in Prediction, runs emergency Planning, and publishes the validated vehicle-frame Trajectory"
+    scope: "Constructed inputs cover the complete LongSafe ID -> Prediction match -> Interactive A* -> DDP -> ValidateTrajectory -> RSCL publication path; a recorded on-vehicle bag remains a scenario-level calibration/replay validation, not an implementation blocker"
+  runtime_object_path:
+    result: "Runtime facade test passes with an explicit matched moving obstacle; every trajectory enters SpacetimeTrajectoryManager and SpacetimePlannerObjectTrajectories, with only the match marked EMERGENCY_AVOIDANCE and all others marked ALL"
+    scope: "Independent normalized-input smoke only; this is not complete live RSCL/replay verification"
+  longsafe_target_bridge:
+    result: "Production calibration loads; empty scene emits ID 0 and a deterministic straight-driving stationary-car scene emits the real selected fus_trkId 7 for 10 consecutive executions"
+    scope: "Selection is proven with constructed production-structure inputs; recorded-bag behavior still depends on sensor/calibration quality"
+  sil_visualization:
+    result: "Standalone parsing/geometry test passed, full as_sil linked after the solid-red target overlay update, and the application remained alive for a five-second offscreen startup smoke using project runtime libraries"
+    scope: "BirdView consumes the published vehicle-frame centerline and corridor and paints the matched LongSafe target as an opaque red Fusion box; visual inspection with a real recorded trajectory bag remains scenario-level acceptance"
+  excluded_from_target:
+    - DLP-only tasks, models, adapters, and tools
+    - tap/aeb_restored_package
+    - recursive source discovery

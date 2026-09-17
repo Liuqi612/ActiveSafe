@@ -63,7 +63,7 @@ bool ElkScenarioDecision::determineLeftInterventionWithTtcMode(const LanesInfo &
         }
     }
 
-    //AD_LINFO(ElkScenarioDecision::determineLeftIntervention) << "left_active_source_mask_ is: " << (int)left_active_source_mask_;
+    AD_LINFO(ElkScenarioDecision::determineLeftIntervention) << "left_active_source_mask_ is: " << (int)left_active_source_mask_;
 
     return left_active_source_mask_ > 0;
 }
@@ -124,7 +124,7 @@ bool ElkScenarioDecision::determineRightInterventionWithTtcMode(const LanesInfo 
         }
     }
 
-    //AD_LINFO(ElkScenarioDecision::determineRightIntervention) << "right_active_source_mask_ is: " << (int)right_active_source_mask_;
+    AD_LINFO(ElkScenarioDecision::determineRightIntervention) << "right_active_source_mask_ is: " << (int)right_active_source_mask_;
 
     return right_active_source_mask_ > 0;
 }
@@ -134,15 +134,15 @@ bool ElkScenarioDecision::determineLeftSuppression(uint32_t suppression_mask)
     left_suppression_mask_ = 0U;
     if ((left_active_source_mask_ & 0xC) != 0) { // 激活的是障碍物
         left_suppression_mask_ = suppression_mask & elk_cals_.k_EVP_Left_Suprsn_Mask_LCT;
-        //AD_LINFO(ElkScenarioDecision::determineLeftSuppression) << "left LCT Suppression mask is: " << left_suppression_mask_;
+        AD_LINFO(ElkScenarioDecision::determineLeftSuppression) << "left LCT Suppression mask is: " << left_suppression_mask_;
         return left_suppression_mask_ != 0;
     } else if ((left_active_source_mask_ & 0x2) != 0) { // 激活的是路沿
         left_suppression_mask_ = suppression_mask & elk_cals_.k_EVP_Left_Suprsn_Mask_RE;
-        //AD_LINFO(ElkScenarioDecision::determineLeftSuppression) << "left RE Suppression mask is: " << left_suppression_mask_;
+        AD_LINFO(ElkScenarioDecision::determineLeftSuppression) << "left RE Suppression mask is: " << left_suppression_mask_;
         return left_suppression_mask_ != 0;
     } else if ((left_active_source_mask_ & 0x1) != 0) { // 激活的是实线
         left_suppression_mask_ = suppression_mask & elk_cals_.k_EVP_Left_Suprsn_Mask_SLD;
-        //AD_LINFO(ElkScenarioDecision::determineLeftSuppression) << "left SLD Suppression mask is: " << left_suppression_mask_;
+        AD_LINFO(ElkScenarioDecision::determineLeftSuppression) << "left SLD Suppression mask is: " << left_suppression_mask_;
         return left_suppression_mask_ != 0;
     } else {
         return false;
@@ -154,15 +154,15 @@ bool ElkScenarioDecision::determineRightSuppression(uint32_t suppression_mask)
     right_suppression_mask_ = 0U;
     if ((right_active_source_mask_ & 0xC) != 0) { // 激活的是障碍物
         right_suppression_mask_ = suppression_mask & elk_cals_.k_EVP_Right_Suprsn_Mask_LCT;
-        //AD_LINFO(ElkScenarioDecision::determineRightSuppression) << "right LCT Suppression mask is: " << right_suppression_mask_;
+        AD_LINFO(ElkScenarioDecision::determineRightSuppression) << "right LCT Suppression mask is: " << right_suppression_mask_;
         return right_suppression_mask_ != 0;
     } else if ((right_active_source_mask_ & 0x2) != 0) { // 激活的是路沿
         right_suppression_mask_ = suppression_mask & elk_cals_.k_EVP_Right_Suprsn_Mask_RE;
-        //AD_LINFO(ElkScenarioDecision::determineRightSuppression) << "right RE Suppression mask is: " << right_suppression_mask_;
+        AD_LINFO(ElkScenarioDecision::determineRightSuppression) << "right RE Suppression mask is: " << right_suppression_mask_;
         return right_suppression_mask_ != 0;
     } else if ((right_active_source_mask_ & 0x1) != 0) { // 激活的是实线
         right_suppression_mask_ = suppression_mask & elk_cals_.k_EVP_Right_Suprsn_Mask_SLD;
-        //AD_LINFO(ElkScenarioDecision::determineRightSuppression) << "right SLD Suppression mask is: " << right_suppression_mask_;
+        AD_LINFO(ElkScenarioDecision::determineRightSuppression) << "right SLD Suppression mask is: " << right_suppression_mask_;
         return right_suppression_mask_ != 0;
     } else {
         return false;
@@ -178,33 +178,33 @@ bool ElkScenarioDecision::checkLeftAligned(const LanesInfo &road_info, const Lan
         if (lane_boundary.lftBdryVld && lane_boundary.rgtBdryVld) {
             c0 = 0.5F * (road_info.HostLeftLaneMarker.LinePolyC0 + road_info.HostRightLaneMarker.LinePolyC0);
             c1 = 0.5 * (road_info.HostLeftLaneMarker.LinePolyC1 + road_info.HostRightLaneMarker.LinePolyC1);
-            //AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "use center line for ELK left edge control target.";
+            AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "use center line for ELK left edge control target.";
         } else if (lane_boundary.lftBdryVld) {
             if ((road_info.HostLeftLaneMarker.LinePolyC0 < road_info.LeftRoadEdge.LinePolyC0) &&
                  lane_boundary.lftEdgeVld) { // 左侧车道线在左路沿内侧
                 c0 = -road_info.HostLeftLaneMarker.LinePolyC0 + elk_cals_.k_ELK_Aligned_LMOffset;
-                //AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "left line inside edge, use left line offset for ELK left edge control target c0.";
+                AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "left line inside edge, use left line offset for ELK left edge control target c0.";
             } else {
                 c0 = -road_info.LeftRoadEdge.LinePolyC0 + elk_cals_.k_ELK_Aligned_REOffset;
-                //AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "left line outside edge, use left edge offset for ELK left edge control target c0.";
+                AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "left line outside edge, use left edge offset for ELK left edge control target c0.";
             }
             c1 = road_info.HostLeftLaneMarker.LinePolyC1;
-            //AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "use left line for ELK left edge control target c1.";
+            AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "use left line for ELK left edge control target c1.";
         } else if (lane_boundary.rgtBdryVld) {
             if ((road_info.LeftRoadEdge.LinePolyC0 - road_info.HostRightLaneMarker.LinePolyC0 > 4.0F) &&
                 lane_boundary.rgtEdgeVld) { // 右车道线与左侧路沿较远
                 c0 = -road_info.LeftRoadEdge.LinePolyC0 + elk_cals_.k_ELK_Aligned_REOffset;
-                //AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "right line far from edge, use left edge offset for ELK left edge control target c0.";
+                AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "right line far from edge, use left edge offset for ELK left edge control target c0.";
             } else {
                 c0 = -road_info.HostRightLaneMarker.LinePolyC0 - elk_cals_.k_ELK_Aligned_LMOffset;
-                //AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "right line not far from edge, use right line offset for ELK left edge control target c0.";
+                AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "right line not far from edge, use right line offset for ELK left edge control target c0.";
             }
             c1 = 0.5 * (road_info.LeftRoadEdge.LinePolyC1 + road_info.HostRightLaneMarker.LinePolyC1);
-            //AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "use right line and left edge for ELK left edge control target c1.";
+            AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "use right line and left edge for ELK left edge control target c1.";
         } else { // 车道线均无效
             c0 = -road_info.LeftRoadEdge.LinePolyC0 + elk_cals_.k_ELK_Aligned_REOffset;
             c1 = road_info.LeftRoadEdge.LinePolyC1;
-            //AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "use left edge for ELK left edge control target.";
+            AD_LINFO(ElkScenarioDecision::checkLeftAligned) << "use left edge for ELK left edge control target.";
         }
     } else {
         c0 = lane_center.c0;
@@ -227,33 +227,33 @@ bool ElkScenarioDecision::checkRightAligned(const LanesInfo &road_info, const La
         if (lane_boundary.lftBdryVld && lane_boundary.rgtBdryVld) {
             c0 = 0.5 * (road_info.HostLeftLaneMarker.LinePolyC0 + road_info.HostRightLaneMarker.LinePolyC0);
             c1 = 0.5 * (road_info.HostLeftLaneMarker.LinePolyC1 + road_info.HostRightLaneMarker.LinePolyC1);
-            //AD_LINFO(ElkScenarioDecision::checkRightAligned) << "use center line for ELK right edge control target.";
+            AD_LINFO(ElkScenarioDecision::checkRightAligned) << "use center line for ELK right edge control target.";
         } else if (lane_boundary.rgtBdryVld) {
             if ((road_info.HostRightLaneMarker.LinePolyC0 > road_info.RightRoadEdge.LinePolyC0) &&
                  lane_boundary.rgtEdgeVld) { // 右侧车道线在右路沿内侧
                 c0 = -road_info.HostRightLaneMarker.LinePolyC0 - elk_cals_.k_ELK_Aligned_LMOffset;
-                //AD_LINFO(ElkScenarioDecision::checkRightAligned) << "right line inside edge, use right line offset for ELK right edge control target c0.";
+                AD_LINFO(ElkScenarioDecision::checkRightAligned) << "right line inside edge, use right line offset for ELK right edge control target c0.";
             } else {
                 c0 = -road_info.RightRoadEdge.LinePolyC0 - elk_cals_.k_ELK_Aligned_REOffset;
-                //AD_LINFO(ElkScenarioDecision::checkRightAligned) << "right line outside edge, use right edge offset for ELK right edge control target c0.";
+                AD_LINFO(ElkScenarioDecision::checkRightAligned) << "right line outside edge, use right edge offset for ELK right edge control target c0.";
             }
             c1 = road_info.HostRightLaneMarker.LinePolyC1;
-            //AD_LINFO(ElkScenarioDecision::checkRightAligned) << "use right line for ELK right edge control target c1.";
+            AD_LINFO(ElkScenarioDecision::checkRightAligned) << "use right line for ELK right edge control target c1.";
         } else if (lane_boundary.lftBdryVld) {
             if ((road_info.HostLeftLaneMarker.LinePolyC0 - road_info.RightRoadEdge.LinePolyC0 > 4.0F) &&
                 lane_boundary.rgtEdgeVld) { // 左车道线与右侧路沿较远
                 c0 = -road_info.RightRoadEdge.LinePolyC0 - elk_cals_.k_ELK_Aligned_REOffset;
-                //AD_LINFO(ElkScenarioDecision::checkRightAligned) << "left line far from edge, use right edge offset for ELK right edge control target c0.";
+                AD_LINFO(ElkScenarioDecision::checkRightAligned) << "left line far from edge, use right edge offset for ELK right edge control target c0.";
             } else {
                 c0 = -road_info.HostLeftLaneMarker.LinePolyC0 + elk_cals_.k_ELK_Aligned_LMOffset;
-                //AD_LINFO(ElkScenarioDecision::checkRightAligned) << "left line not far from edge, use left line offset for ELK right edge control target c0.";
+                AD_LINFO(ElkScenarioDecision::checkRightAligned) << "left line not far from edge, use left line offset for ELK right edge control target c0.";
             }
             c1 = 0.5 * (road_info.RightRoadEdge.LinePolyC1 + road_info.HostLeftLaneMarker.LinePolyC1);
-            //AD_LINFO(ElkScenarioDecision::checkRightAligned) << "use right edge and left line for ELK right edge control target c1.";
+            AD_LINFO(ElkScenarioDecision::checkRightAligned) << "use right edge and left line for ELK right edge control target c1.";
         } else { // 车道线均无效
             c0 = -road_info.RightRoadEdge.LinePolyC0 - elk_cals_.k_ELK_Aligned_REOffset;
             c1 = road_info.RightRoadEdge.LinePolyC1;
-            //AD_LINFO(ElkScenarioDecision::checkRightAligned) << "use right edge for ELK right edge control target.";
+            AD_LINFO(ElkScenarioDecision::checkRightAligned) << "use right edge for ELK right edge control target.";
         }
     } else {
         c0 = lane_center.c0;

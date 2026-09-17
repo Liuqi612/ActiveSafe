@@ -317,7 +317,6 @@ void VehicleStateEstimed::UpdateBcmAcuBcsInfo() {
     vse_ipc_.brake_pedal_pos      = vse_inport_.brk_pedal_pos;
     vse_ipc_.brake_pressure       = vse_inport_.brk_pdl_drvr_apld_prs;
     vse_ipc_.torsion_bar_trq      = vse_inport_.torsion_bar_trq;//手力矩
-    vse_ipc_.hod_hands_monitor    = vse_inport_.hod_hands_monitor;
     // 手力矩逻辑需要做，为aes不受抑制
     vse_ipc_.brake_pedal_type     = 0;  
     vse_ipc_.function_did_config  = vse_inport_.function_did_config;

@@ -1,0 +1,72 @@
+syntax = "proto2";
+
+package pnc_x;
+
+import "pncx_lite_common.proto";
+
+enum LocalizationMode {
+  LOCMOD_UNKNOWN = 0;
+  LOCMOD_MAP = 1;
+  LOCMOD_MAP_LATERAL = 2;
+  LOCMOD_INS = 3;
+  LOCMOD_GPS = 4;
+}
+
+message MapLocationProto {
+  optional int64 lane_id = 1;
+  optional uint64 link_identifier = 2;        
+  optional uint64 lane_model_identifier = 3;  
+  optional uint32 lane_identifier = 4;        
+  
+  optional uint32 lane_shape_point_index = 5;  
+  
+}
+
+message LocalizationTransformProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+
+  optional double smooth_ref_x = 3;
+  optional double smooth_ref_y = 4;
+  optional double global_ref_x = 5;
+  optional double global_ref_y = 6;
+  
+  optional double yaw_diff = 7;
+  optional double z_diff = 8;
+
+  
+  optional double yaw_correct = 10 [default = 0.0];
+
+  
+  optional bool yaw_correct_from_online = 13;
+
+  enum Type {
+    LIDAR = 0;
+    RTK = 1;
+    VISUAL = 2;
+  }
+  optional Type type = 11 [default = LIDAR];
+
+  
+  optional int32 level_id = 12 [default = 0];
+
+  
+  optional LocalizationMode mode = 14;
+
+  optional MapLocationProto map_location = 15;
+
+  
+  repeated int32 error_code = 16;
+
+  enum LocStatus {
+    kInit = 0;
+    kNormal = 1;
+    kLowPrecision = 2;
+    kInvalid = 3;
+  }
+  optional LocStatus loc_status = 17;
+
+  optional int64 outside_odd_reason = 18;
+
+  reserved 9;
+}
